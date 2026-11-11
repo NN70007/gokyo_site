@@ -3,37 +3,63 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>gokyo</title>
-<meta name="description" content="gokyo">
+<title>Gokyo S.à r.l.-S</title>
+<meta name="description" content="Gokyo S.à r.l.-S, Luxembourg — conseil et administration indépendante dans les services financiers, la fintech et le capital-risque.">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#111214" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#0F1726" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="gokyo">
-<meta property="og:title" content="gokyo">
+<meta property="og:site_name" content="Gokyo">
+<meta property="og:title" content="Gokyo S.à r.l.-S — Luxembourg">
 <meta property="og:url" content="https://gokyo.lu/">
-<link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=20261111">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=20261111b">
 <style>
-  :root{--fond:#fff;--encre:#8A8F98}
-  @media (prefers-color-scheme:dark){:root{--fond:#111214;--encre:#6E737C}}
+  :root{--fond:#fff;--texte:#14233C;--doux:#5E6B7E;--filet:#DCE2EA;--accent:#1F4E79}
+  @media (prefers-color-scheme:dark){:root{--fond:#0F1726;--texte:#F2F4F7;--doux:#A7B2C2;--filet:#26334A;--accent:#8FB3D9}}
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
-  body{background:var(--fond);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;flex-direction:column;min-height:100vh}
-  main{flex:1;display:flex;align-items:center;justify-content:center;padding:24px 16px}
-  main picture img{display:block;width:min(70vw,380px);height:auto}
-  footer{text-align:center;font-size:12px;color:var(--encre);padding:0 16px 28px;letter-spacing:.02em}
+  html,body{min-height:100%}
+  body{background:var(--fond);color:var(--texte);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;flex-direction:column;min-height:100vh;-webkit-font-smoothing:antialiased}
+  .langue{display:flex;justify-content:flex-end;gap:4px;padding:20px 16px 0;max-width:880px;width:100%;margin:0 auto;font-size:12px;letter-spacing:.08em}
+  .langue button{background:none;border:0;color:var(--doux);cursor:pointer;padding:6px 8px;font:inherit}
+  .langue button[aria-pressed="true"]{color:var(--texte);font-weight:600;text-decoration:underline;text-underline-offset:4px}
+  main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 16px;gap:36px}
+  main img{display:block;width:min(78vw,380px);height:auto}
+  .activite{max-width:560px;font-size:17px;line-height:1.6;color:var(--doux)}
+  .contact a{color:var(--accent);text-decoration:none;font-weight:500;border-bottom:1px solid var(--filet);padding-bottom:2px}
+  footer{border-top:1px solid var(--filet);padding:22px 16px 30px;text-align:center;font-size:12px;line-height:1.8;color:var(--doux)}
+  [data-lang]{display:none}
+  html[lang="fr"] [data-lang="fr"],html[lang="en"] [data-lang="en"]{display:revert}
 </style>
 </head>
 <body>
+<nav class="langue" aria-label="Langue / Language">
+  <button type="button" data-set="fr" aria-pressed="true">FR</button>
+  <button type="button" data-set="en" aria-pressed="false">EN</button>
+</nav>
 <main>
   <h1><picture>
-    <source srcset="assets/gokyo-logo-sombre.svg?v=20261111" media="(prefers-color-scheme: dark)">
-    <img src="assets/gokyo-logo.svg?v=20261111" alt="gokyo" width="560" height="150">
+    <source srcset="assets/gokyo-logo-sombre.svg?v=20261111b" media="(prefers-color-scheme: dark)">
+    <img src="assets/gokyo-logo.svg?v=20261111b" alt="Gokyo — Luxembourg" width="380" height="110">
   </picture></h1>
+  <p class="activite">
+    <span data-lang="fr">Conseil et administration indépendante dans les services financiers, la fintech et le capital-risque.</span>
+    <span data-lang="en">Advisory and independent directorship in financial services, fintech and venture capital.</span>
+  </p>
+  <p class="contact"><a href="mailto:contact@gokyo.lu">contact@gokyo.lu</a></p>
 </main>
-<footer>© 2026 NiderLabs</footer>
+<footer>
+  <div>Gokyo S.à r.l.-S · 131, rue de Hollerich · L-1741 Luxembourg</div>
+  <div><span data-lang="fr">RCS Luxembourg</span><span data-lang="en">Luxembourg Trade and Companies Register</span> B239634</div>
+  <div>© 2026 Gokyo</div>
+</footer>
 <script>
-  /* FR par défaut, EN si le navigateur n'est pas en français */
-  (function(){var l=(navigator.language||'fr').slice(0,2).toLowerCase();document.documentElement.lang=(l==='fr')?'fr':'en';})();
+(function(){
+  var html=document.documentElement, btns=document.querySelectorAll('[data-set]');
+  function set(l){ html.lang=l; for(var i=0;i<btns.length;i++){btns[i].setAttribute('aria-pressed', String(btns[i].getAttribute('data-set')===l));} try{localStorage.setItem('lang',l);}catch(e){} }
+  var l=null; try{l=localStorage.getItem('lang');}catch(e){}
+  if(l!=='fr'&&l!=='en'){ l=((navigator.language||'fr').slice(0,2).toLowerCase()==='fr')?'fr':'en'; }
+  set(l);
+  for(var i=0;i<btns.length;i++){btns[i].addEventListener('click',function(){set(this.getAttribute('data-set'));});}
+})();
 </script>
 </body>
 </html>
