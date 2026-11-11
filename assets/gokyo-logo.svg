@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 150" role="img" aria-label="gokyo">
+  <title>gokyo</title>
+  <g fill="none" stroke="#14161A" stroke-width="16" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="52" cy="60" r="36"/>
+    <path d="M88 24 V104 A36 36 0 0 1 22 124"/>
+    <circle cx="164" cy="60" r="36"/>
+    <path d="M238 8 V96 M296 24 L246 66 L298 96"/>
+    <path d="M330 26 L366 66 M402 26 L366 66 L348 104"/>
+    <circle cx="476" cy="60" r="36"/>
+  </g>
+</svg>
