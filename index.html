@@ -38,9 +38,10 @@
   .altimetre .val small{font-size:.5em;margin-left:4px;color:var(--or)}
 
   main{position:relative;z-index:3;align-self:end;padding:0 clamp(16px,4vw,56px) 10px;max-width:760px}
-  .devise{font-family:Cormorant,Georgia,serif;font-weight:500;font-size:clamp(44px,7.2vw,104px);line-height:.98;letter-spacing:-.01em;color:#fff;text-shadow:0 4px 30px rgba(0,0,0,.35)}
+  .devise{font-family:Cormorant,Georgia,serif;font-weight:500;font-size:clamp(32px,4.6vw,64px);line-height:1.08;letter-spacing:0;color:#fff;text-shadow:0 4px 30px rgba(0,0,0,.35)}
   .devise em{font-style:italic;color:var(--or)}
   .ligne{display:block;width:72px;height:2px;background:var(--or);margin:26px 0 18px;transform-origin:left;transform:scaleX(0);animation:trait 1.4s 5.6s cubic-bezier(.2,.7,.2,1) forwards}
+  .auteur{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:#fff;margin-bottom:8px}
   .coord{font-size:11px;letter-spacing:.32em;color:var(--doux)}
   .apparait{opacity:0;transform:translateY(14px);animation:monte 1.6s cubic-bezier(.2,.7,.2,1) forwards}
   @keyframes monte{to{opacity:1;transform:none}}
@@ -189,12 +190,13 @@
   </header>
 
   <main>
-    <h1 class="devise apparait" style="animation-delay:4.6s">
-      <span data-lang="fr">Chaque sommet<br><em>se mérite.</em></span>
-      <span data-lang="en">Every summit<br><em>is earned.</em></span>
-    </h1>
+    <blockquote class="devise apparait" style="animation-delay:4.6s">
+      <span data-lang="fr">« Ce n’est pas la montagne<br>que l’on conquiert,<br><em>mais soi-même.</em> »</span>
+      <span data-lang="en">“It is not the mountain<br>we conquer,<br><em>but ourselves.</em>”</span>
+    </blockquote>
     <span class="ligne" aria-hidden="true"></span>
-    <p class="coord apparait" style="animation-delay:6.2s">GOKYO · 27°57′ N · 86°41′ E</p>
+    <p class="auteur apparait" style="animation-delay:6s">Sir Edmund Hillary</p>
+    <p class="coord apparait" style="animation-delay:6.4s">GOKYO · 27°57′ N · 86°41′ E</p>
   </main>
 
   <footer>
