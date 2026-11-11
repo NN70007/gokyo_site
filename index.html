@@ -5,93 +5,201 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Gokyo S.à r.l.-S</title>
 <meta name="description" content="Gokyo S.à r.l.-S — Luxembourg">
-<meta name="theme-color" content="#0B1B33">
+<meta name="theme-color" content="#070F1F">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Gokyo">
 <meta property="og:title" content="Gokyo — Luxembourg">
 <meta property="og:url" content="https://gokyo.lu/">
-<link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=20261111c">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=20261111d">
+<link rel="preload" href="assets/fonts/cormorant-garamond-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+  @font-face{font-family:Cormorant;font-weight:500;font-style:normal;font-display:swap;src:url(assets/fonts/cormorant-garamond-latin-500-normal.woff2) format('woff2')}
+  @font-face{font-family:Cormorant;font-weight:600;font-style:normal;font-display:swap;src:url(assets/fonts/cormorant-garamond-latin-600-normal.woff2) format('woff2')}
+  @font-face{font-family:Cormorant;font-weight:500;font-style:italic;font-display:swap;src:url(assets/fonts/cormorant-garamond-latin-500-italic.woff2) format('woff2')}
+  :root{--or:#F2B880;--blanc:#F4F7FB;--doux:rgba(244,247,251,.66)}
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%;background:#0B1B33}
-  body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#EAF1F8;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-  .scene{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;overflow:hidden}
-  .scene svg.paysage{position:absolute;inset:0;width:100%;height:100%;display:block}
-  .voile{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 38%,rgba(11,27,51,0) 0%,rgba(11,27,51,.25) 55%,rgba(6,14,28,.75) 100%);pointer-events:none}
-  .langue{position:relative;z-index:2;display:flex;justify-content:flex-end;gap:2px;padding:20px 20px 0;font-size:12px;letter-spacing:.14em}
-  .langue button{background:none;border:0;color:rgba(234,241,248,.6);cursor:pointer;padding:6px 8px;font:inherit}
+  html,body{height:100%;background:#070F1F}
+  body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--blanc);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .scene{position:relative;min-height:100vh;min-height:100svh;overflow:hidden;display:grid;grid-template-rows:auto 1fr auto}
+  svg.montagne{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .vignette{position:absolute;inset:0;pointer-events:none;background:
+    linear-gradient(90deg,rgba(7,15,31,.78) 0%,rgba(7,15,31,.35) 38%,rgba(7,15,31,0) 60%),
+    linear-gradient(0deg,rgba(7,15,31,.9) 0%,rgba(7,15,31,0) 34%)}
+
+  header{position:relative;z-index:3;display:flex;justify-content:space-between;align-items:flex-start;padding:26px clamp(16px,4vw,56px) 0}
+  header img{width:clamp(150px,18vw,220px);height:auto}
+  .droite{display:flex;flex-direction:column;align-items:flex-end;gap:14px}
+  .langue{display:flex;gap:2px;font-size:12px;letter-spacing:.16em}
+  .langue button{background:none;border:0;color:var(--doux);cursor:pointer;padding:6px 8px;font:inherit}
   .langue button[aria-pressed="true"]{color:#fff;font-weight:600}
-  main{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:8vh 16px 0;text-align:center}
-  main img{width:min(80vw,440px);height:auto;filter:drop-shadow(0 6px 24px rgba(0,0,0,.35));opacity:0;transform:translateY(10px);animation:entree 2.2s .3s ease-out forwards}
-  .altitude{margin-top:22px;font-size:11px;letter-spacing:.42em;color:rgba(234,241,248,.72);opacity:0;animation:entree 2s 1.2s ease-out forwards}
-  @keyframes entree{to{opacity:1;transform:none}}
-  footer{position:relative;z-index:2;padding:0 16px 26px;text-align:center;font-size:11.5px;line-height:1.9;color:rgba(234,241,248,.72);letter-spacing:.03em}
-  footer a{color:#fff;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.35)}
+  .altimetre{text-align:right;font-variant-numeric:lining-nums tabular-nums;font-feature-settings:"lnum" 1,"tnum" 1}
+  .altimetre .etiq{font-size:10.5px;letter-spacing:.3em;color:var(--doux)}
+  .altimetre .val{font-family:Cormorant,Georgia,serif;font-weight:600;font-size:clamp(30px,3.6vw,46px);line-height:1.05;color:#fff}
+  .altimetre .val small{font-size:.5em;margin-left:4px;color:var(--or)}
+
+  main{position:relative;z-index:3;align-self:end;padding:0 clamp(16px,4vw,56px) 10px;max-width:760px}
+  .devise{font-family:Cormorant,Georgia,serif;font-weight:500;font-size:clamp(44px,7.2vw,104px);line-height:.98;letter-spacing:-.01em;color:#fff;text-shadow:0 4px 30px rgba(0,0,0,.35)}
+  .devise em{font-style:italic;color:var(--or)}
+  .ligne{display:block;width:72px;height:2px;background:var(--or);margin:26px 0 18px;transform-origin:left;transform:scaleX(0);animation:trait 1.4s 5.6s cubic-bezier(.2,.7,.2,1) forwards}
+  .coord{font-size:11px;letter-spacing:.32em;color:var(--doux)}
+  .apparait{opacity:0;transform:translateY(14px);animation:monte 1.6s cubic-bezier(.2,.7,.2,1) forwards}
+  @keyframes monte{to{opacity:1;transform:none}}
+  @keyframes trait{to{transform:scaleX(1)}}
+
+  footer{position:relative;z-index:3;display:flex;flex-wrap:wrap;gap:6px 22px;justify-content:space-between;align-items:flex-end;padding:22px clamp(16px,4vw,56px) 24px;font-size:11.5px;letter-spacing:.03em;color:var(--doux)}
+  footer a{color:#fff;text-decoration:none;border-bottom:1px solid rgba(242,184,128,.6);padding-bottom:1px}
   [data-lang]{display:none}
   html[lang="fr"] [data-lang="fr"],html[lang="en"] [data-lang="en"]{display:inline}
-  .etoile{animation:scintille 4s ease-in-out infinite}
-  @keyframes scintille{50%{opacity:.25}}
-  .reflet{animation:onde 9s ease-in-out infinite alternate}
-  @keyframes onde{to{transform:translateX(-12px)}}
-  .lueur{animation:aube 14s ease-in-out infinite alternate}
-  @keyframes aube{to{opacity:.55}}
-  @media (prefers-reduced-motion:reduce){*{animation:none!important}main img,.altitude{opacity:1;transform:none}}
+
+  /* Animations du paysage */
+  .etoile{animation:scint 5s ease-in-out infinite}
+  @keyframes scint{50%{opacity:.2}}
+  .aube{opacity:0;animation:aube 6s .4s ease-out forwards}
+  @keyframes aube{to{opacity:1}}
+  .alpenglow{opacity:0;animation:aube 5s 1.2s ease-out forwards}
+  .trace{stroke-dasharray:1;stroke-dashoffset:1;animation:trace 5.2s .8s cubic-bezier(.45,.05,.35,1) forwards}
+  @keyframes trace{to{stroke-dashoffset:0}}
+  .camp{opacity:0;animation:pop .6s ease-out forwards}
+  @keyframes pop{to{opacity:1}}
+  .drapeau{opacity:0;transform-box:fill-box;transform-origin:left bottom;transform:scaleY(0);animation:hisse .9s 6s cubic-bezier(.2,.8,.2,1.2) forwards}
+  @keyframes hisse{to{opacity:1;transform:scaleY(1)}}
+  .halo{opacity:0;animation:halo 3s 6s ease-out forwards}
+  @keyframes halo{0%{opacity:0}30%{opacity:.9}100%{opacity:.55}}
+  .neige{animation:vent 16s linear infinite}
+  @keyframes vent{from{transform:translateX(0)}to{transform:translateX(-160px)}}
+
+  @media (max-width:760px){
+    .vignette{background:linear-gradient(0deg,rgba(7,15,31,.92) 0%,rgba(7,15,31,.35) 45%,rgba(7,15,31,.1) 100%)}
+    header{padding-top:20px}
+    footer{justify-content:flex-start}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01s!important;animation-delay:0s!important;animation-iteration-count:1!important}
+  }
 </style>
 </head>
 <body>
 <div class="scene">
-  <svg class="paysage" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <svg class="montagne" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
     <defs>
       <linearGradient id="ciel" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#07142A"/><stop offset=".45" stop-color="#173459"/><stop offset=".72" stop-color="#5E7FA6"/><stop offset=".86" stop-color="#E8B48A"/><stop offset="1" stop-color="#F6D7B5"/>
+        <stop offset="0" stop-color="#050C1A"/><stop offset=".38" stop-color="#0E2142"/><stop offset=".62" stop-color="#2D3F67"/><stop offset=".8" stop-color="#6E5A78"/><stop offset="1" stop-color="#C98A6A"/>
       </linearGradient>
-      <radialGradient id="soleil" cx=".62" cy=".6" r=".35">
-        <stop offset="0" stop-color="#FFE3BF" stop-opacity=".85"/><stop offset="1" stop-color="#FFE3BF" stop-opacity="0"/>
+      <radialGradient id="soleil" cx=".72" cy=".72" r=".55">
+        <stop offset="0" stop-color="#FFC48A" stop-opacity=".75"/><stop offset=".45" stop-color="#E58C6A" stop-opacity=".25"/><stop offset="1" stop-color="#E58C6A" stop-opacity="0"/>
       </radialGradient>
-      <linearGradient id="neige" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#C9D8EA"/></linearGradient>
-      <linearGradient id="roche1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A6687"/><stop offset="1" stop-color="#22385A"/></linearGradient>
-      <linearGradient id="roche2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2A4468"/><stop offset="1" stop-color="#132845"/></linearGradient>
-      <linearGradient id="moraine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1A2E4C"/><stop offset="1" stop-color="#0B1B33"/></linearGradient>
-      <linearGradient id="lac" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3FB7B0"/><stop offset=".5" stop-color="#1D8C93"/><stop offset="1" stop-color="#0E4F63"/></linearGradient>
-      <linearGradient id="refletGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".38"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>
+      <linearGradient id="faceLumiere" x1="1" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#FFD7B0"/><stop offset=".28" stop-color="#E9A486"/><stop offset=".6" stop-color="#8A6A86"/><stop offset="1" stop-color="#2A3557"/>
+      </linearGradient>
+      <linearGradient id="faceOmbre" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#3A4E78"/><stop offset=".5" stop-color="#1F3256"/><stop offset="1" stop-color="#0E1D38"/>
+      </linearGradient>
+      <linearGradient id="faceNeutre" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#6F86AE"/><stop offset="1" stop-color="#1A2B4B"/>
+      </linearGradient>
+      <linearGradient id="lointain" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#5B6E96"/><stop offset="1" stop-color="#2A3A5E"/>
+      </linearGradient>
+      <linearGradient id="premierPlan" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#0F1C33"/><stop offset="1" stop-color="#050B17"/>
+      </linearGradient>
+      <radialGradient id="haloGrad" cx=".5" cy=".5" r=".5">
+        <stop offset="0" stop-color="#FFE2BE" stop-opacity=".95"/><stop offset=".35" stop-color="#F2B880" stop-opacity=".45"/><stop offset="1" stop-color="#F2B880" stop-opacity="0"/>
+      </radialGradient>
+      <mask id="masqueTrace">
+        <path class="trace" pathLength="1" d="M330 980 C420 930 470 900 540 860 S640 800 690 770 S760 700 735 650 S770 560 820 520 S860 450 840 400 S880 320 915 280 S950 220 1000 168" fill="none" stroke="#fff" stroke-width="14"/>
+      </mask>
+      <filter id="flou"><feGaussianBlur stdDeviation="2.2"/></filter>
     </defs>
+
     <rect width="1600" height="1000" fill="url(#ciel)"/>
-    <rect class="lueur" width="1600" height="1000" fill="url(#soleil)"/>
-    <g fill="#FFFFFF">
-      <circle class="etoile" cx="140" cy="90" r="1.6"/><circle class="etoile" cx="320" cy="170" r="1.1" style="animation-delay:1s"/><circle class="etoile" cx="520" cy="60" r="1.4" style="animation-delay:2s"/>
-      <circle class="etoile" cx="760" cy="130" r="1" style="animation-delay:.5s"/><circle class="etoile" cx="980" cy="70" r="1.5" style="animation-delay:3s"/><circle class="etoile" cx="1220" cy="150" r="1.2" style="animation-delay:1.5s"/>
-      <circle class="etoile" cx="1420" cy="80" r="1.6" style="animation-delay:2.5s"/><circle class="etoile" cx="1520" cy="200" r="1" style="animation-delay:.8s"/><circle class="etoile" cx="60" cy="230" r="1" style="animation-delay:3.4s"/>
+    <rect class="aube" width="1600" height="1000" fill="url(#soleil)"/>
+
+    <g fill="#fff">
+      <circle class="etoile" cx="90" cy="70" r="1.5"/><circle class="etoile" cx="230" cy="160" r="1" style="animation-delay:1.2s"/>
+      <circle class="etoile" cx="410" cy="60" r="1.3" style="animation-delay:2.4s"/><circle class="etoile" cx="560" cy="140" r="1" style="animation-delay:.6s"/>
+      <circle class="etoile" cx="700" cy="40" r="1.6" style="animation-delay:3s"/><circle class="etoile" cx="1250" cy="60" r="1.2" style="animation-delay:1.8s"/>
+      <circle class="etoile" cx="1410" cy="130" r="1.5" style="animation-delay:.3s"/><circle class="etoile" cx="1540" cy="50" r="1" style="animation-delay:2.7s"/>
+      <circle class="etoile" cx="330" cy="250" r=".9" style="animation-delay:3.6s"/><circle class="etoile" cx="1180" cy="190" r=".9" style="animation-delay:4.1s"/>
     </g>
-    <!-- Chaîne lointaine (Cho Oyu) -->
-    <path d="M0 640 L120 590 L210 610 L330 520 L420 560 L520 470 L600 505 L700 420 L790 470 L880 455 L960 360 L1040 420 L1120 400 L1210 470 L1300 440 L1400 520 L1500 500 L1600 560 L1600 1000 L0 1000Z" fill="url(#roche1)" opacity=".9"/>
-    <path d="M700 420 L745 448 L760 438 L790 470 L765 462 L742 470 L720 452Z M960 360 L1000 392 L1018 386 L1040 420 L1010 410 L990 420 L972 398 L948 404Z M520 470 L555 495 L540 492 L522 505 L505 488Z M330 520 L362 540 L345 545 L320 535Z M1120 400 L1160 432 L1140 428 L1118 440 L1100 418Z" fill="url(#neige)"/>
-    <!-- Chaîne intermédiaire -->
-    <path d="M0 720 L90 680 L180 700 L260 640 L350 690 L450 650 L560 700 L650 660 L760 710 L860 670 L960 715 L1060 655 L1150 700 L1250 640 L1350 690 L1460 650 L1600 700 L1600 1000 L0 1000Z" fill="url(#roche2)"/>
-    <path d="M260 640 L290 662 L272 660 L256 668 L238 656Z M1250 640 L1282 664 L1262 662 L1246 670 L1228 656Z M1060 655 L1090 676 L1070 674 L1052 682 L1036 668Z" fill="#DCE6F2" opacity=".85"/>
-    <!-- Lac de Gokyo -->
-    <path d="M0 790 C220 770 420 776 640 782 C900 790 1180 772 1600 786 L1600 1000 L0 1000Z" fill="url(#lac)"/>
-    <g class="reflet" opacity=".9">
-      <path d="M700 795 L760 840 L790 815 L880 860 L960 812 L1040 850 L1120 818 L1210 845 L1300 800Z" fill="url(#refletGrad)"/>
-      <path d="M520 800 L560 830 L600 812 L650 834 L700 800Z" fill="url(#refletGrad)"/>
-      <rect x="380" y="868" width="220" height="2" fill="#FFFFFF" opacity=".18"/><rect x="900" y="900" width="320" height="2" fill="#FFFFFF" opacity=".14"/><rect x="180" y="930" width="160" height="2" fill="#FFFFFF" opacity=".12"/>
+
+    <!-- Chaîne lointaine -->
+    <path d="M0 600 L80 560 L160 585 L250 520 L330 560 L420 505 L480 540 L560 480 L600 500 L640 470 L1340 470 L1390 500 L1450 455 L1520 500 L1600 470 L1600 1000 L0 1000Z" fill="url(#lointain)" opacity=".75"/>
+    <path d="M250 520 L272 536 L262 538 L250 532 L238 540Z M420 505 L442 520 L430 522 L418 518 L404 526Z M1450 455 L1474 472 L1460 470 L1448 478 L1434 468Z" fill="#E6ECF5" opacity=".7"/>
+
+    <!-- Le sommet -->
+    <g>
+      <!-- face éclairée (gauche) -->
+      <path d="M1000 160 L960 210 L930 232 L905 280 L870 300 L850 350 L812 380 L790 430 L740 470 L700 530 L640 560 L580 640 L500 690 L440 760 L1010 760 L1020 520 L1005 380 L1012 260Z" fill="url(#faceLumiere)"/>
+      <path class="alpenglow" d="M1000 160 L960 210 L930 232 L905 280 L870 300 L850 350 L880 330 L915 300 L950 250 L985 215 L1006 250 L1012 260Z" fill="#FFE6C8" opacity=".9"/>
+      <!-- face à l'ombre (droite) -->
+      <path d="M1000 160 L1040 200 L1070 215 L1100 260 L1140 290 L1170 340 L1215 370 L1250 420 L1300 450 L1350 510 L1420 540 L1480 600 L1560 640 L1600 660 L1600 760 L1010 760 L1020 520 L1005 380 L1012 260Z" fill="url(#faceOmbre)"/>
+      <!-- arête centrale et couloirs de neige -->
+      <path d="M1000 160 L1012 260 L1005 380 L1020 520 L1010 760" fill="none" stroke="#F7E3D2" stroke-opacity=".55" stroke-width="2"/>
+      <path d="M1000 160 L1040 200 L1030 230 L1050 270 L1030 300 L1060 340 L1045 380 L1080 420 L1060 470 L1012 260Z" fill="#C9D6EA" opacity=".55"/>
+      <path d="M960 210 L985 240 L960 300 L990 340 L955 400 L985 430 L950 500 L1005 380 L1012 260Z" fill="#FFF1E4" opacity=".55"/>
+      <path d="M870 300 L895 330 L870 380 L900 410 L860 470 L850 350Z" fill="#FFF1E4" opacity=".35"/>
+      <path d="M1140 290 L1160 330 L1150 380 L1185 410 L1170 340Z M1250 420 L1270 450 L1262 490 L1300 450Z" fill="#B9C8E0" opacity=".4"/>
     </g>
-    <!-- Moraine au premier plan -->
-    <path d="M0 880 C160 850 300 900 420 905 C520 910 560 940 640 1000 L0 1000Z" fill="url(#moraine)"/>
-    <path d="M1600 860 C1460 850 1360 890 1250 915 C1160 935 1120 960 1080 1000 L1600 1000Z" fill="url(#moraine)"/>
+
+    <!-- Contreforts -->
+    <path d="M0 760 L120 700 L230 730 L340 670 L460 720 L560 690 L700 740 L860 700 L980 745 L1120 705 L1260 740 L1400 690 L1500 720 L1600 700 L1600 1000 L0 1000Z" fill="url(#faceNeutre)" opacity=".92"/>
+    <path d="M340 670 L366 690 L352 694 L340 688 L322 698Z M1400 690 L1428 708 L1410 712 L1398 706 L1382 714Z" fill="#E6ECF5" opacity=".75"/>
+
+    <!-- Premier plan -->
+    <path d="M0 860 C140 820 260 850 380 880 C470 900 520 930 600 1000 L0 1000Z" fill="url(#premierPlan)"/>
+    <path d="M1600 820 C1470 820 1360 860 1230 900 C1140 930 1080 960 1040 1000 L1600 1000Z" fill="url(#premierPlan)"/>
+    <path d="M0 920 C300 900 700 930 1000 960 C1200 975 1400 960 1600 950 L1600 1000 L0 1000Z" fill="#050B17"/>
+
+    <!-- Itinéraire d'ascension -->
+    <path d="M330 980 C420 930 470 900 540 860 S640 800 690 770 S760 700 735 650 S770 560 820 520 S860 450 840 400 S880 320 915 280 S950 220 1000 168" fill="none" stroke="#F2B880" stroke-width="2.4" stroke-dasharray="2 9" stroke-linecap="round" mask="url(#masqueTrace)"/>
+    <circle r="5" fill="#FFE2BE">
+      <animateMotion dur="5.2s" begin="0.8s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines=".45 .05 .35 1" path="M330 980 C420 930 470 900 540 860 S640 800 690 770 S760 700 735 650 S770 560 820 520 S860 450 840 400 S880 320 915 280 S950 220 1000 168"/>
+      <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.05;.9;1" dur="5.6s" begin="0.8s" fill="freeze"/>
+    </circle>
+
+    <!-- Camps -->
+    <g font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="13" letter-spacing="2.5" fill="#F4F7FB" stroke="#0B1730" stroke-width="2" stroke-opacity=".3" paint-order="stroke">
+      <g class="camp" style="animation-delay:1.9s"><circle cx="690" cy="770" r="4.5" fill="#0B1730" stroke="#F2B880" stroke-width="2"/><text x="706" y="775" opacity=".8">5 700 M</text></g>
+      <g class="camp" style="animation-delay:3.1s"><circle cx="820" cy="520" r="4.5" fill="#0B1730" stroke="#F2B880" stroke-width="2"/><text x="836" y="525" opacity=".8">6 400 M</text></g>
+      <g class="camp" style="animation-delay:4.2s"><circle cx="915" cy="280" r="4.5" fill="#0B1730" stroke="#F2B880" stroke-width="2"/><text x="930" y="285" opacity=".8">7 450 M</text></g>
+    </g>
+
+    <!-- Sommet atteint -->
+    <circle class="halo" cx="1000" cy="160" r="70" fill="url(#haloGrad)"/>
+    <g class="drapeau">
+      <line x1="1000" y1="160" x2="1000" y2="118" stroke="#FFFFFF" stroke-width="2.4"/>
+      <path d="M1001 119 L1030 127 L1001 136Z" fill="#F2B880"/>
+    </g>
   </svg>
-  <div class="voile"></div>
-  <nav class="langue" aria-label="Langue / Language">
-    <button type="button" data-set="fr" aria-pressed="true">FR</button>
-    <button type="button" data-set="en" aria-pressed="false">EN</button>
-  </nav>
+  <div class="vignette"></div>
+
+  <header>
+    <img class="apparait" style="animation-delay:.2s" src="assets/gokyo-logo-blanc.svg?v=20261111d" alt="Gokyo — Luxembourg" width="220" height="64">
+    <div class="droite">
+      <nav class="langue" aria-label="Langue / Language">
+        <button type="button" data-set="fr" aria-pressed="true">FR</button>
+        <button type="button" data-set="en" aria-pressed="false">EN</button>
+      </nav>
+      <div class="altimetre apparait" style="animation-delay:.6s" aria-hidden="true">
+        <div class="etiq">ALTITUDE</div>
+        <div class="val"><span id="alt">4 790</span><small>m</small></div>
+      </div>
+    </div>
+  </header>
+
   <main>
-    <h1><img src="assets/gokyo-logo-blanc.svg?v=20261111c" alt="Gokyo — Luxembourg" width="440" height="127"></h1>
-    <p class="altitude">GOKYO · 4 790 M · NEPAL</p>
+    <h1 class="devise apparait" style="animation-delay:4.6s">
+      <span data-lang="fr">Chaque sommet<br><em>se mérite.</em></span>
+      <span data-lang="en">Every summit<br><em>is earned.</em></span>
+    </h1>
+    <span class="ligne" aria-hidden="true"></span>
+    <p class="coord apparait" style="animation-delay:6.2s">GOKYO · 27°57′ N · 86°41′ E</p>
   </main>
+
   <footer>
     <div><a href="mailto:contact@gokyo.lu">contact@gokyo.lu</a></div>
-    <div>Gokyo S.à r.l.-S · 131, rue de Hollerich · L-1741 Luxembourg · <span data-lang="fr">RCS Luxembourg</span><span data-lang="en">Luxembourg Trade and Companies Register</span> B239634</div>
-    <div>© 2026 Gokyo</div>
+    <div>Gokyo S.à r.l.-S · 131, rue de Hollerich · L-1741 Luxembourg · <span data-lang="fr">RCS Luxembourg</span><span data-lang="en">Luxembourg Trade and Companies Register</span> B239634 · © 2026</div>
   </footer>
 </div>
 <script>
@@ -101,7 +209,20 @@
   var l=null; try{l=localStorage.getItem('lang');}catch(e){}
   if(l!=='fr'&&l!=='en'){ l=((navigator.language||'fr').slice(0,2).toLowerCase()==='fr')?'fr':'en'; }
   set(l);
+  var svg=document.querySelector('svg.montagne');
+  function cadrer(){ svg.setAttribute('viewBox', (window.innerWidth/window.innerHeight < .8) ? '560 -60 900 1060' : '0 0 1600 1000'); }
+  cadrer(); window.addEventListener('resize', cadrer);
   for(var i=0;i<btns.length;i++){btns[i].addEventListener('click',function(){set(this.getAttribute('data-set'));});}
+
+  /* Altimètre : de Gokyo (4 790 m) au sommet (8 188 m), au rythme de l'ascension */
+  var el=document.getElementById('alt'), de=4790, a=8188, debut=800, duree=5200;
+  function fmt(n){ return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,' '); }
+  var reduit = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduit) { el.textContent = fmt(a); return; }
+  var t0=null;
+  function ease(t){ return t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2; }
+  function pas(ts){ if(t0===null) t0=ts; var t=Math.min(1,Math.max(0,(ts-t0-debut)/duree)); el.textContent=fmt(de+(a-de)*ease(t)); if(t<1) requestAnimationFrame(pas); }
+  el.textContent=fmt(de); requestAnimationFrame(pas);
 })();
 </script>
 </body>
