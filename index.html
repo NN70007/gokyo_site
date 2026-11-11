@@ -4,53 +4,96 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Gokyo S.à r.l.-S</title>
-<meta name="description" content="Gokyo S.à r.l.-S, Luxembourg — conseil et administration indépendante dans les services financiers, la fintech et le capital-risque.">
-<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0F1726" media="(prefers-color-scheme: dark)">
+<meta name="description" content="Gokyo S.à r.l.-S — Luxembourg">
+<meta name="theme-color" content="#0B1B33">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Gokyo">
-<meta property="og:title" content="Gokyo S.à r.l.-S — Luxembourg">
+<meta property="og:title" content="Gokyo — Luxembourg">
 <meta property="og:url" content="https://gokyo.lu/">
-<link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=20261111b">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=20261111c">
 <style>
-  :root{--fond:#fff;--texte:#14233C;--doux:#5E6B7E;--filet:#DCE2EA;--accent:#1F4E79}
-  @media (prefers-color-scheme:dark){:root{--fond:#0F1726;--texte:#F2F4F7;--doux:#A7B2C2;--filet:#26334A;--accent:#8FB3D9}}
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{min-height:100%}
-  body{background:var(--fond);color:var(--texte);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;flex-direction:column;min-height:100vh;-webkit-font-smoothing:antialiased}
-  .langue{display:flex;justify-content:flex-end;gap:4px;padding:20px 16px 0;max-width:880px;width:100%;margin:0 auto;font-size:12px;letter-spacing:.08em}
-  .langue button{background:none;border:0;color:var(--doux);cursor:pointer;padding:6px 8px;font:inherit}
-  .langue button[aria-pressed="true"]{color:var(--texte);font-weight:600;text-decoration:underline;text-underline-offset:4px}
-  main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 16px;gap:36px}
-  main img{display:block;width:min(78vw,380px);height:auto}
-  .activite{max-width:560px;font-size:17px;line-height:1.6;color:var(--doux)}
-  .contact a{color:var(--accent);text-decoration:none;font-weight:500;border-bottom:1px solid var(--filet);padding-bottom:2px}
-  footer{border-top:1px solid var(--filet);padding:22px 16px 30px;text-align:center;font-size:12px;line-height:1.8;color:var(--doux)}
+  html,body{height:100%;background:#0B1B33}
+  body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#EAF1F8;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .scene{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;overflow:hidden}
+  .scene svg.paysage{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .voile{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 38%,rgba(11,27,51,0) 0%,rgba(11,27,51,.25) 55%,rgba(6,14,28,.75) 100%);pointer-events:none}
+  .langue{position:relative;z-index:2;display:flex;justify-content:flex-end;gap:2px;padding:20px 20px 0;font-size:12px;letter-spacing:.14em}
+  .langue button{background:none;border:0;color:rgba(234,241,248,.6);cursor:pointer;padding:6px 8px;font:inherit}
+  .langue button[aria-pressed="true"]{color:#fff;font-weight:600}
+  main{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:8vh 16px 0;text-align:center}
+  main img{width:min(80vw,440px);height:auto;filter:drop-shadow(0 6px 24px rgba(0,0,0,.35));opacity:0;transform:translateY(10px);animation:entree 2.2s .3s ease-out forwards}
+  .altitude{margin-top:22px;font-size:11px;letter-spacing:.42em;color:rgba(234,241,248,.72);opacity:0;animation:entree 2s 1.2s ease-out forwards}
+  @keyframes entree{to{opacity:1;transform:none}}
+  footer{position:relative;z-index:2;padding:0 16px 26px;text-align:center;font-size:11.5px;line-height:1.9;color:rgba(234,241,248,.72);letter-spacing:.03em}
+  footer a{color:#fff;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.35)}
   [data-lang]{display:none}
-  html[lang="fr"] [data-lang="fr"],html[lang="en"] [data-lang="en"]{display:revert}
+  html[lang="fr"] [data-lang="fr"],html[lang="en"] [data-lang="en"]{display:inline}
+  .etoile{animation:scintille 4s ease-in-out infinite}
+  @keyframes scintille{50%{opacity:.25}}
+  .reflet{animation:onde 9s ease-in-out infinite alternate}
+  @keyframes onde{to{transform:translateX(-12px)}}
+  .lueur{animation:aube 14s ease-in-out infinite alternate}
+  @keyframes aube{to{opacity:.55}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important}main img,.altitude{opacity:1;transform:none}}
 </style>
 </head>
 <body>
-<nav class="langue" aria-label="Langue / Language">
-  <button type="button" data-set="fr" aria-pressed="true">FR</button>
-  <button type="button" data-set="en" aria-pressed="false">EN</button>
-</nav>
-<main>
-  <h1><picture>
-    <source srcset="assets/gokyo-logo-sombre.svg?v=20261111b" media="(prefers-color-scheme: dark)">
-    <img src="assets/gokyo-logo.svg?v=20261111b" alt="Gokyo — Luxembourg" width="380" height="110">
-  </picture></h1>
-  <p class="activite">
-    <span data-lang="fr">Conseil et administration indépendante dans les services financiers, la fintech et le capital-risque.</span>
-    <span data-lang="en">Advisory and independent directorship in financial services, fintech and venture capital.</span>
-  </p>
-  <p class="contact"><a href="mailto:contact@gokyo.lu">contact@gokyo.lu</a></p>
-</main>
-<footer>
-  <div>Gokyo S.à r.l.-S · 131, rue de Hollerich · L-1741 Luxembourg</div>
-  <div><span data-lang="fr">RCS Luxembourg</span><span data-lang="en">Luxembourg Trade and Companies Register</span> B239634</div>
-  <div>© 2026 Gokyo</div>
-</footer>
+<div class="scene">
+  <svg class="paysage" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <linearGradient id="ciel" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#07142A"/><stop offset=".45" stop-color="#173459"/><stop offset=".72" stop-color="#5E7FA6"/><stop offset=".86" stop-color="#E8B48A"/><stop offset="1" stop-color="#F6D7B5"/>
+      </linearGradient>
+      <radialGradient id="soleil" cx=".62" cy=".6" r=".35">
+        <stop offset="0" stop-color="#FFE3BF" stop-opacity=".85"/><stop offset="1" stop-color="#FFE3BF" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="neige" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#C9D8EA"/></linearGradient>
+      <linearGradient id="roche1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A6687"/><stop offset="1" stop-color="#22385A"/></linearGradient>
+      <linearGradient id="roche2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2A4468"/><stop offset="1" stop-color="#132845"/></linearGradient>
+      <linearGradient id="moraine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1A2E4C"/><stop offset="1" stop-color="#0B1B33"/></linearGradient>
+      <linearGradient id="lac" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3FB7B0"/><stop offset=".5" stop-color="#1D8C93"/><stop offset="1" stop-color="#0E4F63"/></linearGradient>
+      <linearGradient id="refletGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".38"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>
+    </defs>
+    <rect width="1600" height="1000" fill="url(#ciel)"/>
+    <rect class="lueur" width="1600" height="1000" fill="url(#soleil)"/>
+    <g fill="#FFFFFF">
+      <circle class="etoile" cx="140" cy="90" r="1.6"/><circle class="etoile" cx="320" cy="170" r="1.1" style="animation-delay:1s"/><circle class="etoile" cx="520" cy="60" r="1.4" style="animation-delay:2s"/>
+      <circle class="etoile" cx="760" cy="130" r="1" style="animation-delay:.5s"/><circle class="etoile" cx="980" cy="70" r="1.5" style="animation-delay:3s"/><circle class="etoile" cx="1220" cy="150" r="1.2" style="animation-delay:1.5s"/>
+      <circle class="etoile" cx="1420" cy="80" r="1.6" style="animation-delay:2.5s"/><circle class="etoile" cx="1520" cy="200" r="1" style="animation-delay:.8s"/><circle class="etoile" cx="60" cy="230" r="1" style="animation-delay:3.4s"/>
+    </g>
+    <!-- Chaîne lointaine (Cho Oyu) -->
+    <path d="M0 640 L120 590 L210 610 L330 520 L420 560 L520 470 L600 505 L700 420 L790 470 L880 455 L960 360 L1040 420 L1120 400 L1210 470 L1300 440 L1400 520 L1500 500 L1600 560 L1600 1000 L0 1000Z" fill="url(#roche1)" opacity=".9"/>
+    <path d="M700 420 L745 448 L760 438 L790 470 L765 462 L742 470 L720 452Z M960 360 L1000 392 L1018 386 L1040 420 L1010 410 L990 420 L972 398 L948 404Z M520 470 L555 495 L540 492 L522 505 L505 488Z M330 520 L362 540 L345 545 L320 535Z M1120 400 L1160 432 L1140 428 L1118 440 L1100 418Z" fill="url(#neige)"/>
+    <!-- Chaîne intermédiaire -->
+    <path d="M0 720 L90 680 L180 700 L260 640 L350 690 L450 650 L560 700 L650 660 L760 710 L860 670 L960 715 L1060 655 L1150 700 L1250 640 L1350 690 L1460 650 L1600 700 L1600 1000 L0 1000Z" fill="url(#roche2)"/>
+    <path d="M260 640 L290 662 L272 660 L256 668 L238 656Z M1250 640 L1282 664 L1262 662 L1246 670 L1228 656Z M1060 655 L1090 676 L1070 674 L1052 682 L1036 668Z" fill="#DCE6F2" opacity=".85"/>
+    <!-- Lac de Gokyo -->
+    <path d="M0 790 C220 770 420 776 640 782 C900 790 1180 772 1600 786 L1600 1000 L0 1000Z" fill="url(#lac)"/>
+    <g class="reflet" opacity=".9">
+      <path d="M700 795 L760 840 L790 815 L880 860 L960 812 L1040 850 L1120 818 L1210 845 L1300 800Z" fill="url(#refletGrad)"/>
+      <path d="M520 800 L560 830 L600 812 L650 834 L700 800Z" fill="url(#refletGrad)"/>
+      <rect x="380" y="868" width="220" height="2" fill="#FFFFFF" opacity=".18"/><rect x="900" y="900" width="320" height="2" fill="#FFFFFF" opacity=".14"/><rect x="180" y="930" width="160" height="2" fill="#FFFFFF" opacity=".12"/>
+    </g>
+    <!-- Moraine au premier plan -->
+    <path d="M0 880 C160 850 300 900 420 905 C520 910 560 940 640 1000 L0 1000Z" fill="url(#moraine)"/>
+    <path d="M1600 860 C1460 850 1360 890 1250 915 C1160 935 1120 960 1080 1000 L1600 1000Z" fill="url(#moraine)"/>
+  </svg>
+  <div class="voile"></div>
+  <nav class="langue" aria-label="Langue / Language">
+    <button type="button" data-set="fr" aria-pressed="true">FR</button>
+    <button type="button" data-set="en" aria-pressed="false">EN</button>
+  </nav>
+  <main>
+    <h1><img src="assets/gokyo-logo-blanc.svg?v=20261111c" alt="Gokyo — Luxembourg" width="440" height="127"></h1>
+    <p class="altitude">GOKYO · 4 790 M · NEPAL</p>
+  </main>
+  <footer>
+    <div><a href="mailto:contact@gokyo.lu">contact@gokyo.lu</a></div>
+    <div>Gokyo S.à r.l.-S · 131, rue de Hollerich · L-1741 Luxembourg · <span data-lang="fr">RCS Luxembourg</span><span data-lang="en">Luxembourg Trade and Companies Register</span> B239634</div>
+    <div>© 2026 Gokyo</div>
+  </footer>
+</div>
 <script>
 (function(){
   var html=document.documentElement, btns=document.querySelectorAll('[data-set]');
