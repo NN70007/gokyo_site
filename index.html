@@ -47,6 +47,7 @@
   footer b{color:rgba(247,243,236,.85);font-weight:600;letter-spacing:.08em}
   footer a{color:#fff;text-decoration:none;border-bottom:1px solid rgba(242,192,138,.55);padding-bottom:1px}
   footer .sep{opacity:.45;margin:0 .55em}
+  footer .credit{font-size:.82em;opacity:.55}
   [data-lang]{display:none}
   html[lang="fr"] [data-lang="fr"],html[lang="en"] [data-lang="en"]{display:inline}
   @media (max-width:700px){
@@ -75,7 +76,8 @@
 
   <footer class="apparait" style="animation-delay:6s">
     <span class="bl"><b>GOKYO S.à r.l.-S</b></span><span class="sep">·</span><span class="bl"><span data-lang="fr">Société à responsabilité limitée simplifiée de droit luxembourgeois</span><span data-lang="en">Simplified limited liability company under Luxembourg law</span></span><span class="sep">·</span><span class="bl">131, rue de Hollerich, L-1741 Luxembourg</span><br class="br">
-    <span class="bl"><span data-lang="fr">RCS Luxembourg</span><span data-lang="en">Luxembourg Trade and Companies Register</span> B239634</span><span class="sep">·</span><span class="bl"><span data-lang="fr">TVA</span><span data-lang="en">VAT</span> LU31725054</span><span class="sep">·</span><span class="bl"><a href="mailto:contact@gokyo.lu">contact@gokyo.lu</a><span class="sep">·</span>© 2026</span>
+    <span class="bl"><span data-lang="fr">RCS Luxembourg</span><span data-lang="en">Luxembourg Trade and Companies Register</span> B239634</span><span class="sep">·</span><span class="bl"><span data-lang="fr">TVA</span><span data-lang="en">VAT</span> LU31725054</span><span class="sep">·</span><span class="bl"><a href="mailto:contact@gokyo.lu">contact@gokyo.lu</a><span class="sep">·</span>© 2026</span><br class="br">
+    <span class="bl credit"><span data-lang="fr">Relief</span><span data-lang="en">Terrain</span> : Copernicus DEM GLO-30 © DLR e.V. 2010-2014, © Airbus Defence and Space GmbH 2014-2018, <span data-lang="fr">fourni dans le cadre de COPERNICUS par l’Union européenne et l’ESA</span><span data-lang="en">provided under COPERNICUS by the European Union and ESA</span></span>
   </footer>
 </div>
 <script>
@@ -95,27 +97,16 @@
      3) Puis elle tourne lentement autour du sommet, objectif toujours dirigé vers lui. */
   var cv=document.getElementById('topo');
   var gl=cv.getContext('webgl2',{antialias:false,alpha:false});
-  var v2=!!gl;
-  if(!gl){ gl=cv.getContext('webgl',{antialias:false,alpha:false}); if(!gl || !gl.getExtension('OES_standard_derivatives')) return; }
+  if(!gl) return;
 
-  var VS = v2 ? '#version 300 es\nin vec2 a;void main(){gl_Position=vec4(a,0.,1.);}'
-              : 'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
-  var FS = (v2 ? '#version 300 es\nprecision highp float;out vec4 o;\n#define FRAG o\n'
-               : '#extension GL_OES_standard_derivatives : enable\nprecision highp float;\n#define FRAG gl_FragColor\n') + [
-    'uniform vec2 R;uniform float T;uniform vec2 M;',
+  var VS='#version 300 es\nin vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
+  var FS='#version 300 es\nprecision highp float;out vec4 o;\n#define FRAG o\n' + [
+    'uniform vec2 R;uniform float T;uniform vec2 M;uniform sampler2D RELIEF;',
     'float h21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}',
-    'float vn(vec2 p){vec2 i=floor(p),f=fract(p);vec2 u=f*f*(3.-2.*f);',
-    ' return mix(mix(h21(i),h21(i+vec2(1,0)),u.x),mix(h21(i+vec2(0,1)),h21(i+vec2(1,1)),u.x),u.y);}',
-    'float ridged(vec2 p){float s=0.,a=.55,w=1.;mat2 r=mat2(.8,-.6,.6,.8);',
-    ' for(int i=0;i<6;i++){float n=1.-abs(vn(p)*2.-1.);n*=n;n*=w;w=clamp(n*1.8,0.,1.);s+=n*a;a*=.5;p=r*p*2.03+3.1;}return s;}',
-    'float H(vec2 p){',
-    ' float d=length(p*vec2(1.,1.15));',
-    ' float massif=exp(-d*d*1.35);',
-    ' vec2 q1=p-vec2(-1.05,.45),q2=p-vec2(1.25,-.55);',
-    ' float second=exp(-dot(q1,q1)*2.6)*.55+exp(-dot(q2,q2)*2.2)*.5;',
-    ' float r=ridged(p*1.25);',
-    ' return massif*1.05+second+r*.55*(.45+massif)-.12;}',
-    'const float EX=.62;',                                                // exagération du relief
+    // relief réel : carré de 56 km = 4 unités ; h = (altitude - 3000 m) / 4000 m
+    'float H(vec2 p){float h=texture(RELIEF,vec2(p.x*.25+.5,.5-p.y*.25)).r;',
+    ' float loin=smoothstep(2.4,4.5,max(abs(p.x),abs(p.y)));return mix(h,-.3,loin);}',
+    'const float EX=.42;',                                                // exagération du relief
     'float Z(vec2 p){return H(p)*EX;}',
     'vec3 ciel(vec3 d,float aube){',
     ' float e=d.z;',
@@ -128,12 +119,12 @@
     ' vec2 uv=(gl_FragCoord.xy-.5*R)/min(R.x,R.y);',
     // --- caméra ---
     ' float k=smoothstep(10.,18.,T);',                                     // descente / inclinaison
-    ' float th=1.16*k*(1.-(clamp(R.y/R.x,1.,2.4)-1.)*.17);',                                                   // angle depuis la verticale
+    ' float th=1.0*k*(1.-(clamp(R.y/R.x,1.,2.4)-1.)*.17);',                                                   // angle depuis la verticale
     ' float s0=T<11.?0.:(T<21.?(T-11.)*(T-11.)/20.:5.+(T-21.));',          // la rotation démarre en douceur
     ' float az=.35+T*.006+s0*.105+M.x*.25;',                               // un tour ≈ 1 min
     ' float por=clamp(R.y/R.x,1.,2.4);',
-    ' float dist=mix(3.15-.45*smoothstep(0.,10.,T),3.55*(1.+(por-1.)*.22),k);',
-    ' vec3 cible=vec3(0.,0.,mix(0.,.38,k));',
+    ' float dist=mix(3.15-.45*smoothstep(0.,10.,T),3.7*(1.+(por-1.)*.22),k);',
+    ' vec3 cible=vec3(mix(vec2(0.),vec2(.62,.1),k),mix(0.,.55,k));',
     ' vec3 ro=cible+dist*vec3(sin(th)*cos(az),sin(th)*sin(az),cos(th));',
     ' ro.z+=M.y*.15*k;',
     ' vec3 fw=normalize(cible-ro);',
@@ -150,13 +141,13 @@
     ' vec3 c;',
     ' if(touche){',
     '  vec3 p=ro+rd*t;float h=H(p.xy);',
-    '  float e=.004;',
+    '  float e=.006;',
     '  vec3 n=normalize(vec3(Z(p.xy-vec2(e,0.))-Z(p.xy+vec2(e,0.)),Z(p.xy-vec2(0.,e))-Z(p.xy+vec2(0.,e)),2.*e));',
-    '  float N=26.;float f=h*N;float fwd=max(fwidth(f),1e-4);',
+    '  float N=20.;float f=h*N;float fwd=max(fwidth(f),1e-4);',
     '  float dl=abs(fract(f-.5)-.5)/fwd;float l1=1.-smoothstep(.0,.9,dl);',
     '  float f5=h*N/5.;float fw5=max(fwidth(f5),1e-4);float d5=abs(fract(f5-.5)-.5)/fw5;float l5=1.-smoothstep(.2,1.8,d5);',
     '  float dens=1.-smoothstep(.35,.9,fwd);l1*=dens;l5*=1.-smoothstep(.6,1.4,fw5*5.);',  // évite le moiré au loin
-    '  float seuil=mix(1.55,.34,aube);',
+    '  float seuil=mix(1.55,.6,aube);',
     '  float lumi=smoothstep(seuil-.02,seuil+.22,h);',
     '  float front=exp(-pow((h-seuil)*7.,2.))*smoothstep(.0,.15,aube)*(1.-smoothstep(.9,1.,aube)*.35);',
     '  vec3 sol=normalize(vec3(.75,.35,.55));float lam=clamp(dot(n,sol),0.,1.);',
@@ -170,7 +161,7 @@
     '  float a=(l1*.34+l5*.62)*apparition*mix(.55,1.,lumi);',
     '  c=fond*apparition+lc*a;',
     '  c+=vec3(1.,.7,.45)*front*(.25+l1*.9+l5);',
-    '  float brume=smoothstep(3.5,12.,t)*k;',
+    '  float brume=smoothstep(3.,9.,t)*k;',
     '  c=mix(c,ciel(rd,aube),brume);',
     ' } else { c=ciel(rd,aube)*k; }',
     // halo du soleil levant (vue du dessus), puis vignettage
@@ -188,6 +179,26 @@
   var loc=gl.getAttribLocation(pr,'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
   var uR=gl.getUniformLocation(pr,'R'), uT=gl.getUniformLocation(pr,'T'), uM=gl.getUniformLocation(pr,'M');
 
+  // Carte d'altitude réelle (Copernicus DEM, voir tools/relief.py) → texture flottante
+  var pret=false;
+  (function(){
+    var img=new Image(); img.decoding='async';
+    img.onload=function(){
+      var w=img.naturalWidth, h=img.naturalHeight, c=document.createElement('canvas'); c.width=w; c.height=h;
+      var x=c.getContext('2d',{willReadFrequently:true}); x.drawImage(img,0,0);
+      var d=x.getImageData(0,0,w,h).data, f=new Float32Array(w*h);
+      for(var i=0,j=0;i<f.length;i++,j+=4){ f[i]=((d[j]*256+d[j+1])/4-3000)/4000; }
+      var tx=gl.createTexture(); gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D,tx);
+      gl.pixelStorei(gl.UNPACK_ALIGNMENT,1);
+      gl.texImage2D(gl.TEXTURE_2D,0,gl.R16F,w,h,0,gl.RED,gl.FLOAT,f);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.MIRRORED_REPEAT); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.MIRRORED_REPEAT);
+      gl.uniform1i(gl.getUniformLocation(pr,'RELIEF'),0);
+      pret=true; T0=performance.now(); requestAnimationFrame(frame);
+    };
+    img.src='assets/relief.png?v=20261122';
+  })();
+
   // Le relief en 3D est plus coûteux : résolution adaptée à l'appareil, et baisse automatique si ça rame
   var mobile=Math.min(innerWidth,innerHeight)<700;
   var echelle=mobile?.85:1;
@@ -202,13 +213,12 @@
   function frame(now){
     var t=reduit?9.5:(tFixe!=null?tFixe:(now-T0)/1000);
     var dt=now-dernier; dernier=now;
-    if(dt>40 && t>1){ if(++lents>15 && echelle>.4){ echelle*=.75; lents=0; taille(); } } else if(lents>0) lents--;
+    if(tFixe==null && dt>40 && t>1){ if(++lents>15 && echelle*Math.min(window.devicePixelRatio||1,mobile?2:1.5)>.75){ echelle*=.75; lents=0; taille(); } } else if(lents>0) lents--;
     souris[0]+=(cible[0]-souris[0])*.03; souris[1]+=(cible[1]-souris[1])*.03;
     gl.uniform2f(uR,cv.width,cv.height); gl.uniform1f(uT,t); gl.uniform2f(uM,souris[0],souris[1]);
     gl.drawArrays(gl.TRIANGLES,0,3);
     if(!reduit) requestAnimationFrame(frame);
   }
-  requestAnimationFrame(frame);
 })();
 </script>
 </body>
