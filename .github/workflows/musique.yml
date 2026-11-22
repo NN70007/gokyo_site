@@ -1,0 +1,41 @@
+name: Musique d'ambiance
+# Récupère un morceau Morning Light Music (lien de téléchargement du compte, temporaire),
+# le compresse et le range dans assets/musique/. Lancement manuel uniquement.
+on:
+  workflow_dispatch:
+    inputs:
+      lien:
+        description: "Lien de téléchargement (.zip) du morceau"
+        required: true
+      nom:
+        description: "Nom du fichier de sortie (sans extension)"
+        required: true
+        default: "ambiance"
+permissions:
+  contents: write
+jobs:
+  musique:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Télécharger et compresser
+        env:
+          LIEN: ${{ inputs.lien }}
+          NOM: ${{ inputs.nom }}
+        run: |
+          sudo apt-get -qq update && sudo apt-get -qq install -y ffmpeg unzip >/dev/null
+          mkdir -p /tmp/m && curl -sSL "$LIEN" -o /tmp/m/piste.zip
+          cd /tmp/m && unzip -o -q piste.zip && find . -type f | sed 's/^/  /'
+          SRC=$(find . -type f \( -iname '*.wav' \) | grep -iv stem | head -1)
+          [ -z "$SRC" ] && SRC=$(find . -type f -iname '*.mp3' | head -1)
+          echo "Source : $SRC"
+          mkdir -p "$GITHUB_WORKSPACE/assets/musique"
+          ffmpeg -loglevel error -y -i "$SRC" -ac 2 -ar 44100 -codec:a libmp3lame -b:a 128k "$GITHUB_WORKSPACE/assets/musique/$NOM.mp3"
+          ls -la "$GITHUB_WORKSPACE/assets/musique"
+      - name: Enregistrer
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add assets/musique
+          git diff --cached --quiet || git commit -m "Musique d'ambiance : ${{ inputs.nom }}"
+          git pull --rebase origin main && git push
