@@ -510,7 +510,7 @@
   /* ---------- Le soleil réel au-dessus de Gokyo, à l'heure du Népal ----------
      Après le lever du jour de l'ouverture, l'éclairage rejoint la vraie position du soleil
      (calcul astronomique) ; le bouton ⏩ fait défiler une journée en une minute. */
-  var rapide=false, decalage=0, SDl=null;
+  var rapide=false, decalage=0, SDl=null, dernierAccel=0;
   function soleilA(ms){
     var r=Math.PI/180, d=ms/86400000+2440587.5-2451545.0;
     var g=(357.529+0.98560028*d)%360, q=280.459+0.98564736*d;
@@ -523,7 +523,7 @@
   }
   function heureSim(){ return Date.now()+decalage; }
   function soleilReel(t,dt){
-    if(rapide) decalage+=dt*1000*1439;                // 24 h en 1 min
+    var mt=performance.now(); if(rapide&&dernierAccel) decalage+=(mt-dernierAccel)*1439; dernierAccel=mt;   // 24 h en 1 min, quelle que soit la fluidité
     var so=soleilA(heureSim());
     if(!SDl) SDl=so.v.slice(); for(var i=0;i<3;i++) SDl[i]+=(so.v[i]-SDl[i])*.08;
     var n=n3(SDl), el=Math.asin(Math.max(-1,Math.min(1,n[2])))*180/Math.PI;
