@@ -39,17 +39,6 @@
   header{position:relative;z-index:3;display:flex;justify-content:space-between;align-items:center;padding:24px clamp(18px,4vw,56px) 0}
   .coord{font-size:12.5px;letter-spacing:.34em;color:rgba(255,252,246,.88);text-shadow:0 1px 14px rgba(4,7,15,.9),0 0 3px rgba(4,7,15,.8);font-variant-numeric:tabular-nums;white-space:nowrap}
   .coord .sep{color:var(--or);margin:0 .34em 0 0}
-  header{align-items:flex-start}
-  .gauche{display:flex;flex-direction:column;gap:9px;padding-top:6px}
-  .heure{display:flex;align-items:center;gap:10px;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,252,246,.62);font-variant-numeric:tabular-nums;white-space:nowrap;
-    text-shadow:0 1px 14px rgba(4,7,15,.9),0 0 3px rgba(4,7,15,.8)}
-  .heure .sep{color:var(--or)}
-  .heure small{font-size:.85em;letter-spacing:.16em;opacity:.7;margin-left:.3em;text-transform:none}
-  .accel{display:inline-flex;align-items:center;justify-content:center;width:26px;height:22px;border:1px solid rgba(247,243,236,.25);border-radius:11px;background:rgba(4,7,15,.35);color:rgba(247,243,236,.7);cursor:pointer;padding:0}
-  .accel:hover{color:#fff;border-color:rgba(247,243,236,.5)}
-  .accel[aria-pressed="true"]{color:var(--or);border-color:var(--or);box-shadow:0 0 12px rgba(242,192,138,.35)}
-  .accel[aria-pressed="true"] svg{animation:avance 1s linear infinite}
-  @keyframes avance{0%{transform:translateX(-1px)}50%{transform:translateX(1.5px)}100%{transform:translateX(-1px)}}
   .droite{display:flex;align-items:center;gap:14px}
   .son{display:flex;align-items:center;gap:8px;background:none;border:0;color:rgba(247,243,236,.55);cursor:pointer;padding:6px 4px;font:inherit;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase}
   .son:hover,.son[aria-pressed="true"]{color:#fff}
@@ -77,6 +66,21 @@
   .scene{touch-action:none;cursor:grab}
   .scene.saisie{cursor:grabbing}
   header,footer{cursor:auto}
+  /* Fiche de mission */
+  .mission{position:absolute;left:0;top:0;z-index:4;pointer-events:none;opacity:0;min-width:230px;max-width:300px;padding:11px 14px 12px;
+    background:rgba(6,9,18,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(255,70,55,.35);border-left:2px solid #ff4a3a;border-radius:3px;
+    font-size:10.5px;line-height:1.5;letter-spacing:.06em;color:rgba(247,243,236,.78);font-variant-numeric:tabular-nums;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+  .mission .m-tete{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-size:10px;letter-spacing:.28em;font-weight:600}
+  .mission .m-id{color:#fff}
+  .mission .m-type{color:#ff6a5a;border:1px solid rgba(255,90,75,.5);padding:1px 6px;border-radius:2px;letter-spacing:.2em}
+  .mission .m-nom{color:#fff;font-size:12px;letter-spacing:.02em;margin-bottom:3px}
+  .mission .m-coord{color:var(--or);letter-spacing:.08em}
+  .mission .m-det{opacity:.75}
+  .mission .m-ok{margin-top:7px;padding-top:7px;border-top:1px solid rgba(255,255,255,.1);font-size:9.5px;letter-spacing:.3em;text-transform:uppercase;color:rgba(247,243,236,.35);display:flex;align-items:center;gap:8px;transition:color .6s}
+  .mission .m-ok i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.2);transition:background .6s,box-shadow .6s}
+  .mission.ok .m-ok{color:#7fe0a0}
+  .mission.ok .m-ok i{background:#5fd38a;box-shadow:0 0 8px #5fd38a}
+  @media (max-width:700px){.mission{min-width:0;max-width:220px;font-size:9.5px;padding:9px 11px}.mission .m-nom{font-size:11px}}
   /* Altimètre sous le curseur */
   .altitude{position:absolute;left:0;top:0;z-index:5;pointer-events:none;opacity:0;transition:opacity .35s;white-space:nowrap;
     font-size:12px;letter-spacing:.16em;color:#fff;font-variant-numeric:tabular-nums;text-shadow:0 1px 10px rgba(4,7,15,.95),0 0 3px rgba(4,7,15,.9)}
@@ -101,8 +105,6 @@
   @media (max-width:700px){
     footer{font-size:10px;line-height:1.6}
     .coord{font-size:10.5px;letter-spacing:.22em}
-    .heure{font-size:9px;letter-spacing:.12em;gap:7px}
-    .heure small{display:none}
     footer .bl{display:block}
     footer > .sep,footer .br{display:none}
   }
@@ -119,14 +121,7 @@
   <h1 class="masque">GOKYO</h1>
 
   <header>
-    <div class="gauche apparait" style="animation-delay:5.6s">
-      <p class="coord" aria-label="Gokyo, 27°57′ N, 86°41′ E">27°57′ N <span class="sep">·</span> 86°41′ E</p>
-      <p class="heure"><span id="heure" aria-live="off"></span>
-        <button type="button" id="accel" class="accel" aria-pressed="false" title="Accélérer le temps : une journée en une minute / Speed up time: one day in one minute" aria-label="Accélérer le temps / Speed up time">
-          <svg viewBox="0 0 16 12" width="15" height="11" aria-hidden="true"><path d="M1 1l6 5-6 5zM8 1l6 5-6 5z" fill="currentColor"/></svg>
-        </button>
-      </p>
-    </div>
+    <p class="coord apparait" style="animation-delay:5.6s" aria-label="Gokyo, 27°57′ N, 86°41′ E">27°57′ N <span class="sep">·</span> 86°41′ E</p>
     <div class="droite apparait" style="animation-delay:5.6s">
     <button type="button" class="son" id="son" aria-pressed="false" aria-label="Musique : activer / Music: on">
       <span class="barres" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="son-txt"><span data-lang="fr">Son</span><span data-lang="en">Sound</span></span>
@@ -151,8 +146,8 @@
     <p>L’image est le relief réel de la région de Gokyo, dans le Khumbu, au nord-est du Népal : un carré d’environ 56 km de côté qui englobe le village et les lacs de Gokyo, le glacier de Ngozumpa, le Cho Oyu (8 188 m), l’Everest (8 849 m), le Lhotse (8 516 m) et le Makalu (8 485 m).</p>
     <p>Chaque ligne est une courbe de niveau, comme sur une carte de montagne : une ligne tous les 200 m d’altitude, une ligne plus marquée tous les 1 000 m.</p>
     <h2>Le lever du jour</h2>
-    <p>À l’aube, en haute montagne, la lumière touche d’abord les plus hauts sommets puis descend lentement le long des pentes. La page reprend ce moment : les courbes s’éclairent des sommets de plus de 8 000 m vers les vallées, qui restent dans l’ombre bleue de la nuit. La caméra descend ensuite vers le massif et tourne lentement autour de l’Everest. L’éclairage rejoint alors la position réelle du soleil au-dessus de Gokyo, à l’heure du Népal ; le bouton ⏩ fait défiler une journée entière en une minute.</p>
-    <p>Une courbe dorée parcourt ensuite le massif, du plus haut sommet vers les vallées, en suivant une même altitude. Un point rouge, comme un hélicoptère, relie les villages et les camps de base ; là où il se pose, une onde se propage sur le relief. En survolant le relief (ou en le touchant sur un téléphone), l’altitude du point ou le nom du sommet s’affiche. On peut faire tourner la vue en la faisant glisser, et zoomer avec la molette ou en pinçant l’écran ; un double-clic rétablit la vue d’origine.</p>
+    <p>À l’aube, en haute montagne, la lumière touche d’abord les plus hauts sommets puis descend lentement le long des pentes. La page reprend ce moment : les courbes s’éclairent des sommets de plus de 8 000 m vers les vallées, qui restent dans l’ombre bleue de la nuit. La caméra descend ensuite vers le massif et tourne lentement autour de l’Everest.</p>
+    <p>Une courbe dorée parcourt ensuite le massif, du plus haut sommet vers les vallées, en suivant une même altitude. Un point rouge, comme un hélicoptère, relie les villages et les camps de base ; là où il se pose, une onde se propage sur le relief et une fiche de mission s’affiche (les numéros et le détail des missions sont fictifs). En survolant le relief (ou en le touchant sur un téléphone), l’altitude du point ou le nom du sommet s’affiche. On peut faire tourner la vue en la faisant glisser, et zoomer avec la molette ou en pinçant l’écran ; un double-clic rétablit la vue d’origine.</p>
     <p class="petit">Pour mieux lire les pentes, le relief est exagéré environ 1,5 fois en hauteur. Les couleurs et la lumière sont une interprétation artistique.</p>
     <h2>Données utilisées</h2>
     <p>Modèle numérique de terrain Copernicus DEM GLO-30 (résolution d’environ 30 m), ramené ici à environ 73 m par point. Copernicus DEM GLO-30 © DLR e.V. 2010-2014 et © Airbus Defence and Space GmbH 2014-2018, fourni dans le cadre de COPERNICUS par l’Union européenne et l’ESA ; tous droits réservés.</p>
@@ -169,8 +164,8 @@
     <p>The image is the real terrain of the Gokyo region in the Khumbu, north-eastern Nepal: a square of about 56 km across that takes in the village and lakes of Gokyo, the Ngozumpa glacier, Cho Oyu (8,188 m), Everest (8,849 m), Lhotse (8,516 m) and Makalu (8,485 m).</p>
     <p>Each line is a contour line, as on a mountain map: one line every 200 m of altitude, a stronger line every 1,000 m.</p>
     <h2>Sunrise</h2>
-    <p>At dawn in high mountains, light reaches the highest summits first, then slowly moves down the slopes. The page recreates that moment: the contours light up from the 8,000-metre peaks down towards the valleys, which stay in the blue shadow of night. The camera then descends towards the massif and slowly circles Everest. The lighting then follows the real position of the sun over Gokyo, at Nepal time; the ⏩ button plays a whole day in one minute.</p>
-    <p>A golden contour then travels across the massif, from the highest summit down to the valleys, following a single altitude. A red dot, like a helicopter, links the villages and base camps; where it lands, a ripple spreads across the terrain. Hover over the terrain (or touch it on a phone) to see the altitude of that point or the name of the summit. Drag to turn the view, and zoom with the scroll wheel or by pinching; double-click to return to the original view.</p>
+    <p>At dawn in high mountains, light reaches the highest summits first, then slowly moves down the slopes. The page recreates that moment: the contours light up from the 8,000-metre peaks down towards the valleys, which stay in the blue shadow of night. The camera then descends towards the massif and slowly circles Everest.</p>
+    <p>A golden contour then travels across the massif, from the highest summit down to the valleys, following a single altitude. A red dot, like a helicopter, links the villages and base camps; where it lands, a ripple spreads across the terrain and a mission card appears (mission numbers and details are fictitious). Hover over the terrain (or touch it on a phone) to see the altitude of that point or the name of the summit. Drag to turn the view, and zoom with the scroll wheel or by pinching; double-click to return to the original view.</p>
     <p class="petit">To make the slopes easier to read, the terrain is exaggerated about 1.5 times vertically. Colours and lighting are an artistic interpretation.</p>
     <h2>Data used</h2>
     <p>Copernicus DEM GLO-30 digital elevation model (about 30 m resolution), resampled here to about 73 m per point. Copernicus DEM GLO-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018, provided under COPERNICUS by the European Union and ESA; all rights reserved.</p>
@@ -238,7 +233,7 @@
 
   var VS='#version 300 es\nin vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
   var FS='#version 300 es\nprecision highp float;out vec4 o;\n#define FRAG o\n' + [
-    'uniform vec2 R;uniform float T;uniform sampler2D RELIEF;uniform float SW;uniform float SI;uniform vec2 CP;uniform float CI;uniform float K;uniform vec3 RO;uniform vec3 FW;uniform vec3 RT;uniform vec3 UP;uniform vec3 HP;uniform float HV;uniform vec4 ON;uniform vec3 SD;uniform float JR;uniform float RM;uniform float SR;uniform float NE;',
+    'uniform vec2 R;uniform float T;uniform sampler2D RELIEF;uniform float SW;uniform float SI;uniform vec2 CP;uniform float CI;uniform float K;uniform vec3 RO;uniform vec3 FW;uniform vec3 RT;uniform vec3 UP;uniform vec3 HP;uniform float HV;uniform vec4 ON;',
     'float h21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}',
     // relief réel : carré de 56 km = 4 unités ; h = (altitude - 3000 m) / 4000 m
     'float H(vec2 p){float h=texture(RELIEF,vec2(p.x*.25+.5,.5-p.y*.25)).r;',
@@ -248,10 +243,9 @@
     'vec3 ciel(vec3 d,float aube){',
     ' float e=d.z;',
     ' vec3 c=mix(vec3(.10,.07,.11),vec3(.012,.02,.05),smoothstep(-.02,.45,e));',
-    ' vec3 sd=normalize(mix(vec3(.75,.35,.10),SD,RM));float s=max(dot(d,sd),0.);',
+    ' vec3 sd=normalize(vec3(.75,.35,.10));float s=max(dot(d,sd),0.);',
     ' c+=vec3(1.,.55,.30)*pow(s,10.)*.55*aube;',
     ' c+=vec3(1.,.45,.28)*exp(-max(e,0.)*9.)*.22*aube*(.4+.6*s);',
-    ' c+=vec3(.05,.08,.13)*JR*RM*(1.-smoothstep(.0,.6,e));',
     ' return c;}',
     'void main(){',
     ' vec2 uv=(gl_FragCoord.xy-.5*R)/min(R.x,R.y);',
@@ -264,7 +258,7 @@
     '  if(hq<0.){touche=true;break;}',
     '  tp=t;t+=max(.003*t,hq*.38);if(t>tmax)break;}',
     ' if(touche){float a0=tp,a1=t;for(int j=0;j<6;j++){float m=.5*(a0+a1);vec3 q=ro+rd*m;if(q.z-Z(q.xy)<0.)a1=m;else a0=m;}t=.5*(a0+a1);}',
-    ' float aube0=smoothstep(1.5,9.5,T);float aube=mix(aube0,JR,RM);',
+    ' float aube=smoothstep(1.5,9.5,T);',
     ' vec3 c;',
     ' if(touche){',
     '  vec3 p=ro+rd*t;float h=H(p.xy);',
@@ -274,16 +268,15 @@
     '  float dl=abs(fract(f-.5)-.5)/fwd;float l1=1.-smoothstep(.0,.9,dl);',
     '  float f5=h*N/5.;float fw5=max(fwidth(f5),1e-4);float d5=abs(fract(f5-.5)-.5)/fw5;float l5=1.-smoothstep(.2,1.8,d5);',
     '  float dens=1.-smoothstep(.35,.9,fwd);l1*=dens;l5*=1.-smoothstep(.6,1.4,fw5*5.);',  // évite le moiré au loin
-    '  float seuil=mix(mix(1.55,.6,aube0),SR,RM);',
+    '  float seuil=mix(1.55,.6,aube);',
     '  float lumi=smoothstep(seuil-.02,seuil+.22,h);',
     '  float front=exp(-pow((h-seuil)*7.,2.))*smoothstep(.0,.15,aube)*(1.-smoothstep(.9,1.,aube)*.35);',
-    '  vec3 sol=normalize(mix(vec3(.75,.35,.55),SD,RM));float lam=clamp(dot(n,sol),0.,1.)*mix(1.,smoothstep(-.05,.08,SD.z),RM);',
+    '  vec3 sol=normalize(vec3(.75,.35,.55));float lam=clamp(dot(n,sol),0.,1.);',
     '  float lamV=mix(clamp(dot(n,normalize(vec3(.55,.62,.55))),0.,1.),lam,k);',
-    '  lamV=max(lamV,clamp(dot(n,normalize(vec3(-.45,-.3,.85))),0.,1.)*.55*(1.-JR)*RM);',
     '  vec3 fond=mix(vec3(.012,.02,.045),vec3(.05,.065,.12),lamV);',
-    '  fond=mix(fond,mix(vec3(.10,.06,.09),mix(vec3(.48,.26,.19),vec3(.56,.36,.24),NE*RM),lamV),lumi*mix(.55,.8,k));',
+    '  fond=mix(fond,mix(vec3(.10,.06,.09),vec3(.48,.26,.19),lamV),lumi*mix(.55,.8,k));',
     '  vec3 froid=vec3(.22,.32,.58);',
-    '  vec3 chaud=mix(vec3(.98,.62,.40),vec3(1.,.93,.80),smoothstep(.6,1.4,h));chaud=mix(chaud,vec3(1.,.88,.70),NE*RM*.45);',
+    '  vec3 chaud=mix(vec3(.98,.62,.40),vec3(1.,.93,.80),smoothstep(.6,1.4,h));',
     '  vec3 lc=mix(froid,chaud,lumi);',
     '  float apparition=smoothstep(.0,2.2,T-length(uv)*1.1);',
     '  float dh=abs(h-SW)/max(fwidth(h),1e-5);float sel=(1.-smoothstep(.7,2.6,dh))*SI;',
@@ -317,7 +310,7 @@
   gl.useProgram(pr);
   var buf=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,buf); gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
   var loc=gl.getAttribLocation(pr,'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
-  var U={}; ['R','T','SW','SI','CP','CI','K','RO','FW','RT','UP','RELIEF','HP','HV','ON','SD','JR','RM','SR','NE'].forEach(function(n){ U[n]=gl.getUniformLocation(pr,n); });
+  var U={}; ['R','T','SW','SI','CP','CI','K','RO','FW','RT','UP','RELIEF','HP','HV','ON'].forEach(function(n){ U[n]=gl.getUniformLocation(pr,n); });
 
   // Carte d'altitude réelle (Copernicus DEM, voir tools/relief.py) → texture flottante
   var relief=null;
@@ -476,7 +469,7 @@
      et une onde rouge se propage sur le terrain à l'endroit où il s'est posé. */
   var ESCALES=[['Gokyo',27.9530,86.6950],['Camp de base de l’Everest',28.0026,86.8528],['Island Peak',27.9180,86.9150],
     ['Ama Dablam',27.8740,86.8530],['Tengboche',27.8361,86.7642],['Namche Bazaar',27.8057,86.7144],['Machermo',27.9000,86.7140]]
-    .map(function(e){ var q=xy(e[1],e[2]); return {nom:e[0],x:q[0],y:q[1]}; });
+    .map(function(e){ var q=xy(e[1],e[2]); return {nom:e[0],lat:e[1],lon:e[2],x:q[0],y:q[1]}; });
   var VOLS=null, CYCLE=0, DEBUT_VOL=11, SOL=5, VIT=.11;
   function preparerVols(){
     VOLS=[]; CYCLE=0;
@@ -503,53 +496,49 @@
       // l'onde du dernier atterrissage finit de s'étendre pendant le décollage
       var r=(SOL+tau)/ (SOL+2.5); return {p:[x,y,z],v:visible,onde:[v.A.x,v.A.y,.02+.33*Math.min(1,r),Math.max(0,1-r)*.0]};
     }
-    var g=tau-v.duree, r2=g/SOL;
-    return {p:[v.B.x,v.B.y,v.zb],v:visible,onde:[v.B.x,v.B.y,.015+.34*r2,Math.pow(Math.max(0,1-r2),1.3)*ss(0,.25,g)]};
+    var g=tau-v.duree, r2=g/SOL, tour=Math.floor((t-DEBUT_VOL)/CYCLE);
+    return {pose:{escale:v.B,g:g,n:tour*VOLS.length+VOLS.indexOf(v)},p:[v.B.x,v.B.y,v.zb],v:visible,onde:[v.B.x,v.B.y,.015+.34*r2,Math.pow(Math.max(0,1-r2),1.3)*ss(0,.25,g)]};
   }
 
-  /* ---------- Le soleil réel au-dessus de Gokyo, à l'heure du Népal ----------
-     Après le lever du jour de l'ouverture, l'éclairage rejoint la vraie position du soleil
-     (calcul astronomique) ; le bouton ⏩ fait défiler une journée en une minute. */
-  var rapide=false, decalage=0, SDl=null, dernierAccel=0;
-  function soleilA(ms){
-    var r=Math.PI/180, d=ms/86400000+2440587.5-2451545.0;
-    var g=(357.529+0.98560028*d)%360, q=280.459+0.98564736*d;
-    var L=q+1.915*Math.sin(g*r)+0.020*Math.sin(2*g*r), e=23.439-0.00000036*d;
-    var ra=Math.atan2(Math.cos(e*r)*Math.sin(L*r),Math.cos(L*r))/r, dec=Math.asin(Math.sin(e*r)*Math.sin(L*r));
-    var gmst=((18.697374558+24.06570982441908*d)%24+24)%24, H=(gmst*15+86.695-ra)*r, la=27.955*r;
-    var el=Math.asin(Math.sin(la)*Math.sin(dec)+Math.cos(la)*Math.cos(dec)*Math.cos(H));
-    var az=Math.atan2(-Math.sin(H)*Math.cos(dec), Math.cos(la)*Math.sin(dec)-Math.sin(la)*Math.cos(dec)*Math.cos(H));
-    return {el:el/r, v:[Math.sin(az)*Math.cos(el), Math.cos(az)*Math.cos(el), Math.sin(el)]};
+  /* ---------- Fiche de mission à chaque atterrissage ---------- */
+  var fiche=document.createElement('div'); fiche.className='mission'; fiche.setAttribute('aria-hidden','true'); scene.appendChild(fiche);
+  var TYPES=[['SAR','Recherche et sauvetage','Search and rescue'],['MEDEVAC','Évacuation sanitaire','Medical evacuation'],
+    ['HOIST','Hélitreuillage','Winch rescue'],['LOG','Ravitaillement d’altitude','High-altitude resupply'],
+    ['SAR','Secours en crevasse','Crevasse rescue'],['RECON','Reconnaissance d’itinéraire','Route reconnaissance'],['MEDEVAC','Évacuation de nuit','Night evacuation']];
+  var jour=Math.floor(Date.now()/86400000), BASE=2140+(jour*37)%600, ficheN=-1;
+  function dms(v,pos,neg){ var a=Math.abs(v), d=Math.floor(a), m=Math.floor((a-d)*60), sec=Math.round(((a-d)*60-m)*60); if(sec===60){sec=0;m++;}
+    return d+'°'+String(m).padStart(2,'0')+'′'+String(sec).padStart(2,'0')+'″ '+(v>=0?pos:neg); }
+  function hash32(n){ n=(n^61)^(n>>>16); n=n+(n<<3); n=n^(n>>>4); n=Math.imul(n,0x27d4eb2d); return (n^(n>>>15))>>>0; }
+  function remplirFiche(pose){
+    var n=pose.n, ty=TYPES[n%TYPES.length], en=document.documentElement.lang==='en', E=pose.escale;
+    var num=BASE+n*3+(hash32(n+jour)%3), alt=Math.round((Hjs(E.x,E.y)*4000+3000)/1)*1;
+    var duree=11+hash32(n*7+jour)%38, pers=1+hash32(n*13+jour)%4;
+    var detail=ty[0]==='LOG'?(en?(140+hash32(n)%260)+' kg delivered':(140+hash32(n)%260)+' kg livrés'):ty[0]==='RECON'?(en?'Route cleared':'Itinéraire validé'):(pers+(en?(pers>1?' persons':' person')+' recovered':(pers>1?' personnes récupérées':' personne récupérée')));
+    fiche.innerHTML='<div class="m-tete"><span class="m-id">MSN '+String(num).padStart(4,'0')+'</span><span class="m-type">'+ty[0]+'</span></div>'+
+      '<div class="m-nom">'+(en?ty[2]:ty[1])+' · '+E.nom+'</div>'+
+      '<div class="m-coord">'+dms(E.lat,'N','S')+' · '+dms(E.lon,'E','W')+' · '+alt.toLocaleString(en?'en-GB':'fr-FR').replace(/,/g,' ')+' m</div>'+
+      '<div class="m-det">'+detail+' · T+'+duree+' min</div>'+
+      '<div class="m-ok"><i></i>'+(en?'Mission accomplished':'Mission accomplie')+'</div>';
   }
-  function heureSim(){ return Date.now()+decalage; }
-  function soleilReel(t,dt){
-    var mt=performance.now(); if(rapide&&dernierAccel) decalage+=(mt-dernierAccel)*1439; dernierAccel=mt;   // 24 h en 1 min, quelle que soit la fluidité
-    var so=soleilA(heureSim());
-    if(!SDl) SDl=so.v.slice(); for(var i=0;i<3;i++) SDl[i]+=(so.v[i]-SDl[i])*.08;
-    var n=n3(SDl), el=Math.asin(Math.max(-1,Math.min(1,n[2])))*180/Math.PI;
-    gl.uniform3fv(U.SD,n);
-    gl.uniform1f(U.JR,ss(-6,6,el));
-    gl.uniform1f(U.SR,1.6-1.95*ss(-3,25,el));
-    gl.uniform1f(U.NE,ss(15,40,el));
-    gl.uniform1f(U.RM,tFixe!=null&&params.has('h')?1:ss(10,14,t));
-    afficherHeure();
+  function majFiche(hel){
+    var pose=hel&&hel.pose, vis=0;
+    if(pose && cam){
+      if(pose.n!==ficheN){ ficheN=pose.n; remplirFiche(pose); fiche.classList.remove('ok'); }
+      vis=ss(.4,1.1,pose.g)*(1-ss(SOL-1.1,SOL-.2,pose.g));
+      if(pose.g>1.8) fiche.classList.add('ok');
+      var P=hel.p, vh=[P[0]-cam.ro[0],P[1]-cam.ro[1],P[2]-cam.ro[2]], prof=vh[0]*cam.fw[0]+vh[1]*cam.fw[1]+vh[2]*cam.fw[2];
+      if(prof>.05){
+        var W=cv.clientWidth, Hh=cv.clientHeight, m=Math.min(W,Hh);
+        var sx=(vh[0]*cam.rt[0]+vh[1]*cam.rt[1]+vh[2]*cam.rt[2])/prof*1.6, sy=(vh[0]*cam.up[0]+vh[1]*cam.up[1]+vh[2]*cam.up[2])/prof*1.6;
+        var X=W/2+sx*m, Y=Hh/2-sy*m, fw=fiche.offsetWidth||260, fh=fiche.offsetHeight||110;
+        var gx=X+22, gy=Y-fh-18;                                 // à droite au-dessus du point
+        if(gx+fw>W-16) gx=X-fw-22; if(gy<84) gy=Y+22; if(gy+fh>Hh-110) gy=Hh-110-fh;
+        fiche.style.transform='translate('+Math.round(gx)+'px,'+Math.round(gy)+'px)';
+        fiche.style.setProperty('--ax',(X-gx)+'px'); fiche.style.setProperty('--ay',(Y-gy)+'px');
+      } else vis=0;
+    }
+    fiche.style.opacity=vis.toFixed(3); fiche.style.visibility=vis>0?'visible':'hidden';
   }
-  var elHeure=document.getElementById('heure'), derniereMinute='';
-  function afficherHeure(){
-    var lang=document.documentElement.lang==='en'?'en-GB':'fr-FR', d=new Date(heureSim());
-    var f=new Intl.DateTimeFormat(lang,{timeZone:'Asia/Kathmandu',weekday:'short',day:'numeric',month:'short',year:'numeric'}).format(d).replace(/,/g,'');
-    var h=new Intl.DateTimeFormat('fr-FR',{timeZone:'Asia/Kathmandu',hour:'2-digit',minute:'2-digit',hour12:false}).format(d);
-    var txt=f+'|'+h; if(txt===derniereMinute) return; derniereMinute=txt;
-    elHeure.innerHTML=f+' <span class="sep">·</span> '+h+' <small>'+(lang==='fr-FR'?'heure du Népal':'Nepal time')+'</small>';
-  }
-  var btnAccel=document.getElementById('accel');
-  btnAccel.addEventListener('click',function(){
-    rapide=!rapide; if(!rapide) decalage=0;          // on revient à l'heure réelle, l'éclairage glisse en douceur
-    btnAccel.setAttribute('aria-pressed',String(rapide));
-  });
-  // pour les captures : ?h=12 fixe l'heure du Népal
-  if(params.has('h')){ var hh=parseFloat(params.get('h')), now=new Date(), npt=new Date(now.getTime()+(5*60+45)*60000);
-    var cible=Date.UTC(npt.getUTCFullYear(),npt.getUTCMonth(),npt.getUTCDate(),0,0)-(5*60+45)*60000+hh*3600000; decalage=cible-now.getTime(); }
 
   function frame(now){
     var t=reduit?9.5:(tFixe!=null?tFixe:(now-T0)/1000);
@@ -560,8 +549,7 @@
     gl.uniform2f(U.R,cv.width,cv.height); gl.uniform1f(U.T,t); gl.uniform1f(U.K,kCam);
     gl.uniform3fv(U.RO,cam.ro); gl.uniform3fv(U.FW,cam.fw); gl.uniform3fv(U.RT,cam.rt); gl.uniform3fv(U.UP,cam.up);
     gl.uniform1f(U.SW,sw[0]); gl.uniform1f(U.SI,sw[1]);
-    soleilReel(t,dt);
-    var hel=helico(t); if(hel){ gl.uniform3fv(U.HP,hel.p); gl.uniform1f(U.HV,hel.v); gl.uniform4fv(U.ON,hel.onde); } else gl.uniform1f(U.HV,0);
+    var hel=helico(t); majFiche(hel); if(hel){ gl.uniform3fv(U.HP,hel.p); gl.uniform1f(U.HV,hel.v); gl.uniform4fv(U.ON,hel.onde); } else gl.uniform1f(U.HV,0);
     majEtiquette(t,now);
     gl.drawArrays(gl.TRIANGLES,0,3);
     requestAnimationFrame(frame);
