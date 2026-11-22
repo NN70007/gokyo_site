@@ -68,12 +68,13 @@
   header,footer{cursor:auto}
   /* Fiche de mission */
   .mission{position:absolute;left:0;top:0;z-index:4;will-change:transform,opacity;backface-visibility:hidden;pointer-events:none;opacity:0;min-width:230px;max-width:300px;padding:11px 14px 12px;
-    background:rgba(6,9,18,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(255,70,55,.35);border-left:2px solid #ff4a3a;border-radius:3px;
+    background:rgba(6,9,18,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(242,192,138,.28);border-left:2px solid #ff4a3a;border-radius:3px;
     font-size:10.5px;line-height:1.5;letter-spacing:.06em;color:rgba(247,243,236,.78);font-variant-numeric:tabular-nums;box-shadow:0 10px 30px rgba(0,0,0,.45)}
   .mission .m-tete{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-size:10px;letter-spacing:.28em;font-weight:600}
   .mission .m-id{color:#fff}
-  .mission .m-type{color:#ff6a5a;border:1px solid rgba(255,90,75,.5);padding:1px 6px;border-radius:2px;letter-spacing:.2em}
+  .mission .m-type{color:var(--or);border:1px solid rgba(242,192,138,.45);padding:1px 6px;border-radius:2px;letter-spacing:.2em}
   .mission .m-nom{color:#fff;font-size:12px;letter-spacing:.02em;margin-bottom:3px}
+  .mission .m-lieu{color:rgba(247,243,236,.7);margin-bottom:2px}
   .mission .m-coord{color:var(--or);letter-spacing:.08em}
   .mission .m-det{opacity:.75}
   .mission .m-ok{margin-top:7px;padding-top:7px;border-top:1px solid rgba(255,255,255,.1);font-size:9.5px;letter-spacing:.3em;text-transform:uppercase;color:rgba(247,243,236,.35);display:flex;align-items:center;gap:8px;transition:color .6s}
@@ -147,7 +148,7 @@
     <p>Chaque ligne est une courbe de niveau, comme sur une carte de montagne : une ligne tous les 200 m d’altitude, une ligne plus marquée tous les 1 000 m.</p>
     <h2>Le lever du jour</h2>
     <p>À l’aube, en haute montagne, la lumière touche d’abord les plus hauts sommets puis descend lentement le long des pentes. La page reprend ce moment : les courbes s’éclairent des sommets de plus de 8 000 m vers les vallées, qui restent dans l’ombre bleue de la nuit. La caméra descend ensuite vers le massif et tourne lentement autour de l’Everest.</p>
-    <p>Une courbe dorée parcourt ensuite le massif, du plus haut sommet vers les vallées, en suivant une même altitude. Un point rouge, comme un hélicoptère, relie les villages et les camps de base ; là où il se pose, une onde se propage sur le relief et une fiche de mission s’affiche (les numéros et le détail des missions sont fictifs). En survolant le relief (ou en le touchant sur un téléphone), l’altitude du point ou le nom du sommet s’affiche. On peut faire tourner la vue en la faisant glisser, et zoomer avec la molette ou en pinçant l’écran ; un double-clic rétablit la vue d’origine.</p>
+    <p>Une courbe dorée parcourt ensuite le massif, du plus haut sommet vers les vallées, en suivant une même altitude. Un point rouge, comme un hélicoptère, relie les villages et les camps de base ; là où il se pose, une onde se propage sur le relief et une fiche d’étape d’expédition s’affiche (les numéros et les mesures sont fictifs). En survolant le relief (ou en le touchant sur un téléphone), l’altitude du point ou le nom du sommet s’affiche. On peut faire tourner la vue en la faisant glisser, et zoomer avec la molette ou en pinçant l’écran ; un double-clic rétablit la vue d’origine.</p>
     <p class="petit">Pour mieux lire les pentes, le relief est exagéré environ 1,5 fois en hauteur. Les couleurs et la lumière sont une interprétation artistique.</p>
     <h2>Données utilisées</h2>
     <p>Modèle numérique de terrain Copernicus DEM GLO-30 (résolution d’environ 30 m), ramené ici à environ 73 m par point. Copernicus DEM GLO-30 © DLR e.V. 2010-2014 et © Airbus Defence and Space GmbH 2014-2018, fourni dans le cadre de COPERNICUS par l’Union européenne et l’ESA ; tous droits réservés.</p>
@@ -165,7 +166,7 @@
     <p>Each line is a contour line, as on a mountain map: one line every 200 m of altitude, a stronger line every 1,000 m.</p>
     <h2>Sunrise</h2>
     <p>At dawn in high mountains, light reaches the highest summits first, then slowly moves down the slopes. The page recreates that moment: the contours light up from the 8,000-metre peaks down towards the valleys, which stay in the blue shadow of night. The camera then descends towards the massif and slowly circles Everest.</p>
-    <p>A golden contour then travels across the massif, from the highest summit down to the valleys, following a single altitude. A red dot, like a helicopter, links the villages and base camps; where it lands, a ripple spreads across the terrain and a mission card appears (mission numbers and details are fictitious). Hover over the terrain (or touch it on a phone) to see the altitude of that point or the name of the summit. Drag to turn the view, and zoom with the scroll wheel or by pinching; double-click to return to the original view.</p>
+    <p>A golden contour then travels across the massif, from the highest summit down to the valleys, following a single altitude. A red dot, like a helicopter, links the villages and base camps; where it lands, a ripple spreads across the terrain and an expedition stage card appears (numbers and readings are fictitious). Hover over the terrain (or touch it on a phone) to see the altitude of that point or the name of the summit. Drag to turn the view, and zoom with the scroll wheel or by pinching; double-click to return to the original view.</p>
     <p class="petit">To make the slopes easier to read, the terrain is exaggerated about 1.5 times vertically. Colours and lighting are an artistic interpretation.</p>
     <h2>Data used</h2>
     <p>Copernicus DEM GLO-30 digital elevation model (about 30 m resolution), resampled here to about 73 m per point. Copernicus DEM GLO-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018, provided under COPERNICUS by the European Union and ESA; all rights reserved.</p>
@@ -469,8 +470,8 @@
      et une onde rouge se propage sur le terrain à l'endroit où il s'est posé. */
   var ESCALES=[['Gokyo',27.9530,86.6950],['Camp de base de l’Everest',28.0026,86.8528],['Island Peak',27.9180,86.9150],
     ['Ama Dablam',27.8740,86.8530],['Tengboche',27.8361,86.7642],['Namche Bazaar',27.8057,86.7144],['Machermo',27.9000,86.7140]]
-    .map(function(e){ var q=xy(e[1],e[2]); return {nom:e[0],lat:e[1],lon:e[2],x:q[0],y:q[1]}; });
-  var VOLS=null, CYCLE=0, DEBUT_VOL=11, SOL=5, VIT=.11;
+    .map(function(e){ var q=xy(e[1],e[2]); return {nom:e[0],en:{'Camp de base de l’Everest':'Everest Base Camp'}[e[0]],lat:e[1],lon:e[2],x:q[0],y:q[1]}; });
+  var VOLS=null, CYCLE=0, DEBUT_VOL=11, SOL=10, VIT=.11;
   function preparerVols(){
     VOLS=[]; CYCLE=0;
     for(var i=0;i<ESCALES.length;i++){
@@ -496,35 +497,61 @@
       // l'onde du dernier atterrissage finit de s'étendre pendant le décollage
       var r=(SOL+tau)/ (SOL+2.5); return {p:[x,y,z],v:visible,onde:[v.A.x,v.A.y,.02+.33*Math.min(1,r),Math.max(0,1-r)*.0]};
     }
-    var g=tau-v.duree, r2=g/SOL, tour=Math.floor((t-DEBUT_VOL)/CYCLE);
+    var g=tau-v.duree, r2=g/5, tour=Math.floor((t-DEBUT_VOL)/CYCLE);
     return {pose:{escale:v.B,g:g,n:tour*VOLS.length+VOLS.indexOf(v)},p:[v.B.x,v.B.y,v.zb],v:visible,onde:[v.B.x,v.B.y,.015+.34*r2,Math.pow(Math.max(0,1-r2),1.3)*ss(0,.25,g)]};
   }
 
   /* ---------- Fiche de mission à chaque atterrissage ---------- */
   var fiche=document.createElement('div'); fiche.className='mission'; fiche.setAttribute('aria-hidden','true'); scene.appendChild(fiche);
-  var TYPES=[['SAR','Recherche et sauvetage','Search and rescue'],['MEDEVAC','Évacuation sanitaire','Medical evacuation'],
-    ['HOIST','Hélitreuillage','Winch rescue'],['LOG','Ravitaillement d’altitude','High-altitude resupply'],
-    ['SAR','Secours en crevasse','Crevasse rescue'],['RECON','Reconnaissance d’itinéraire','Route reconnaissance'],['MEDEVAC','Évacuation de nuit','Night evacuation']];
-  var jour=Math.floor(Date.now()/86400000), BASE=2140+(jour*37)%600, ficheN=-1;
+  // Expédition : chaque escale est une étape réussie. Combinaisons tirées au hasard, sans répétition rapprochée.
+  var TYPES=[['Ouverture de voie','Route opening'],['Acclimatation','Acclimatisation'],['Traversée de glacier','Glacier crossing'],
+    ['Franchissement de col','Pass crossing'],['Approche du sommet','Summit approach'],['Bivouac d’altitude','High-altitude bivouac'],
+    ['Retour au camp','Return to camp'],['Pose de cordes fixes','Fixed-line setting'],['Passage de séracs','Serac traverse'],
+    ['Ascension de nuit','Night ascent'],['Traversée d’arête','Ridge traverse'],['Installation du camp','Camp set-up'],
+    ['Descente technique','Technical descent'],['Reconnaissance de face','Face reconnaissance'],['Franchissement de crevasses','Crevasse crossing'],
+    ['Ascension en libre','Free ascent'],['Repérage d’itinéraire','Route finding'],['Attaque de la face','Face attempt']];
+  function al(){ return Math.random(); }
+  function entre(a,b,dec){ var v=a+(b-a)*al(); return dec?v.toFixed(dec).replace('.',','):String(Math.round(v)); }
+  function enNb(t,en){ return en?t.replace(',','.'):t; }
+  var MESURES=[
+    function(en){ return en?'Weather window respected':'Fenêtre météo respectée'; },
+    function(en){ return (en?'Trajectory deviation ':'Écart de trajectoire ')+enNb(entre(.1,.9,1),en)+' m'; },
+    function(en){ return (en?'Vertical gain ':'Dénivelé ')+'+'+entre(420,1350)+' m'; },
+    function(en){ return (en?'Elapsed ':'Durée ')+entre(2,9)+' h '+String(entre(0,59)).padStart(2,'0'); },
+    function(en){ return (en?'Wind ':'Vent ')+entre(18,62)+' km/h · '+(en?'gusts ':'rafales ')+entre(65,95)+' km/h'; },
+    function(en){ return (en?'Temperature ':'Température ')+'−'+entre(14,34)+' °C'; },
+    function(en){ return (en?'Oxygen saturation ':'Saturation ')+entre(78,91)+' %'; },
+    function(en){ return (en?'Timing deviation ':'Écart horaire ')+entre(2,11)+' min'; },
+    function(en){ return (en?'Rope fixed ':'Corde fixée ')+entre(180,640)+' m'; },
+    function(en){ return (en?'Slope ':'Pente ')+entre(42,68)+'° · '+(en?'ice':'glace'); },
+    function(en){ return (en?'Visibility ':'Visibilité ')+enNb(entre(.3,4,1),en)+' km'; },
+    function(en){ return (en?'Rope team of ':'Cordée de ')+entre(2,5); },
+    function(en){ return (en?'Position fix ':'Calage de position ')+'±'+enNb(entre(.2,.8,1),en)+' m'; },
+    function(en){ return (en?'Snow cover ':'Enneigement ')+entre(30,140)+' cm'; },
+    function(en){ return (en?'Departure ':'Départ ')+String(entre(1,4)).padStart(2,'0')+':'+String(entre(0,59)).padStart(2,'0'); }];
+  var ISSUES=[['Objectif atteint','Objective reached'],['Étape validée','Stage validated'],['Objectif atteint','Objective reached'],['Étape validée','Stage validated']];
+  var BASE=1200+Math.floor(al()*7000), ficheN=-1, recentsT=[], recentsM=[];
+  function choisir(n,recents,garde){ var i, essais=0; do{ i=Math.floor(al()*n); }while(recents.indexOf(i)>=0 && ++essais<50); recents.push(i); if(recents.length>garde) recents.shift(); return i; }
   function dms(v,pos,neg){ var a=Math.abs(v), d=Math.floor(a), m=Math.floor((a-d)*60), sec=Math.round(((a-d)*60-m)*60); if(sec===60){sec=0;m++;}
     return d+'°'+String(m).padStart(2,'0')+'′'+String(sec).padStart(2,'0')+'″ '+(v>=0?pos:neg); }
-  function hash32(n){ n=(n^61)^(n>>>16); n=n+(n<<3); n=n^(n>>>4); n=Math.imul(n,0x27d4eb2d); return (n^(n>>>15))>>>0; }
   function remplirFiche(pose){
-    var n=pose.n, ty=TYPES[n%TYPES.length], en=document.documentElement.lang==='en', E=pose.escale;
-    var num=BASE+n*3+(hash32(n+jour)%3), alt=Math.round((Hjs(E.x,E.y)*4000+3000)/1)*1;
-    var duree=11+hash32(n*7+jour)%38, pers=1+hash32(n*13+jour)%4;
-    var detail=ty[0]==='LOG'?(en?(140+hash32(n)%260)+' kg delivered':(140+hash32(n)%260)+' kg livrés'):ty[0]==='RECON'?(en?'Route cleared':'Itinéraire validé'):(pers+(en?(pers>1?' persons':' person')+' recovered':(pers>1?' personnes récupérées':' personne récupérée')));
-    fiche.innerHTML='<div class="m-tete"><span class="m-id">MSN '+String(num).padStart(4,'0')+'</span><span class="m-type">'+ty[0]+'</span></div>'+
-      '<div class="m-nom">'+(en?ty[2]:ty[1])+' · '+E.nom+'</div>'+
-      '<div class="m-coord">'+dms(E.lat,'N','S')+' · '+dms(E.lon,'E','W')+' · '+alt.toLocaleString(en?'en-GB':'fr-FR').replace(/,/g,' ')+' m</div>'+
-      '<div class="m-det">'+detail+' · T+'+duree+' min</div>'+
-      '<div class="m-ok"><i></i>'+(en?'Mission accomplished':'Mission accomplie')+'</div>';
+    var n=pose.n, en=document.documentElement.lang==='en', E=pose.escale;
+    var ty=TYPES[choisir(TYPES.length,recentsT,8)];
+    var m1=choisir(MESURES.length,recentsM,6), m2=choisir(MESURES.length,recentsM,6);
+    var num=BASE+n*(2+Math.floor(al()*4)), alt=Math.round(Hjs(E.x,E.y)*4000+3000), etape=((n+1)%ESCALES.length)+1;
+    var issue=ISSUES[Math.floor(al()*ISSUES.length)];
+    fiche.innerHTML='<div class="m-tete"><span class="m-id">OP-'+num+'</span><span class="m-type">'+(en?'EXPEDITION':'EXPÉDITION')+'</span></div>'+
+      '<div class="m-nom">'+(en?'Stage ':'Étape ')+etape+' / '+ESCALES.length+' · '+(en?ty[1]:ty[0])+'</div>'+
+      '<div class="m-lieu">'+(en&&E.en?E.en:E.nom)+'</div>'+
+      '<div class="m-coord">'+dms(E.lat,'N','S')+' · '+dms(E.lon,'E','W')+' · '+alt.toLocaleString(en?'en-GB':'fr-FR').replace(/[,\s]/g,' ')+' m</div>'+
+      '<div class="m-det">'+MESURES[m1](en)+' · '+MESURES[m2](en)+'</div>'+
+      '<div class="m-ok"><i></i>'+(en?issue[1]:issue[0])+'</div>';
   }
   function majFiche(hel){
     var pose=hel&&hel.pose, vis=0;
     if(pose && cam){
       if(pose.n!==ficheN){ ficheN=pose.n; remplirFiche(pose); fiche.classList.remove('ok'); fiche._t=null; }
-      vis=ss(.4,1.1,pose.g)*(1-ss(SOL-1.1,SOL-.2,pose.g));
+      vis=ss(.6,1.4,pose.g)*(1-ss(SOL-1.2,SOL-.2,pose.g));
       if(pose.g>1.8) fiche.classList.add('ok');
       var P=hel.p, vh=[P[0]-cam.ro[0],P[1]-cam.ro[1],P[2]-cam.ro[2]], prof=vh[0]*cam.fw[0]+vh[1]*cam.fw[1]+vh[2]*cam.fw[2];
       if(prof>.05){
@@ -534,8 +561,8 @@
         if(!fiche._t){ fiche._t={fw:fiche.offsetWidth||260, fh:fiche.offsetHeight||110}; fiche._cote=null; fiche._pos=null; }
         var fw=fiche._t.fw, fh=fiche._t.fh;
         // côté choisi une seule fois à l'atterrissage (pas de bascule pendant l'affichage)
-        if(fiche._cote===null){ fiche._cote={d:X+22+fw<W-16, h:Y-fh-18>84}; }
-        var gx=fiche._cote.d?X+22:X-fw-22, gy=fiche._cote.h?Y-fh-18:Y+22;
+        if(fiche._cote===null){ fiche._cote={d:X+110+fw<W-16, h:Y-fh-70>84}; }
+        var gx=fiche._cote.d?X+110:X-fw-110, gy=fiche._cote.h?Y-fh-70:Y+70;
         gx=Math.max(12,Math.min(W-fw-12,gx)); gy=Math.max(84,Math.min(Hh-110-fh,gy));
         // suivi amorti : la vignette accompagne la carte sans trembler
         if(!fiche._pos) fiche._pos=[gx,gy]; else { fiche._pos[0]+=(gx-fiche._pos[0])*.35; fiche._pos[1]+=(gy-fiche._pos[1])*.35; }
