@@ -303,7 +303,7 @@
     '  tp=t;t+=max(.003*t,hq*.38);if(t>tmax)break;}',
     ' if(touche){float a0=tp,a1=t;for(int j=0;j<6;j++){float m=.5*(a0+a1);vec3 q=ro+rd*m;if(q.z-Z(q.xy)<0.)a1=m;else a0=m;}t=.5*(a0+a1);}',
     ' float tb=1e9;vec3 nb=vec3(0.);',
-    ' if(BV>0.){for(int i=0;i<12;i++){vec3 b=BX[i];vec3 hs=vec3(.0042,.0042,.0055);vec3 ce=vec3(b.xy,b.z+hs.z-.001);',
+    ' if(BV>0.){for(int i=0;i<12;i++){vec3 b=BX[i];vec3 hs=vec3(.0042,.0042,R.x>R.y?.0013:.0055);vec3 ce=vec3(b.xy,b.z+hs.z-.0003);',
     '  vec3 iv=1./rd;vec3 t0=(ce-hs-ro)*iv,t1=(ce+hs-ro)*iv;vec3 tn=min(t0,t1),tf=max(t0,t1);float a0=max(max(tn.x,tn.y),tn.z),a1=min(min(tf.x,tf.y),tf.z);',
     '  if(a1>max(a0,0.)&&a0<tb){tb=a0;nb=-sign(rd)*step(tn.yzx,tn.xyz)*step(tn.zxy,tn.xyz);}}}',
     ' float aube=smoothstep(1.5,9.5,T);',
@@ -580,7 +580,7 @@
       if(best){ parC[best].inv.push(g); var dd=(p.e[0]||{}).d||''; if(dd>parC[best].der) parC[best].der=dd; }
       return g; });
     // cubes : un petit volume ivoire posé sur le relief à chaque base
-    var bx=[]; ESCALES.forEach(function(h){ bx.push(h.x,h.y,Zjs(h.x,h.y)); }); while(bx.length<36) bx.push(99,99,0);
+    var bx=[]; ESCALES.forEach(function(h){ var zm=-9; for(var i=-1;i<=1;i++) for(var j=-1;j<=1;j++) zm=Math.max(zm,Zjs(h.x+i*.0042,h.y+j*.0042)); bx.push(h.x,h.y,zm); }); while(bx.length<36) bx.push(99,99,0);
     gl.uniform3fv(U.BX,new Float32Array(bx));
     // étiquettes des bases
     ESCALES.forEach(function(h){ var e=document.createElement('span'); e.className='base-nom'; e.setAttribute('aria-hidden','true'); calqueBases.appendChild(e); h.el=e; });
