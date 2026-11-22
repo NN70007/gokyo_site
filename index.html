@@ -132,7 +132,7 @@
     <p>Chaque ligne est une courbe de niveau, comme sur une carte de montagne : une ligne tous les 200 m d’altitude, une ligne plus marquée tous les 1 000 m.</p>
     <h2>Le lever du jour</h2>
     <p>À l’aube, en haute montagne, la lumière touche d’abord les plus hauts sommets puis descend lentement le long des pentes. La page reprend ce moment : les courbes s’éclairent des sommets de plus de 8 000 m vers les vallées, qui restent dans l’ombre bleue de la nuit. La caméra descend ensuite vers le massif et tourne lentement autour de l’Everest.</p>
-    <p>Une courbe dorée parcourt ensuite le massif, du plus haut sommet vers les vallées, en suivant une même altitude. En survolant le relief (ou en le touchant sur un téléphone), l’altitude du point ou le nom du sommet s’affiche. On peut faire tourner la vue en la faisant glisser, et zoomer avec la molette ou en pinçant l’écran ; un double-clic rétablit la vue d’origine.</p>
+    <p>Une courbe dorée parcourt ensuite le massif, du plus haut sommet vers les vallées, en suivant une même altitude. Un point rouge, comme un hélicoptère, relie les villages et les camps de base ; là où il se pose, une onde se propage sur le relief. En survolant le relief (ou en le touchant sur un téléphone), l’altitude du point ou le nom du sommet s’affiche. On peut faire tourner la vue en la faisant glisser, et zoomer avec la molette ou en pinçant l’écran ; un double-clic rétablit la vue d’origine.</p>
     <p class="petit">Pour mieux lire les pentes, le relief est exagéré environ 1,5 fois en hauteur. Les couleurs et la lumière sont une interprétation artistique.</p>
     <h2>Données utilisées</h2>
     <p>Modèle numérique de terrain Copernicus DEM GLO-30 (résolution d’environ 30 m), ramené ici à environ 73 m par point. Copernicus DEM GLO-30 © DLR e.V. 2010-2014 et © Airbus Defence and Space GmbH 2014-2018, fourni dans le cadre de COPERNICUS par l’Union européenne et l’ESA ; tous droits réservés.</p>
@@ -150,7 +150,7 @@
     <p>Each line is a contour line, as on a mountain map: one line every 200 m of altitude, a stronger line every 1,000 m.</p>
     <h2>Sunrise</h2>
     <p>At dawn in high mountains, light reaches the highest summits first, then slowly moves down the slopes. The page recreates that moment: the contours light up from the 8,000-metre peaks down towards the valleys, which stay in the blue shadow of night. The camera then descends towards the massif and slowly circles Everest.</p>
-    <p>A golden contour then travels across the massif, from the highest summit down to the valleys, following a single altitude. Hover over the terrain (or touch it on a phone) to see the altitude of that point or the name of the summit. Drag to turn the view, and zoom with the scroll wheel or by pinching; double-click to return to the original view.</p>
+    <p>A golden contour then travels across the massif, from the highest summit down to the valleys, following a single altitude. A red dot, like a helicopter, links the villages and base camps; where it lands, a ripple spreads across the terrain. Hover over the terrain (or touch it on a phone) to see the altitude of that point or the name of the summit. Drag to turn the view, and zoom with the scroll wheel or by pinching; double-click to return to the original view.</p>
     <p class="petit">To make the slopes easier to read, the terrain is exaggerated about 1.5 times vertically. Colours and lighting are an artistic interpretation.</p>
     <h2>Data used</h2>
     <p>Copernicus DEM GLO-30 digital elevation model (about 30 m resolution), resampled here to about 73 m per point. Copernicus DEM GLO-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018, provided under COPERNICUS by the European Union and ESA; all rights reserved.</p>
@@ -218,7 +218,7 @@
 
   var VS='#version 300 es\nin vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
   var FS='#version 300 es\nprecision highp float;out vec4 o;\n#define FRAG o\n' + [
-    'uniform vec2 R;uniform float T;uniform sampler2D RELIEF;uniform float SW;uniform float SI;uniform vec2 CP;uniform float CI;uniform float K;uniform vec3 RO;uniform vec3 FW;uniform vec3 RT;uniform vec3 UP;',
+    'uniform vec2 R;uniform float T;uniform sampler2D RELIEF;uniform float SW;uniform float SI;uniform vec2 CP;uniform float CI;uniform float K;uniform vec3 RO;uniform vec3 FW;uniform vec3 RT;uniform vec3 UP;uniform vec3 HP;uniform float HV;uniform vec4 ON;',
     'float h21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}',
     // relief réel : carré de 56 km = 4 unités ; h = (altitude - 3000 m) / 4000 m
     'float H(vec2 p){float h=texture(RELIEF,vec2(p.x*.25+.5,.5-p.y*.25)).r;',
@@ -272,8 +272,16 @@
     '  float fr=exp(-dot(p.xy-CP,p.xy-CP)*70.)*CI;',
     '  c+=vec3(1.,.72,.45)*fr*(.10+l1*.8+l5*.6);',
     '  c=mix(c,vec3(1.,.74,.44),sel*.85);c+=vec3(1.,.58,.28)*(sel*.35+exp(-pow((h-SW)*28.,2.))*.10*SI);',
+    '  float dH=length(p.xy-HP.xy);float haut=HP.z-Z(HP.xy);c*=1.-.45*exp(-dH*dH*2500.)*HV*smoothstep(.0,.02,haut);',
+    '  float dL=length(p.xy-ON.xy);float o1=exp(-pow((dL-ON.z)*130.,2.)),o2=exp(-pow((dL-ON.z+.07)*130.,2.))*step(.07,ON.z),o3=exp(-pow((dL-ON.z+.14)*130.,2.))*step(.14,ON.z);',
+    '  c+=vec3(1.,.16,.12)*(o1+.65*o2+.4*o3)*ON.w*HV*1.3;',
     '  c=mix(c,ciel(rd,aube),brume);',
     ' } else { c=ciel(rd,aube)*k; }',
+    // le point rouge (masqué s'il passe derrière une montagne)
+    ' vec3 vh=HP-ro;float prof=dot(vh,fw);',
+    ' if(prof>.05&&HV>0.){vec2 sp=vec2(dot(vh,rt),dot(vh,up))/prof*1.6;float px=length(uv-sp)*min(R.x,R.y)/max(min(R.x,R.y)/900.,1.);',
+    '  float cache=(touche&&t<length(vh)-.01)?0.:1.;float pouls=.7+.3*sin(T*5.);',
+    '  float balise=pow(.5+.5*sin(T*4.),6.);c+=vec3(1.,.16,.12)*(exp(-px*px/16.)*1.5+exp(-px/14.)*(.25+.45*balise))*cache*HV;c+=vec3(1.,.85,.8)*exp(-px*px/3.)*.7*cache*HV;}',
     // halo du soleil levant (vue du dessus), puis vignettage
     ' c+=vec3(1.,.55,.32)*aube*(1.-k)*exp(-length(uv-vec2(.95,.75))*1.6)*.35;',
     ' c*=1.-.35*smoothstep(.6,1.4,length(uv*vec2(.8,1.)));',
@@ -287,7 +295,7 @@
   gl.useProgram(pr);
   var buf=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,buf); gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
   var loc=gl.getAttribLocation(pr,'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
-  var U={}; ['R','T','SW','SI','CP','CI','K','RO','FW','RT','UP','RELIEF'].forEach(function(n){ U[n]=gl.getUniformLocation(pr,n); });
+  var U={}; ['R','T','SW','SI','CP','CI','K','RO','FW','RT','UP','RELIEF','HP','HV','ON'].forEach(function(n){ U[n]=gl.getUniformLocation(pr,n); });
 
   // Carte d'altitude réelle (Copernicus DEM, voir tools/relief.py) → texture flottante
   var relief=null;
@@ -434,11 +442,47 @@
   var HAUT=(8849-3000)/4000, BAS=(2520-3000)/4000;
   function balayage(t){
     if(t<9.5) return [HAUT+1,0];
-    var P=7.5, ph=(t-9.5)%P, d=4.8;            // 4,8 s de descente, puis un temps de repos
+    var P=24, ph=(t-9.5)%P, d=17;               // 17 s de descente lente, puis 7 s de silence
     if(ph>d) return [BAS-1,0];
-    var x=ph/d, e=x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2;
-    var env=Math.min(1,ph/.35)*Math.min(1,(d-ph)/.6);
-    return [HAUT+.02+(BAS-.04-HAUT)*e, env*ss(9.5,11,t)];
+    var x=ph/d, e=.5-.5*Math.cos(Math.PI*x);    // départ et arrivée tout en douceur
+    var env=ss(0,2.2,ph)*(1-ss(d-3.5,d,ph));
+    return [HAUT+.02+(BAS-.04-HAUT)*e, env*ss(9.5,12,t)];
+  }
+
+  /* ---------- Le point rouge : un hélicoptère qui relie les camps et les villages ----------
+     Il décolle, survole le relief en restant au-dessus des crêtes, se pose,
+     et une onde rouge se propage sur le terrain à l'endroit où il s'est posé. */
+  var ESCALES=[['Gokyo',27.9530,86.6950],['Camp de base de l’Everest',28.0026,86.8528],['Island Peak',27.9180,86.9150],
+    ['Ama Dablam',27.8740,86.8530],['Tengboche',27.8361,86.7642],['Namche Bazaar',27.8057,86.7144],['Machermo',27.9000,86.7140]]
+    .map(function(e){ var q=xy(e[1],e[2]); return {nom:e[0],x:q[0],y:q[1]}; });
+  var VOLS=null, CYCLE=0, DEBUT_VOL=11, SOL=5, VIT=.11;
+  function preparerVols(){
+    VOLS=[]; CYCLE=0;
+    for(var i=0;i<ESCALES.length;i++){
+      var A=ESCALES[i], B=ESCALES[(i+1)%ESCALES.length], za=Zjs(A.x,A.y)+.004, zb=Zjs(B.x,B.y)+.004;
+      var L=Math.hypot(B.x-A.x,B.y-A.y), marge=0;
+      for(var k=0;k<=80;k++){ var u=k/80, x=A.x+(B.x-A.x)*u, y=A.y+(B.y-A.y)*u; marge=Math.max(marge, Zjs(x,y)-(za+(zb-za)*u)); }
+      var duree=L/VIT+4;
+      VOLS.push({A:A,B:B,za:za,zb:zb,H:marge+.05,duree:duree,debut:CYCLE}); CYCLE+=duree+SOL;
+    }
+  }
+  function helico(t){
+    if(!relief) return null;
+    if(!VOLS) preparerVols();
+    var visible=ss(DEBUT_VOL-1.5,DEBUT_VOL,t);
+    if(t<DEBUT_VOL){ var A0=ESCALES[ESCALES.length-1]; return {p:[A0.x,A0.y,Zjs(A0.x,A0.y)+.004],v:visible,onde:[A0.x,A0.y,0,0]}; }
+    var c=(t-DEBUT_VOL)%CYCLE, v=VOLS[0];
+    for(var i=0;i<VOLS.length;i++){ if(c>=VOLS[i].debut && c<VOLS[i].debut+VOLS[i].duree+SOL){ v=VOLS[i]; break; } }
+    var tau=c-v.debut, prec=VOLS[(VOLS.indexOf(v)+VOLS.length-1)%VOLS.length];
+    if(tau<v.duree){
+      var s0=tau/v.duree, e=ss(.12,.88,s0), bosse=ss(0,.18,s0)*(1-ss(.82,1,s0));
+      var x=v.A.x+(v.B.x-v.A.x)*e, y=v.A.y+(v.B.y-v.A.y)*e, z=v.za+(v.zb-v.za)*e+v.H*bosse;
+      z=Math.max(z,Zjs(x,y)+.004);
+      // l'onde du dernier atterrissage finit de s'étendre pendant le décollage
+      var r=(SOL+tau)/ (SOL+2.5); return {p:[x,y,z],v:visible,onde:[v.A.x,v.A.y,.02+.33*Math.min(1,r),Math.max(0,1-r)*.0]};
+    }
+    var g=tau-v.duree, r2=g/SOL;
+    return {p:[v.B.x,v.B.y,v.zb],v:visible,onde:[v.B.x,v.B.y,.015+.34*r2,Math.pow(Math.max(0,1-r2),1.3)*ss(0,.25,g)]};
   }
 
   function frame(now){
@@ -450,6 +494,7 @@
     gl.uniform2f(U.R,cv.width,cv.height); gl.uniform1f(U.T,t); gl.uniform1f(U.K,kCam);
     gl.uniform3fv(U.RO,cam.ro); gl.uniform3fv(U.FW,cam.fw); gl.uniform3fv(U.RT,cam.rt); gl.uniform3fv(U.UP,cam.up);
     gl.uniform1f(U.SW,sw[0]); gl.uniform1f(U.SI,sw[1]);
+    var hel=helico(t); if(hel){ gl.uniform3fv(U.HP,hel.p); gl.uniform1f(U.HV,hel.v); gl.uniform4fv(U.ON,hel.onde); } else gl.uniform1f(U.HV,0);
     majEtiquette(t,now);
     gl.drawArrays(gl.TRIANGLES,0,3);
     requestAnimationFrame(frame);
