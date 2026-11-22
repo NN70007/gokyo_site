@@ -49,9 +49,24 @@
   footer b{color:rgba(247,243,236,.85);font-weight:600;letter-spacing:.08em}
   footer a{color:#fff;text-decoration:none;border-bottom:1px solid rgba(242,192,138,.55);padding-bottom:1px}
   footer .sep{opacity:.45;margin:0 .55em}
-  footer .credit{font-size:.82em;opacity:.55}
   [data-lang]{display:none}
   html[lang="fr"] [data-lang="fr"],html[lang="en"] [data-lang="en"]{display:inline}
+
+  /* Fenêtre « Mentions et crédits » */
+  dialog#apropos{margin:auto;max-width:min(560px,92vw);max-height:84svh;overflow:auto;padding:34px clamp(22px,4vw,40px) 28px;border:1px solid rgba(242,192,138,.22);border-radius:14px;
+    background:rgba(8,12,24,.86);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);color:rgba(247,243,236,.86);font-size:13.5px;line-height:1.65;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+  dialog#apropos::backdrop{background:rgba(2,4,10,.55);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+  dialog#apropos[open]{animation:fenetre .5s var(--ease)}
+  @keyframes fenetre{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+  #apropos h2{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--or);font-weight:600;margin:22px 0 8px}
+  #apropos h2:first-of-type{margin-top:0}
+  #apropos p{margin:0 0 10px}
+  #apropos .petit{font-size:11.5px;color:rgba(247,243,236,.6)}
+  #apropos a{color:#fff;text-decoration:none;border-bottom:1px solid rgba(242,192,138,.55)}
+  #apropos .fermer{position:absolute;top:12px;right:12px;width:36px;height:36px;border:0;border-radius:50%;background:rgba(255,255,255,.06);color:#fff;font-size:20px;line-height:36px;cursor:pointer}
+  #apropos .fermer:hover{background:rgba(255,255,255,.14)}
+  #apropos [data-lang]{display:none}
+  html[lang="fr"] #apropos div[data-lang="fr"],html[lang="en"] #apropos div[data-lang="en"]{display:block}
   @media (max-width:700px){
     footer{font-size:10px;line-height:1.6}
     .coord{font-size:10.5px;letter-spacing:.22em}
@@ -80,10 +95,39 @@
 
   <footer class="apparait" style="animation-delay:6s">
     <span class="bl"><b>GOKYO S.à r.l.-S</b></span><span class="sep">·</span><span class="bl"><span data-lang="fr">Société à responsabilité limitée simplifiée de droit luxembourgeois</span><span data-lang="en">Simplified limited liability company under Luxembourg law</span></span><span class="sep">·</span><span class="bl">131, rue de Hollerich, L-1741 Luxembourg</span><br class="br">
-    <span class="bl"><span data-lang="fr">RCS Luxembourg</span><span data-lang="en">Luxembourg Trade and Companies Register</span> B239634</span><span class="sep">·</span><span class="bl"><span data-lang="fr">TVA</span><span data-lang="en">VAT</span> LU31725054</span><span class="sep">·</span><span class="bl"><a href="mailto:contact@gokyo.lu">contact@gokyo.lu</a><span class="sep">·</span>© 2026</span><br class="br">
-    <span class="bl credit"><span data-lang="fr">Relief</span><span data-lang="en">Terrain</span> : Copernicus DEM GLO-30 © DLR e.V. 2010-2014, © Airbus Defence and Space GmbH 2014-2018, <span data-lang="fr">fourni dans le cadre de COPERNICUS par l’Union européenne et l’ESA</span><span data-lang="en">provided under COPERNICUS by the European Union and ESA</span></span>
+    <span class="bl"><span data-lang="fr">RCS Luxembourg</span><span data-lang="en">Luxembourg Trade and Companies Register</span> B239634</span><span class="sep">·</span><span class="bl"><span data-lang="fr">TVA</span><span data-lang="en">VAT</span> LU31725054</span><span class="sep">·</span><span class="bl"><a href="mailto:contact@gokyo.lu">contact@gokyo.lu</a><span class="sep">·</span>© 2026</span><span class="sep">·</span><span class="bl"><a href="#apropos" id="ouvrir"><span data-lang="fr">Mentions et crédits</span><span data-lang="en">Notices &amp; credits</span></a></span>
   </footer>
 </div>
+
+<dialog id="apropos" aria-labelledby="titreApropos">
+  <button class="fermer" type="button" aria-label="Fermer / Close">×</button>
+  <div data-lang="fr">
+    <h2 id="titreApropos">Ce que montre cette page</h2>
+    <p>L’image est le relief réel de la région de Gokyo, dans le Khumbu, au nord-est du Népal : un carré d’environ 56 km de côté qui englobe le village et les lacs de Gokyo, le glacier de Ngozumpa, le Cho Oyu (8 188 m), l’Everest (8 849 m), le Lhotse (8 516 m) et le Makalu (8 485 m).</p>
+    <p>Chaque ligne est une courbe de niveau, comme sur une carte de montagne : une ligne tous les 200 m d’altitude, une ligne plus marquée tous les 1 000 m.</p>
+    <h2>Le lever du jour</h2>
+    <p>À l’aube, en haute montagne, la lumière touche d’abord les plus hauts sommets puis descend lentement le long des pentes. La page reprend ce moment : les courbes s’éclairent des sommets de plus de 8 000 m vers les vallées, qui restent dans l’ombre bleue de la nuit. La caméra descend ensuite vers le massif et tourne lentement autour de l’Everest.</p>
+    <p class="petit">Pour mieux lire les pentes, le relief est exagéré environ 1,5 fois en hauteur. Les couleurs et la lumière sont une interprétation artistique.</p>
+    <h2>Données utilisées</h2>
+    <p>Modèle numérique de terrain Copernicus DEM GLO-30 (résolution d’environ 30 m), ramené ici à environ 73 m par point. Copernicus DEM GLO-30 © DLR e.V. 2010-2014 et © Airbus Defence and Space GmbH 2014-2018, fourni dans le cadre de COPERNICUS par l’Union européenne et l’ESA ; tous droits réservés.</p>
+    <h2>Éditeur</h2>
+    <p>GOKYO S.à r.l.-S · 131, rue de Hollerich, L-1741 Luxembourg · RCS Luxembourg B239634 · TVA LU31725054 · <a href="mailto:contact@gokyo.lu">contact@gokyo.lu</a></p>
+    <p class="petit">Ce site ne dépose aucun cookie et ne mesure pas l’audience. Seul votre choix de langue est conservé dans votre navigateur.</p>
+  </div>
+  <div data-lang="en">
+    <h2 id="titreAproposEn">What this page shows</h2>
+    <p>The image is the real terrain of the Gokyo region in the Khumbu, north-eastern Nepal: a square of about 56 km across that takes in the village and lakes of Gokyo, the Ngozumpa glacier, Cho Oyu (8,188 m), Everest (8,849 m), Lhotse (8,516 m) and Makalu (8,485 m).</p>
+    <p>Each line is a contour line, as on a mountain map: one line every 200 m of altitude, a stronger line every 1,000 m.</p>
+    <h2>Sunrise</h2>
+    <p>At dawn in high mountains, light reaches the highest summits first, then slowly moves down the slopes. The page recreates that moment: the contours light up from the 8,000-metre peaks down towards the valleys, which stay in the blue shadow of night. The camera then descends towards the massif and slowly circles Everest.</p>
+    <p class="petit">To make the slopes easier to read, the terrain is exaggerated about 1.5 times vertically. Colours and lighting are an artistic interpretation.</p>
+    <h2>Data used</h2>
+    <p>Copernicus DEM GLO-30 digital elevation model (about 30 m resolution), resampled here to about 73 m per point. Copernicus DEM GLO-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018, provided under COPERNICUS by the European Union and ESA; all rights reserved.</p>
+    <h2>Publisher</h2>
+    <p>GOKYO S.à r.l.-S · 131, rue de Hollerich, L-1741 Luxembourg · Luxembourg Trade and Companies Register B239634 · VAT LU31725054 · <a href="mailto:contact@gokyo.lu">contact@gokyo.lu</a></p>
+    <p class="petit">This site sets no cookies and does not measure traffic. Only your language choice is kept in your browser.</p>
+  </div>
+</dialog>
 <script>
 (function(){
   "use strict";
@@ -94,6 +138,13 @@
   if(l!=='fr'&&l!=='en'){ l=((navigator.language||'fr').slice(0,2).toLowerCase()==='fr')?'fr':'en'; }
   set(l);
   for(var b=0;b<btns.length;b++){btns[b].addEventListener('click',function(){set(this.getAttribute('data-set'));});}
+
+
+  /* ---------- Fenêtre « Mentions et crédits » ---------- */
+  var dlg=document.getElementById('apropos'), ouvrir=document.getElementById('ouvrir');
+  ouvrir.addEventListener('click',function(e){ e.preventDefault(); if(dlg.showModal) dlg.showModal(); else dlg.setAttribute('open',''); });
+  dlg.querySelector('.fermer').addEventListener('click',function(){ dlg.close?dlg.close():dlg.removeAttribute('open'); });
+  dlg.addEventListener('click',function(e){ if(e.target!==dlg) return; var r=dlg.getBoundingClientRect(); if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom) dlg.close(); });
 
   /* ---------- Massif en 3D avec ses courbes de niveau (WebGL) ----------
      1) Vue du dessus : les courbes apparaissent, l'aube éclaire les sommets puis descend.
