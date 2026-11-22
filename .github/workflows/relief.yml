@@ -1,0 +1,25 @@
+name: Relief réel de Gokyo
+# Télécharge le relief réel (Copernicus DEM) et range assets/relief.png dans le site.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['tools/relief.py', '.github/workflows/relief.yml']
+permissions:
+  contents: write
+jobs:
+  relief:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install numpy pillow rasterio
+      - run: python tools/relief.py
+      - name: Enregistrer
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add assets/relief.png assets/relief.json
+          git diff --cached --quiet || git commit -m "Relief réel de Gokyo (données d'altitude)"
+          git pull --rebase origin main && git push
