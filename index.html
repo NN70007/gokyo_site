@@ -63,6 +63,12 @@
   .apparait{opacity:0;transform:translateY(10px);animation:monte 1.8s var(--ease) forwards}
   @keyframes monte{to{opacity:1;transform:none}}
 
+  /* Fin de l'ouverture : le nom monte en haut à gauche */
+  .titre{transform-origin:0 0;will-change:transform}
+  .titre.vol{transition:transform 2.2s cubic-bezier(.65,0,.2,1)}
+  .fin .ligne{width:min(420px,60vw);animation:disparait 1.2s forwards}
+  .fin .coord{animation:disparait 1.2s forwards}
+  @keyframes disparait{from{opacity:1}to{opacity:0}}
   footer{position:relative;z-index:3;padding:20px clamp(18px,4vw,56px) max(22px,env(safe-area-inset-bottom));font-size:11px;line-height:1.75;letter-spacing:.04em;color:var(--doux);text-align:center}
   footer b{color:rgba(247,243,236,.85);font-weight:600;letter-spacing:.08em}
   footer a{color:#fff;text-decoration:none;border-bottom:1px solid rgba(242,192,138,.55);padding-bottom:1px}
@@ -122,6 +128,23 @@
   if(l!=='fr'&&l!=='en'){ l=((navigator.language||'fr').slice(0,2).toLowerCase()==='fr')?'fr':'en'; }
   set(l);
   for(var b=0;b<btns.length;b++){btns[b].addEventListener('click',function(){set(this.getAttribute('data-set'));});}
+
+
+  /* ---------- Fin de l'ouverture : le nom monte en haut à gauche et rapetisse ---------- */
+  var titre=document.querySelector('.titre'), h1=titre.querySelector('h1'), entete=document.querySelector('header'), enHaut=false;
+  function placer(anim){
+    titre.classList.remove('vol'); titre.style.transform='none';
+    var r=titre.getBoundingClientRect(), cs=getComputedStyle(entete);
+    var fs=parseFloat(getComputedStyle(h1).fontSize), cible=innerWidth<700?30:46, k=cible/fs;
+    var x=parseFloat(cs.paddingRight), y=parseFloat(cs.paddingTop)+2;
+    var tr='translate('+(x-r.left).toFixed(1)+'px,'+(y-r.top).toFixed(1)+'px) scale('+k.toFixed(4)+')';
+    if(anim){ void titre.offsetWidth; titre.classList.add('vol'); }
+    titre.style.transform=tr;
+  }
+  function monter(anim){ enHaut=true; document.body.classList.add('fin'); placer(anim); }
+  var reduitTitre=matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduitTitre) monter(false); else setTimeout(function(){ monter(true); },12400);
+  addEventListener('resize',function(){ if(enHaut) placer(false); });
 
   /* ---------- Courbes de niveau à l'aube (WebGL) ----------
      Un massif imaginaire vu d'en haut. La lumière du jour touche d'abord les plus hauts sommets
