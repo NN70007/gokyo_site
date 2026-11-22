@@ -66,6 +66,9 @@
   /* Fin de l'ouverture : le nom monte en haut à gauche */
   .titre{transform-origin:0 0;will-change:transform}
   .titre.vol{transition:transform 2.2s cubic-bezier(.65,0,.2,1)}
+  .titre.posee{position:fixed;z-index:4}
+  .fin h1 span{animation:none;opacity:1;filter:none;transform:none}
+  .fin h1{animation:none}
   .fin .ligne{width:min(420px,60vw);animation:disparait 1.2s forwards}
   .fin .coord{animation:disparait 1.2s forwards}
   @keyframes disparait{from{opacity:1}to{opacity:0}}
@@ -130,21 +133,31 @@
   for(var b=0;b<btns.length;b++){btns[b].addEventListener('click',function(){set(this.getAttribute('data-set'));});}
 
 
-  /* ---------- Fin de l'ouverture : le nom monte en haut à gauche et rapetisse ---------- */
-  var titre=document.querySelector('.titre'), h1=titre.querySelector('h1'), entete=document.querySelector('header'), enHaut=false;
-  function placer(anim){
-    titre.classList.remove('vol'); titre.style.transform='none';
-    var r=titre.getBoundingClientRect(), cs=getComputedStyle(entete);
-    var fs=parseFloat(getComputedStyle(h1).fontSize), cible=innerWidth<700?30:46, k=cible/fs;
-    var x=parseFloat(cs.paddingRight), y=parseFloat(cs.paddingTop)+2;
-    var tr='translate('+(x-r.left).toFixed(1)+'px,'+(y-r.top).toFixed(1)+'px) scale('+k.toFixed(4)+')';
-    if(anim){ void titre.offsetWidth; titre.classList.add('vol'); }
-    titre.style.transform=tr;
+  /* ---------- Fin de l'ouverture : le nom monte en haut à gauche et réduit à 25 % ----------
+     Le mouvement se fait par transformation, puis le nom est redessiné à sa vraie taille (net). */
+  var titre=document.querySelector('.titre'), h1=titre.querySelector('h1'), ec=titre.querySelector('.eclat'), entete=document.querySelector('header'), enHaut=false;
+  function mesure(){
+    titre.classList.remove('vol','posee'); titre.style.transform=''; titre.style.left=''; titre.style.top=''; h1.style.fontSize=''; ec.style.fontSize='';
+    var r=titre.getBoundingClientRect(), cs=getComputedStyle(entete), fs=parseFloat(getComputedStyle(h1).fontSize);
+    return { r:r, fs:fs, k:Math.max(.25, 30/fs), x:parseFloat(cs.paddingRight), y:parseFloat(cs.paddingTop) };
   }
-  function monter(anim){ enHaut=true; document.body.classList.add('fin'); placer(anim); }
+  function poser(m){
+    titre.classList.remove('vol'); titre.classList.add('posee'); titre.style.transform='';
+    titre.style.left=m.x+'px'; titre.style.top=m.y+'px';
+    h1.style.fontSize=ec.style.fontSize=(m.fs*m.k).toFixed(1)+'px';
+  }
+  function monter(anim){
+    enHaut=true; document.body.classList.add('fin');
+    var m=mesure();
+    if(!anim){ poser(m); return; }
+    var tr='translate('+(m.x-m.r.left).toFixed(1)+'px,'+(m.y-m.r.top).toFixed(1)+'px) scale('+m.k.toFixed(4)+')';
+    void titre.offsetWidth; titre.classList.add('vol'); titre.style.transform=tr;
+    var fini=false; function fin(){ if(fini) return; fini=true; poser(m); }
+    titre.addEventListener('transitionend',fin,{once:true}); setTimeout(fin,2500);
+  }
   var reduitTitre=matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(reduitTitre) monter(false); else setTimeout(function(){ monter(true); },12400);
-  addEventListener('resize',function(){ if(enHaut) placer(false); });
+  var tempoT; addEventListener('resize',function(){ if(!enHaut) return; clearTimeout(tempoT); tempoT=setTimeout(function(){ poser(mesure()); },120); });
 
   /* ---------- Courbes de niveau à l'aube (WebGL) ----------
      Un massif imaginaire vu d'en haut. La lumière du jour touche d'abord les plus hauts sommets
