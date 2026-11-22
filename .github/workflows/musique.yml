@@ -23,8 +23,9 @@ jobs:
           LIEN: ${{ inputs.lien }}
           NOM: ${{ inputs.nom }}
         run: |
-          sudo apt-get -qq update && sudo apt-get -qq install -y ffmpeg unzip >/dev/null
-          mkdir -p /tmp/m && curl -sSL "$LIEN" -o /tmp/m/piste.zip
+          sudo apt-get -qq update >/dev/null && sudo apt-get -qq install -y ffmpeg unzip >/dev/null 2>&1
+          mkdir -p /tmp/m && CODE=$(curl -sSL -w '%{http_code}' "$LIEN" -o /tmp/m/piste.zip); echo "HTTP $CODE, $(stat -c %s /tmp/m/piste.zip) octets"
+          if [ "$CODE" != "200" ]; then head -c 400 /tmp/m/piste.zip | sed -E 's/X-Amz[^<]*//g'; echo; exit 1; fi
           cd /tmp/m && unzip -o -q piste.zip && find . -type f | sed 's/^/  /'
           SRC=$(find . -type f \( -iname '*.wav' \) | grep -iv stem | head -1)
           [ -z "$SRC" ] && SRC=$(find . -type f -iname '*.mp3' | head -1)
