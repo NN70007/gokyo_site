@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Gokyo S.à r.l.-S</title>
 <meta name="description" content="Gokyo S.à r.l.-S — Luxembourg">
-<meta name="theme-color" content="#070F1F">
+<meta name="theme-color" content="#050A16">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Gokyo">
 <meta property="og:title" content="Gokyo — Luxembourg">
@@ -16,18 +16,33 @@
   @font-face{font-family:Cormorant;font-weight:500;font-style:normal;font-display:swap;src:url(assets/fonts/cormorant-garamond-latin-500-normal.woff2) format('woff2')}
   @font-face{font-family:Cormorant;font-weight:600;font-style:normal;font-display:swap;src:url(assets/fonts/cormorant-garamond-latin-600-normal.woff2) format('woff2')}
   @font-face{font-family:Cormorant;font-weight:500;font-style:italic;font-display:swap;src:url(assets/fonts/cormorant-garamond-latin-500-italic.woff2) format('woff2')}
-  :root{--or:#F2B880;--blanc:#F4F7FB;--doux:rgba(244,247,251,.66)}
+  :root{--or:#F2B880;--blanc:#F4F7FB;--doux:rgba(244,247,251,.66);--ease:cubic-bezier(.2,.7,.2,1)}
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%;background:#070F1F}
-  body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--blanc);-webkit-font-smoothing:antialiased;overflow-x:hidden}
-  .scene{position:relative;min-height:100vh;min-height:100svh;overflow:hidden;display:grid;grid-template-rows:auto 1fr auto}
-  svg.montagne{position:absolute;inset:0;width:100%;height:100%;display:block}
+  html,body{height:100%;background:#050A16}
+  body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--blanc);-webkit-font-smoothing:antialiased;overflow:hidden}
+  .scene{position:relative;height:100vh;height:100svh;overflow:hidden;display:grid;grid-template-rows:auto 1fr auto}
+  canvas#ciel{position:absolute;inset:0;width:100%;height:100%;display:block}
   .vignette{position:absolute;inset:0;pointer-events:none;background:
-    linear-gradient(90deg,rgba(7,15,31,.78) 0%,rgba(7,15,31,.35) 38%,rgba(7,15,31,0) 60%),
-    linear-gradient(0deg,rgba(7,15,31,.9) 0%,rgba(7,15,31,0) 34%)}
+    radial-gradient(120% 90% at 50% 40%,rgba(5,10,22,0) 55%,rgba(5,10,22,.65) 100%),
+    linear-gradient(90deg,rgba(5,10,22,.7) 0%,rgba(5,10,22,.25) 36%,rgba(5,10,22,0) 58%),
+    linear-gradient(0deg,rgba(5,10,22,.92) 0%,rgba(5,10,22,0) 34%)}
+  .grain{position:absolute;inset:-50%;pointer-events:none;opacity:.06;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>");animation:grain 1s steps(4) infinite}
+  @keyframes grain{25%{transform:translate(-3%,2%)}50%{transform:translate(2%,-3%)}75%{transform:translate(-2%,-1%)}}
+
+  /* Ouverture : le nom au milieu des nuages, puis il s'efface pendant la montée */
+  .ouverture{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;animation:sortie 1.4s 3.7s var(--ease) forwards}
+  .ouverture h1{font-family:Cormorant,Georgia,serif;font-weight:500;font-size:clamp(56px,13vw,190px);letter-spacing:.5em;margin-right:-.5em;line-height:1;color:#fff;display:flex}
+  .ouverture h1 span{display:inline-block;opacity:0;filter:blur(14px);transform:translateY(.25em);animation:lettre 1.6s var(--ease) forwards;text-shadow:0 0 40px rgba(255,214,170,.35)}
+  .ouverture p{margin-top:18px;font-size:clamp(10px,1.1vw,13px);letter-spacing:.6em;margin-right:-.6em;color:var(--or);opacity:0;animation:monte 1.4s 1.5s var(--ease) forwards}
+  @keyframes lettre{to{opacity:1;filter:none;transform:none}}
+  @keyframes sortie{to{opacity:0;transform:translateY(-6vh) scale(.94);filter:blur(6px)}}
 
   header{position:relative;z-index:3;display:flex;justify-content:space-between;align-items:flex-start;padding:26px clamp(16px,4vw,56px) 0}
-  header img{width:clamp(150px,18vw,220px);height:auto}
+  .logo{position:relative;width:clamp(150px,18vw,220px)}
+  .logo img{width:100%;height:auto;display:block}
+  .logo::after{content:"";position:absolute;inset:0;-webkit-mask:url(assets/gokyo-logo-blanc.svg) center/contain no-repeat;mask:url(assets/gokyo-logo-blanc.svg) center/contain no-repeat;
+    background:linear-gradient(105deg,transparent 35%,rgba(255,226,190,.95) 50%,transparent 65%) no-repeat;background-size:250% 100%;background-position:120% 0;animation:eclat 1.8s 5.4s ease-in-out forwards}
+  @keyframes eclat{to{background-position:-30% 0}}
   .droite{display:flex;flex-direction:column;align-items:flex-end;gap:14px}
   .langue{display:flex;gap:2px;font-size:12px;letter-spacing:.16em}
   .langue button{background:none;border:0;color:var(--doux);cursor:pointer;padding:6px 8px;font:inherit}
@@ -36,14 +51,19 @@
   .altimetre .etiq{font-size:10.5px;letter-spacing:.3em;color:var(--doux)}
   .altimetre .val{font-family:Cormorant,Georgia,serif;font-weight:600;font-size:clamp(30px,3.6vw,46px);line-height:1.05;color:#fff}
   .altimetre .val small{font-size:.5em;margin-left:4px;color:var(--or)}
+  .jauge{width:120px;height:2px;background:rgba(255,255,255,.14);margin:8px 0 0 auto;overflow:hidden}
+  .jauge i{display:block;height:100%;width:0;background:linear-gradient(90deg,#9FD8D2,var(--or))}
 
-  main{position:relative;z-index:3;align-self:end;padding:0 clamp(16px,4vw,56px) 10px;max-width:760px}
-  .devise{font-family:Cormorant,Georgia,serif;font-weight:500;font-size:clamp(32px,4.6vw,64px);line-height:1.08;letter-spacing:0;color:#fff;text-shadow:0 4px 30px rgba(0,0,0,.35)}
+  main{position:relative;z-index:3;align-self:end;padding:0 clamp(16px,4vw,56px) 10px;max-width:780px}
+  .devise{font-family:Cormorant,Georgia,serif;font-weight:500;font-size:clamp(32px,4.6vw,64px);line-height:1.08;color:#fff;text-shadow:0 4px 30px rgba(0,0,0,.45)}
   .devise em{font-style:italic;color:var(--or)}
-  .ligne{display:block;width:72px;height:2px;background:var(--or);margin:26px 0 18px;transform-origin:left;transform:scaleX(0);animation:trait 1.4s 5.6s cubic-bezier(.2,.7,.2,1) forwards}
+  .devise .l{display:block;overflow:hidden}
+  .devise .l > span{display:inline-block;transform:translateY(105%);animation:ligne 1.3s var(--ease) forwards}
+  @keyframes ligne{to{transform:none}}
+  .trait{display:block;width:72px;height:2px;background:var(--or);margin:26px 0 18px;transform-origin:left;transform:scaleX(0);animation:trait 1.4s 7.2s var(--ease) forwards}
   .auteur{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:#fff;margin-bottom:8px}
   .coord{font-size:11px;letter-spacing:.32em;color:var(--doux)}
-  .apparait{opacity:0;transform:translateY(14px);animation:monte 1.6s cubic-bezier(.2,.7,.2,1) forwards}
+  .apparait{opacity:0;transform:translateY(14px);animation:monte 1.6s var(--ease) forwards}
   @keyframes monte{to{opacity:1;transform:none}}
   @keyframes trait{to{transform:scaleX(1)}}
 
@@ -51,180 +71,243 @@
   footer a{color:#fff;text-decoration:none;border-bottom:1px solid rgba(242,184,128,.6);padding-bottom:1px}
   [data-lang]{display:none}
   html[lang="fr"] [data-lang="fr"],html[lang="en"] [data-lang="en"]{display:inline}
-
-  /* Animations du paysage */
-  .etoile{animation:scint 5s ease-in-out infinite}
-  @keyframes scint{50%{opacity:.2}}
-  .aube{opacity:0;animation:aube 6s .4s ease-out forwards}
-  @keyframes aube{to{opacity:1}}
-  .alpenglow{opacity:0;animation:aube 5s 1.2s ease-out forwards}
-  .trace{stroke-dasharray:1;stroke-dashoffset:1;animation:trace 5.2s .8s cubic-bezier(.45,.05,.35,1) forwards}
-  @keyframes trace{to{stroke-dashoffset:0}}
-  .camp{opacity:0;animation:pop .6s ease-out forwards}
-  @keyframes pop{to{opacity:1}}
-  .drapeau{opacity:0;transform-box:fill-box;transform-origin:left bottom;transform:scaleY(0);animation:hisse .9s 6s cubic-bezier(.2,.8,.2,1.2) forwards}
-  @keyframes hisse{to{opacity:1;transform:scaleY(1)}}
-  .halo{opacity:0;animation:halo 3s 6s ease-out forwards}
-  @keyframes halo{0%{opacity:0}30%{opacity:.9}100%{opacity:.55}}
-  .neige{animation:vent 16s linear infinite}
-  @keyframes vent{from{transform:translateX(0)}to{transform:translateX(-160px)}}
+  html[lang="fr"] .devise [data-lang="fr"],html[lang="en"] .devise [data-lang="en"]{display:block}
 
   @media (max-width:760px){
-    .vignette{background:linear-gradient(0deg,rgba(7,15,31,.92) 0%,rgba(7,15,31,.35) 45%,rgba(7,15,31,.1) 100%)}
+    .vignette{background:radial-gradient(130% 80% at 50% 35%,rgba(5,10,22,0) 50%,rgba(5,10,22,.6) 100%),linear-gradient(0deg,rgba(5,10,22,.94) 0%,rgba(5,10,22,.35) 45%,rgba(5,10,22,.1) 100%)}
     header{padding-top:20px}
     footer{justify-content:flex-start}
+    .ouverture h1{letter-spacing:.32em;margin-right:-.32em}
   }
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{animation-duration:.01s!important;animation-delay:0s!important;animation-iteration-count:1!important}
+    .ouverture{display:none}
   }
 </style>
 </head>
 <body>
 <div class="scene">
-  <svg class="montagne" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <defs>
-      <linearGradient id="ciel" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#050C1A"/><stop offset=".38" stop-color="#0E2142"/><stop offset=".62" stop-color="#2D3F67"/><stop offset=".8" stop-color="#6E5A78"/><stop offset="1" stop-color="#C98A6A"/>
-      </linearGradient>
-      <radialGradient id="soleil" cx=".72" cy=".72" r=".55">
-        <stop offset="0" stop-color="#FFC48A" stop-opacity=".75"/><stop offset=".45" stop-color="#E58C6A" stop-opacity=".25"/><stop offset="1" stop-color="#E58C6A" stop-opacity="0"/>
-      </radialGradient>
-      <linearGradient id="faceLumiere" x1="1" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#FFD7B0"/><stop offset=".28" stop-color="#E9A486"/><stop offset=".6" stop-color="#8A6A86"/><stop offset="1" stop-color="#2A3557"/>
-      </linearGradient>
-      <linearGradient id="faceOmbre" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stop-color="#3A4E78"/><stop offset=".5" stop-color="#1F3256"/><stop offset="1" stop-color="#0E1D38"/>
-      </linearGradient>
-      <linearGradient id="faceNeutre" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#6F86AE"/><stop offset="1" stop-color="#1A2B4B"/>
-      </linearGradient>
-      <linearGradient id="lointain" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#5B6E96"/><stop offset="1" stop-color="#2A3A5E"/>
-      </linearGradient>
-      <linearGradient id="premierPlan" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#0F1C33"/><stop offset="1" stop-color="#050B17"/>
-      </linearGradient>
-      <radialGradient id="haloGrad" cx=".5" cy=".5" r=".5">
-        <stop offset="0" stop-color="#FFE2BE" stop-opacity=".95"/><stop offset=".35" stop-color="#F2B880" stop-opacity=".45"/><stop offset="1" stop-color="#F2B880" stop-opacity="0"/>
-      </radialGradient>
-      <mask id="masqueTrace">
-        <path class="trace" pathLength="1" d="M330 980 C420 930 470 900 540 860 S640 800 690 770 S760 700 735 650 S770 560 820 520 S860 450 840 400 S880 320 915 280 S950 220 1000 168" fill="none" stroke="#fff" stroke-width="14"/>
-      </mask>
-      <filter id="flou"><feGaussianBlur stdDeviation="2.2"/></filter>
-    </defs>
-
-    <rect width="1600" height="1000" fill="url(#ciel)"/>
-    <rect class="aube" width="1600" height="1000" fill="url(#soleil)"/>
-
-    <g fill="#fff">
-      <circle class="etoile" cx="90" cy="70" r="1.5"/><circle class="etoile" cx="230" cy="160" r="1" style="animation-delay:1.2s"/>
-      <circle class="etoile" cx="410" cy="60" r="1.3" style="animation-delay:2.4s"/><circle class="etoile" cx="560" cy="140" r="1" style="animation-delay:.6s"/>
-      <circle class="etoile" cx="700" cy="40" r="1.6" style="animation-delay:3s"/><circle class="etoile" cx="1250" cy="60" r="1.2" style="animation-delay:1.8s"/>
-      <circle class="etoile" cx="1410" cy="130" r="1.5" style="animation-delay:.3s"/><circle class="etoile" cx="1540" cy="50" r="1" style="animation-delay:2.7s"/>
-      <circle class="etoile" cx="330" cy="250" r=".9" style="animation-delay:3.6s"/><circle class="etoile" cx="1180" cy="190" r=".9" style="animation-delay:4.1s"/>
-    </g>
-
-    <!-- Chaîne lointaine -->
-    <path d="M0 600 L80 560 L160 585 L250 520 L330 560 L420 505 L480 540 L560 480 L600 500 L640 470 L1340 470 L1390 500 L1450 455 L1520 500 L1600 470 L1600 1000 L0 1000Z" fill="url(#lointain)" opacity=".75"/>
-    <path d="M250 520 L272 536 L262 538 L250 532 L238 540Z M420 505 L442 520 L430 522 L418 518 L404 526Z M1450 455 L1474 472 L1460 470 L1448 478 L1434 468Z" fill="#E6ECF5" opacity=".7"/>
-
-    <!-- Le sommet -->
-    <g>
-      <!-- face éclairée (gauche) -->
-      <path d="M1000 160 L960 210 L930 232 L905 280 L870 300 L850 350 L812 380 L790 430 L740 470 L700 530 L640 560 L580 640 L500 690 L440 760 L1010 760 L1020 520 L1005 380 L1012 260Z" fill="url(#faceLumiere)"/>
-      <path class="alpenglow" d="M1000 160 L960 210 L930 232 L905 280 L870 300 L850 350 L880 330 L915 300 L950 250 L985 215 L1006 250 L1012 260Z" fill="#FFE6C8" opacity=".9"/>
-      <!-- face à l'ombre (droite) -->
-      <path d="M1000 160 L1040 200 L1070 215 L1100 260 L1140 290 L1170 340 L1215 370 L1250 420 L1300 450 L1350 510 L1420 540 L1480 600 L1560 640 L1600 660 L1600 760 L1010 760 L1020 520 L1005 380 L1012 260Z" fill="url(#faceOmbre)"/>
-      <!-- arête centrale et couloirs de neige -->
-      <path d="M1000 160 L1012 260 L1005 380 L1020 520 L1010 760" fill="none" stroke="#F7E3D2" stroke-opacity=".55" stroke-width="2"/>
-      <path d="M1000 160 L1040 200 L1030 230 L1050 270 L1030 300 L1060 340 L1045 380 L1080 420 L1060 470 L1012 260Z" fill="#C9D6EA" opacity=".55"/>
-      <path d="M960 210 L985 240 L960 300 L990 340 L955 400 L985 430 L950 500 L1005 380 L1012 260Z" fill="#FFF1E4" opacity=".55"/>
-      <path d="M870 300 L895 330 L870 380 L900 410 L860 470 L850 350Z" fill="#FFF1E4" opacity=".35"/>
-      <path d="M1140 290 L1160 330 L1150 380 L1185 410 L1170 340Z M1250 420 L1270 450 L1262 490 L1300 450Z" fill="#B9C8E0" opacity=".4"/>
-    </g>
-
-    <!-- Contreforts -->
-    <path d="M0 760 L120 700 L230 730 L340 670 L460 720 L560 690 L700 740 L860 700 L980 745 L1120 705 L1260 740 L1400 690 L1500 720 L1600 700 L1600 1000 L0 1000Z" fill="url(#faceNeutre)" opacity=".92"/>
-    <path d="M340 670 L366 690 L352 694 L340 688 L322 698Z M1400 690 L1428 708 L1410 712 L1398 706 L1382 714Z" fill="#E6ECF5" opacity=".75"/>
-
-    <!-- Premier plan -->
-    <path d="M0 860 C140 820 260 850 380 880 C470 900 520 930 600 1000 L0 1000Z" fill="url(#premierPlan)"/>
-    <path d="M1600 820 C1470 820 1360 860 1230 900 C1140 930 1080 960 1040 1000 L1600 1000Z" fill="url(#premierPlan)"/>
-    <path d="M0 920 C300 900 700 930 1000 960 C1200 975 1400 960 1600 950 L1600 1000 L0 1000Z" fill="#050B17"/>
-
-    <!-- Itinéraire d'ascension -->
-    <path d="M330 980 C420 930 470 900 540 860 S640 800 690 770 S760 700 735 650 S770 560 820 520 S860 450 840 400 S880 320 915 280 S950 220 1000 168" fill="none" stroke="#F2B880" stroke-width="2.4" stroke-dasharray="2 9" stroke-linecap="round" mask="url(#masqueTrace)"/>
-    <circle r="5" fill="#FFE2BE">
-      <animateMotion dur="5.2s" begin="0.8s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines=".45 .05 .35 1" path="M330 980 C420 930 470 900 540 860 S640 800 690 770 S760 700 735 650 S770 560 820 520 S860 450 840 400 S880 320 915 280 S950 220 1000 168"/>
-      <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.05;.9;1" dur="5.6s" begin="0.8s" fill="freeze"/>
-    </circle>
-
-    <!-- Camps -->
-    <g font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="13" letter-spacing="2.5" fill="#F4F7FB" stroke="#0B1730" stroke-width="2" stroke-opacity=".3" paint-order="stroke">
-      <g class="camp" style="animation-delay:1.9s"><circle cx="690" cy="770" r="4.5" fill="#0B1730" stroke="#F2B880" stroke-width="2"/><text x="706" y="775" opacity=".8">5 700 M</text></g>
-      <g class="camp" style="animation-delay:3.1s"><circle cx="820" cy="520" r="4.5" fill="#0B1730" stroke="#F2B880" stroke-width="2"/><text x="836" y="525" opacity=".8">6 400 M</text></g>
-      <g class="camp" style="animation-delay:4.2s"><circle cx="915" cy="280" r="4.5" fill="#0B1730" stroke="#F2B880" stroke-width="2"/><text x="930" y="285" opacity=".8">7 450 M</text></g>
-    </g>
-
-    <!-- Sommet atteint -->
-    <circle class="halo" cx="1000" cy="160" r="70" fill="url(#haloGrad)"/>
-    <g class="drapeau">
-      <line x1="1000" y1="160" x2="1000" y2="118" stroke="#FFFFFF" stroke-width="2.4"/>
-      <path d="M1001 119 L1030 127 L1001 136Z" fill="#F2B880"/>
-    </g>
-  </svg>
+  <canvas id="ciel" aria-hidden="true"></canvas>
   <div class="vignette"></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <div class="ouverture" aria-hidden="true">
+    <h1><span style="animation-delay:.35s">G</span><span style="animation-delay:.5s">O</span><span style="animation-delay:.65s">K</span><span style="animation-delay:.8s">Y</span><span style="animation-delay:.95s">O</span></h1>
+    <p>LUXEMBOURG</p>
+  </div>
 
   <header>
-    <img class="apparait" style="animation-delay:.2s" src="assets/gokyo-logo-blanc.svg?v=20261111d" alt="Gokyo — Luxembourg" width="220" height="64">
+    <div class="logo apparait" style="animation-delay:4.6s"><img src="assets/gokyo-logo-blanc.svg?v=20261111d" alt="Gokyo — Luxembourg" width="220" height="64"></div>
     <div class="droite">
-      <nav class="langue" aria-label="Langue / Language">
+      <nav class="langue apparait" style="animation-delay:4.8s" aria-label="Langue / Language">
         <button type="button" data-set="fr" aria-pressed="true">FR</button>
         <button type="button" data-set="en" aria-pressed="false">EN</button>
       </nav>
-      <div class="altimetre apparait" style="animation-delay:.6s" aria-hidden="true">
+      <div class="altimetre apparait" style="animation-delay:.9s" aria-hidden="true">
         <div class="etiq">ALTITUDE</div>
         <div class="val"><span id="alt">4 790</span><small>m</small></div>
+        <div class="jauge"><i id="jauge"></i></div>
       </div>
     </div>
   </header>
 
   <main>
-    <blockquote class="devise apparait" style="animation-delay:4.6s">
-      <span data-lang="fr">« Ce n’est pas la montagne<br>que l’on conquiert,<br><em>mais soi-même.</em> »</span>
-      <span data-lang="en">“It is not the mountain<br>we conquer,<br><em>but ourselves.</em>”</span>
+    <blockquote class="devise">
+      <span data-lang="fr"><span class="l"><span style="animation-delay:5.6s">« Ce n’est pas la montagne</span></span><span class="l"><span style="animation-delay:5.8s">que l’on conquiert,</span></span><span class="l"><span style="animation-delay:6s"><em>mais soi-même.</em> »</span></span></span>
+      <span data-lang="en"><span class="l"><span style="animation-delay:5.6s">“It is not the mountain</span></span><span class="l"><span style="animation-delay:5.8s">we conquer,</span></span><span class="l"><span style="animation-delay:6s"><em>but ourselves.</em>”</span></span></span>
     </blockquote>
-    <span class="ligne" aria-hidden="true"></span>
-    <p class="auteur apparait" style="animation-delay:6s">Sir Edmund Hillary</p>
-    <p class="coord apparait" style="animation-delay:6.4s">GOKYO · 27°57′ N · 86°41′ E</p>
+    <span class="trait" aria-hidden="true"></span>
+    <p class="auteur apparait" style="animation-delay:7.4s">Sir Edmund Hillary</p>
+    <p class="coord apparait" style="animation-delay:7.8s">GOKYO · 27°57′ N · 86°41′ E</p>
   </main>
 
-  <footer>
+  <footer class="apparait" style="animation-delay:8.2s">
     <div><a href="mailto:contact@gokyo.lu">contact@gokyo.lu</a></div>
     <div>Gokyo S.à r.l.-S · 131, rue de Hollerich · L-1741 Luxembourg · <span data-lang="fr">RCS Luxembourg</span><span data-lang="en">Luxembourg Trade and Companies Register</span> B239634 · © 2026</div>
   </footer>
 </div>
 <script>
 (function(){
+  "use strict";
+  /* ---------- Langue ---------- */
   var html=document.documentElement, btns=document.querySelectorAll('[data-set]');
   function set(l){ html.lang=l; for(var i=0;i<btns.length;i++){btns[i].setAttribute('aria-pressed', String(btns[i].getAttribute('data-set')===l));} try{localStorage.setItem('lang',l);}catch(e){} }
   var l=null; try{l=localStorage.getItem('lang');}catch(e){}
   if(l!=='fr'&&l!=='en'){ l=((navigator.language||'fr').slice(0,2).toLowerCase()==='fr')?'fr':'en'; }
   set(l);
-  var svg=document.querySelector('svg.montagne');
-  function cadrer(){ svg.setAttribute('viewBox', (window.innerWidth/window.innerHeight < .8) ? '560 -60 900 1060' : '0 0 1600 1000'); }
-  cadrer(); window.addEventListener('resize', cadrer);
-  for(var i=0;i<btns.length;i++){btns[i].addEventListener('click',function(){set(this.getAttribute('data-set'));});}
+  for(var b=0;b<btns.length;b++){btns[b].addEventListener('click',function(){set(this.getAttribute('data-set'));});}
 
-  /* Altimètre : de Gokyo (4 790 m) au sommet (8 188 m), au rythme de l'ascension */
-  var el=document.getElementById('alt'), de=4790, a=8188, debut=800, duree=5200;
-  function fmt(n){ return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,' '); }
+  /* ---------- Paysage ---------- */
+  var cv=document.getElementById('ciel'), cx=cv.getContext('2d');
   var reduit = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduit) { el.textContent = fmt(a); return; }
-  var t0=null;
+  var W=0,H=0,dpr=1, couches=[], etoiles=[], nuages=[], filantes=[], portrait=false, sommet={x:0,y:0};
+  var T0=performance.now(), MONTEE=6200;   // durée de l'ascension (ms)
+  var souris={x:0,y:0}, cible={x:0,y:0};
+
+  // Bruit pseudo-aléatoire déterministe (le paysage est le même à chaque visite)
+  var graine=7; function alea(){ graine=(graine*16807)%2147483647; return (graine-1)/2147483646; }
+  function crete(n, rugo){ // déplacement du point milieu
+    var p=[0,0]; var pas=1;
+    for(var o=0;o<n;o++){ var q=[]; for(var i=0;i<p.length-1;i++){ q.push(p[i], (p[i]+p[i+1])/2+(alea()-.5)*rugo*pas); } q.push(p[p.length-1]); p=q; pas*=.55; }
+    return p;
+  }
+  function melange(a,b,t){ return Math.round(a+(b-a)*t); }
+  function couleur(c1,c2,t){ return 'rgb('+melange(c1[0],c2[0],t)+','+melange(c1[1],c2[1],t)+','+melange(c1[2],c2[2],t)+')'; }
   function ease(t){ return t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2; }
-  function pas(ts){ if(t0===null) t0=ts; var t=Math.min(1,Math.max(0,(ts-t0-debut)/duree)); el.textContent=fmt(de+(a-de)*ease(t)); if(t<1) requestAnimationFrame(pas); }
-  el.textContent=fmt(de); requestAnimationFrame(pas);
+  function easeOut(t){ return 1-Math.pow(1-t,3); }
+  function clamp(v){ return v<0?0:v>1?1:v; }
+
+  function canvas(w,h){ var c=document.createElement('canvas'); c.width=Math.max(1,Math.round(w)); c.height=Math.max(1,Math.round(h)); return c; }
+
+  /* Bruit de valeur 2D + bruit « ridged » (arêtes rocheuses) */
+  function hash(x,y){ var h=x*374761393+y*668265263; h=(h^(h>>>13))*1274126177; return ((h^(h>>>16))>>>0)/4294967295; }
+  function vnoise(x,y){ var xi=Math.floor(x), yi=Math.floor(y), xf=x-xi, yf=y-yi; var u=xf*xf*(3-2*xf), v=yf*yf*(3-2*yf);
+    var a=hash(xi,yi), b=hash(xi+1,yi), c=hash(xi,yi+1), d=hash(xi+1,yi+1); return a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v; }
+  function ridged(x,y,oct){ var s=0, amp=.5, f=1, w=1; for(var o=0;o<oct;o++){ var n=1-Math.abs(vnoise(x*f+o*17.3,y*f-o*9.1)*2-1); n*=n; n*=w; w=Math.min(1,n*1.6); s+=n*amp; amp*=.5; f*=2.03; } return s; }
+  function fbm1(x,oct){ var s=0, amp=.5, f=1; for(var o=0;o<oct;o++){ s+=(1-Math.abs(vnoise(x*f,o*31.7)*2-1))*amp; amp*=.5; f*=2.1; } return s; }
+  function smooth(a,b,x){ var t=clamp((x-a)/(b-a)); return t*t*(3-2*t); }
+  function mix(a,b,t){ return [a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t, a[2]+(b[2]-a[2])*t]; }
+
+  /* Une chaîne rendue pixel par pixel : silhouette déchiquetée, roche éclairée, neige sur les pentes douces.
+     Deux éclairages calculés en même temps : nuit (froid) et aube (alpenglow). */
+  function relief(o){
+    var sc=o.res, w=Math.round(W*sc), h=Math.round(H*sc);
+    var cn=canvas(w,h), ca=canvas(w,h), gn=cn.getContext('2d'), ga=ca.getContext('2d');
+    var dn=gn.createImageData(w,h), da=ga.createImageData(w,h);
+    var top=new Float32Array(w), ridgeX=o.ridge;
+    for(var x=0;x<w;x++){ var X=x/w, t=o.base;
+      for(var k=0;k<o.pics.length;k++){ var pk=o.pics[k], d=(X-pk.x)/pk.l; t-=pk.h*(pk.pointu? Math.pow(Math.max(0,1-Math.abs(d)),1.35) : Math.exp(-d*d*2.2)); }
+      t-=(fbm1(X*o.freq+o.seed,7)-.45)*o.amp*(o.ampFn?o.ampFn(X):1); top[x]=t*h; }
+    var L1=[.55,-.55,.62], L2=[.82,-.18,.55]; // nuit (lune haute) / aube (soleil rasant à droite)
+    function nrm(v){ var l=Math.hypot(v[0],v[1],v[2]); return [v[0]/l,v[1]/l,v[2]/l]; } L1=nrm(L1); L2=nrm(L2);
+    var f=o.tex/ (W*sc), hz=o.haze;
+    for(var y=0;y<h;y++){
+      for(var x2=0;x2<w;x2++){
+        var tp=top[x2]; if(y<tp) continue;
+        var i=(y*w+x2)*4, px=x2*f, py=y*f*.42;
+        var h0=ridged(px,py,5), hx=ridged(px+.02,py,5), hy=ridged(px,py+.02,5);
+        var gx=(hx-h0)*o.relief, gy=(hy-h0)*o.relief*.7;
+        if(ridgeX!=null){ var rx=ridgeX + (y/h-o.sommetY)*.05 + (vnoise(y/h*9,3.3)-.5)*.035; var side=Math.tanh((x2/w-rx)*90); gx+=side*o.macro*(1-smooth(.6,1,(y-tp)/h*2.2)); }
+        var N=nrm([-gx,-gy*.6+.35,1]);
+        var lamN=Math.max(0,N[0]*L1[0]+N[1]*L1[1]+N[2]*L1[2]), lamA=Math.max(0,N[0]*L2[0]+N[1]*L2[1]+N[2]*L2[2]);
+        var prof=(y-tp)/h, alt=1-(y/h - o.neigeHaut)/o.neigeEp;
+        var pente=Math.hypot(gx,gy);
+        var neige=smooth(.5,.66, alt*.8 + (1-Math.min(1,pente*.7))*.35 + (h0-.35)*.5 - prof*.9);
+        if(o.sansNeige) neige*=.25;
+        var rN=mix(o.rocheOmbreN,o.rocheLumN,lamN), sN=mix(o.neigeOmbreN,o.neigeLumN,lamN);
+        var rA=mix(o.rocheOmbreA,o.rocheLumA,Math.pow(lamA,1.4)), sA=mix(o.neigeOmbreA,o.neigeLumA,Math.pow(lamA,1.2));
+        var cN=mix(rN,sN,neige), cA=mix(rA,sA,neige);
+        var brume=clamp(hz + prof*o.brumeBas);
+        cN=mix(cN,o.hazeN,brume); cA=mix(cA,o.hazeA,brume*(1-.35*(1-prof)));
+        var aa= y-tp<1.2 ? (y-tp)/1.2 : 1;
+        dn.data[i]=cN[0]; dn.data[i+1]=cN[1]; dn.data[i+2]=cN[2]; dn.data[i+3]=255*aa;
+        da.data[i]=cA[0]; da.data[i+1]=cA[1]; da.data[i+2]=cA[2]; da.data[i+3]=255*aa;
+      }
+    }
+    gn.putImageData(dn,0,0); ga.putImageData(da,0,0);
+    var mi=0; for(var q=1;q<w;q++) if(top[q]<top[mi]) mi=q;
+    return {nuit:cn, aube:ca, pic:{x:mi/w*W, y:top[mi]/h*H}};
+  }
+
+  function construire(){
+    dpr=Math.min(2, window.devicePixelRatio||1); W=cv.clientWidth; H=cv.clientHeight; cv.width=W*dpr; cv.height=H*dpr;
+    portrait = W/H < .8;
+    var sX = portrait ? .56 : .64;
+    sommet = { x: W*sX, y: H*(portrait?.29:.19) };
+    var R=W*H>1.4e6 ? .5 : .62;
+    var commun={ rocheLumN:[96,112,152], rocheOmbreN:[20,28,52], neigeLumN:[196,210,236], neigeOmbreN:[84,100,142],
+                 rocheLumA:[226,146,120], rocheOmbreA:[44,48,88], neigeLumA:[255,228,204], neigeOmbreA:[118,126,178] };
+    function o(extra){ var r={}; for(var k in commun) r[k]=commun[k]; for(var k2 in extra) r[k2]=extra[k2]; return r; }
+    couches = [
+      { r: relief(o({seed:3, res:R*.6, base:.6, amp:.12, freq:9, tex:26, relief:26, pics:[{x:.1,h:.06,l:.1},{x:.32,h:.09,l:.08},{x:.88,h:.08,l:.09}], haze:.55, brumeBas:.6, neigeHaut:.42, neigeEp:.14, hazeN:[42,56,92], hazeA:[150,120,150]})), prof:.12 },
+      { r: relief(o({seed:11, res:R*.7, base:.68, amp:.14, freq:10, tex:30, relief:28, pics:[{x:.18,h:.1,l:.09},{x:.4,h:.05,l:.07},{x:.84,h:.12,l:.07}], haze:.32, brumeBas:.7, neigeHaut:.5, neigeEp:.14, hazeN:[34,46,80], hazeA:[120,100,140]})), prof:.22 },
+      { r: relief(o({seed:5, res:R, base:.98, amp:.16, freq:11, tex:34, relief:24, ridge:sX, sommetY:sommet.y/H, macro:1.1, ampFn:function(X){ return .35+Math.min(1,Math.abs(X-sX)*4); },
+             pics:[{x:sX,h:.74,l:portrait?.85:.3,pointu:true},{x:sX+.15,h:.2,l:.1},{x:sX-.17,h:.12,l:.08},{x:sX+.3,h:.08,l:.08}],
+             haze:.04, brumeBas:.55, neigeHaut:sommet.y/H, neigeEp:.32, hazeN:[30,40,70], hazeA:[96,84,124]})), prof:.35, sommet:true },
+      { r: relief(o({seed:23, res:R*.6, base:.84, amp:.1, freq:8, tex:22, relief:20, sansNeige:true, pics:[{x:.06,h:.06,l:.1},{x:.55,h:.03,l:.15}], haze:.1, brumeBas:.9, neigeHaut:.8, neigeEp:.1,
+             rocheLumN:[40,52,82], rocheOmbreN:[10,16,32], rocheLumA:[96,76,96], rocheOmbreA:[18,22,44], hazeN:[14,22,42], hazeA:[30,32,58]})), prof:.6 },
+      { r: relief(o({seed:31, res:R*.5, base:.97, amp:.09, freq:6, tex:18, relief:18, sansNeige:true, pics:[{x:.96,h:.09,l:.12},{x:.12,h:.04,l:.1}], haze:.05, brumeBas:1.2, neigeHaut:.9, neigeEp:.1,
+             rocheLumN:[18,26,46], rocheOmbreN:[5,9,19], rocheLumA:[40,34,54], rocheOmbreA:[6,9,20], hazeN:[5,9,19], hazeA:[8,12,24]})), prof:1 }
+    ];
+    var pc=couches[2].r.pic; sommet={x:pc.x*1.04-W*.02, y:pc.y+2};
+    graine=99; etoiles=[];
+    for(var i=0;i<Math.round(W*H/2600);i++) etoiles.push({x:alea()*W, y:alea()*H*.75, r:alea()*1.3+.2, a:alea()*.8+.2, p:alea()*6.28, v:.5+alea()*2});
+    nuages=[];
+    for(var n=0;n<46;n++) nuages.push({x:alea()*W*1.4-W*.2, y:.5+alea()*.45, r:(.12+alea()*.22)*Math.max(W,H*.9), a:.05+alea()*.12, v:(alea()*.6+.25)*(alea()<.5?-1:1), prof:.4+alea()*.7});
+  }
+
+  function ciel(t){ // t : 0 nuit → 1 aube
+    var g=cx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0, couleur([3,6,16],[8,18,40],t));
+    g.addColorStop(.35,couleur([7,14,32],[22,40,78],t));
+    g.addColorStop(.6, couleur([12,22,46],[70,72,118],t));
+    g.addColorStop(.8, couleur([16,28,56],[176,112,118],t));
+    g.addColorStop(1,  couleur([20,32,60],[242,170,120],t));
+    cx.fillStyle=g; cx.fillRect(0,0,W,H);
+  }
+
+  function dessine(now){
+    var e=now-T0, m=clamp((e-400)/MONTEE), monte=ease(m), aube=easeOut(clamp((e-1600)/5200));
+    if(reduit){ m=1; monte=1; aube=1; }
+    souris.x+=(cible.x-souris.x)*.04; souris.y+=(cible.y-souris.y)*.04;
+    cx.setTransform(dpr,0,0,dpr,0,0);
+    ciel(aube);
+
+    // étoiles qui pâlissent avec l'aube
+    for(var i=0;i<etoiles.length;i++){ var s=etoiles[i]; var a=s.a*(.55+.45*Math.sin(now/1000*s.v+s.p))*(1-aube*.85);
+      cx.globalAlpha=a; cx.fillStyle='#fff'; cx.beginPath(); cx.arc(s.x - souris.x*6, s.y + (1-monte)*H*.08 - souris.y*4, s.r, 0, 6.283); cx.fill(); }
+    cx.globalAlpha=1;
+    // étoiles filantes
+    if(Math.random()<.004 && aube<.7) filantes.push({x:Math.random()*W*.8+W*.1, y:Math.random()*H*.3, v:6+Math.random()*5, vie:1});
+    for(var f=filantes.length-1;f>=0;f--){ var fs=filantes[f]; fs.x-=fs.v*1.6; fs.y+=fs.v*.6; fs.vie-=.025; if(fs.vie<=0){filantes.splice(f,1);continue;}
+      var lg=cx.createLinearGradient(fs.x,fs.y,fs.x+90,fs.y-34); lg.addColorStop(0,'rgba(255,240,220,'+fs.vie+')'); lg.addColorStop(1,'rgba(255,240,220,0)');
+      cx.strokeStyle=lg; cx.lineWidth=1.4; cx.beginPath(); cx.moveTo(fs.x,fs.y); cx.lineTo(fs.x+90,fs.y-34); cx.stroke(); }
+
+    // soleil derrière le sommet
+    var sol=cx.createRadialGradient(sommet.x+W*.08, sommet.y+H*.55, 0, sommet.x+W*.08, sommet.y+H*.55, Math.max(W,H)*.85);
+    sol.addColorStop(0,'rgba(255,196,140,'+(.55*aube)+')'); sol.addColorStop(.35,'rgba(229,140,106,'+(.22*aube)+')'); sol.addColorStop(1,'rgba(229,140,106,0)');
+    cx.fillStyle=sol; cx.fillRect(0,0,W,H);
+
+    // couches de montagnes (la caméra monte : les couches proches descendent plus vite)
+    for(var c=0;c<couches.length;c++){
+      var k=couches[c], dy=(1-monte)*H*(.15+k.prof*.9), dx=-souris.x*k.prof*26, dy2=-souris.y*k.prof*12;
+      cx.drawImage(k.r.nuit, dx-W*.02, dy+dy2, W*1.04, H);
+      cx.globalAlpha=aube; cx.drawImage(k.r.aube, dx-W*.02, dy+dy2, W*1.04, H); cx.globalAlpha=1;
+      if(k.sommet){
+        var hx=sommet.x+dx, hy=sommet.y+dy+dy2, hA=reduit ? .6 : clamp((e-4800)/1400);
+        if(hA>0){ var hg=cx.createRadialGradient(hx,hy,0,hx,hy,H*.16); hg.addColorStop(0,'rgba(255,232,200,'+(.7*hA)+')'); hg.addColorStop(.3,'rgba(242,184,128,'+(.22*hA)+')'); hg.addColorStop(1,'rgba(242,184,128,0)');
+          cx.fillStyle=hg; cx.fillRect(hx-H*.2,hy-H*.2,H*.4,H*.4);
+          var sc=1+Math.sin(now/600)*.08; cx.save(); cx.translate(hx,hy); cx.globalAlpha=hA*.9; cx.strokeStyle='rgba(255,240,220,.9)'; cx.lineWidth=1;
+          cx.beginPath(); cx.moveTo(-16*sc,0); cx.lineTo(16*sc,0); cx.moveTo(0,-16*sc); cx.lineTo(0,16*sc); cx.stroke(); cx.restore(); cx.globalAlpha=1; }
+      }
+      // mer de nuages entre les couches
+      if(c===1||c===3){
+        for(var n=0;n<nuages.length;n++){ var nu=nuages[n]; if((c===1)!==(nu.prof<.75)) continue;
+          nu.x+=nu.v*.15; if(nu.x>W*1.3) nu.x=-W*.3; if(nu.x<-W*.3) nu.x=W*1.3;
+          var ny=nu.y*H + (1-monte)*H*(.2+nu.prof*.9) - souris.y*nu.prof*10, nx=nu.x - souris.x*nu.prof*30;
+          var tint=couleur([60,74,110],[255,214,190],aube*(1-nu.y*.6));
+          var ng=cx.createRadialGradient(nx,ny,0,nx,ny,nu.r); ng.addColorStop(0,tint.replace('rgb','rgba').replace(')',','+nu.a*(1+aube*.6)+')')); ng.addColorStop(1,tint.replace('rgb','rgba').replace(')',',0)'));
+          cx.fillStyle=ng; cx.fillRect(nx-nu.r,ny-nu.r,nu.r*2,nu.r*2);
+        }
+      }
+    }
+    // voile de brume au début : on traverse les nuages
+    var voile=1-clamp((e-300)/2600); if(reduit) voile=0;
+    if(voile>0){ var vg=cx.createLinearGradient(0,0,0,H); vg.addColorStop(0,'rgba(170,186,214,'+(.0*voile)+')'); vg.addColorStop(.5,'rgba(150,166,196,'+(.55*voile)+')'); vg.addColorStop(1,'rgba(120,136,170,'+(.85*voile)+')');
+      cx.fillStyle=vg; cx.fillRect(0,0,W,H); }
+
+    // altimètre
+    if(alt){ var v=4790+(8188-4790)*monte; alt.textContent=String(Math.round(v)).replace(/\B(?=(\d{3})+(?!\d))/g,' '); jauge.style.width=(monte*100)+'%'; }
+    if(!reduit) requestAnimationFrame(dessine);
+  }
+
+  var alt=document.getElementById('alt'), jauge=document.getElementById('jauge');
+  construire();
+  var tempo; window.addEventListener('resize', function(){ clearTimeout(tempo); tempo=setTimeout(construire,150); });
+  window.addEventListener('pointermove', function(ev){ cible.x=ev.clientX/W-.5; cible.y=ev.clientY/H-.5; });
+  window.addEventListener('deviceorientation', function(ev){ if(ev.gamma==null) return; cible.x=Math.max(-.5,Math.min(.5,ev.gamma/45)); cible.y=Math.max(-.5,Math.min(.5,(ev.beta-45)/60)); });
+  document.addEventListener('visibilitychange', function(){ /* rien : requestAnimationFrame se met en pause tout seul */ });
+  requestAnimationFrame(dessine);
 })();
 </script>
 </body>
