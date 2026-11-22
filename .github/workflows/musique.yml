@@ -27,8 +27,8 @@ jobs:
           mkdir -p /tmp/m && CODE=$(curl -sSL -w '%{http_code}' "$LIEN" -o /tmp/m/piste.zip); echo "HTTP $CODE, $(stat -c %s /tmp/m/piste.zip) octets"
           if [ "$CODE" != "200" ]; then head -c 400 /tmp/m/piste.zip | sed -E 's/X-Amz[^<]*//g'; echo; exit 1; fi
           cd /tmp/m && unzip -o -q piste.zip && find . -type f | sed 's/^/  /'
-          SRC=$(find . -type f \( -iname '*.wav' \) | grep -iv stem | head -1)
-          [ -z "$SRC" ] && SRC=$(find . -type f -iname '*.mp3' | head -1)
+          SRC=$(find . -type f -iname '*.wav' -not -path '*__MACOSX*' -not -name '._*' | grep -iv stem | head -1)
+          [ -z "$SRC" ] && SRC=$(find . -type f -iname '*.mp3' -not -path '*__MACOSX*' -not -name '._*' | head -1)
           echo "Source : $SRC"
           mkdir -p "$GITHUB_WORKSPACE/assets/musique"
           ffmpeg -loglevel error -y -i "$SRC" -ac 2 -ar 44100 -codec:a libmp3lame -b:a 128k "$GITHUB_WORKSPACE/assets/musique/$NOM.mp3"
