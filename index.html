@@ -31,12 +31,14 @@
   canvas#topo{position:absolute;inset:0;width:100%;height:100%;display:block;background:#04070F}
   .voile{position:absolute;inset:0;pointer-events:none;background:
     linear-gradient(0deg,rgba(4,7,15,.85) 0%,rgba(4,7,15,0) 26%),
-    linear-gradient(180deg,rgba(4,7,15,.45) 0%,rgba(4,7,15,0) 16%)}
+    linear-gradient(180deg,rgba(4,7,15,.62) 0%,rgba(4,7,15,0) 16%)}
   .grain{position:absolute;inset:-50%;pointer-events:none;opacity:.06;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>");animation:grain 1s steps(4) infinite}
   @keyframes grain{25%{transform:translate(-3%,2%)}50%{transform:translate(2%,-3%)}75%{transform:translate(-2%,-1%)}}
   .masque{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 
-  header{position:relative;z-index:3;display:flex;justify-content:flex-end;padding:24px clamp(18px,4vw,56px) 0}
+  header{position:relative;z-index:3;display:flex;justify-content:space-between;align-items:center;padding:24px clamp(18px,4vw,56px) 0}
+  .coord{font-size:12.5px;letter-spacing:.34em;color:rgba(255,252,246,.88);text-shadow:0 1px 14px rgba(4,7,15,.9),0 0 3px rgba(4,7,15,.8);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .coord .sep{color:var(--or);margin:0 .34em 0 0}
   .langue{display:flex;gap:2px;font-size:11.5px;letter-spacing:.18em}
   .langue button{background:none;border:0;color:var(--doux);cursor:pointer;padding:6px 8px;font:inherit}
   .langue button[aria-pressed="true"]{color:#fff;font-weight:600}
@@ -52,6 +54,7 @@
   html[lang="fr"] [data-lang="fr"],html[lang="en"] [data-lang="en"]{display:inline}
   @media (max-width:700px){
     footer{font-size:10px;line-height:1.6}
+    .coord{font-size:10.5px;letter-spacing:.22em}
     footer .bl{display:block}
     footer > .sep,footer .br{display:none}
   }
@@ -68,6 +71,7 @@
   <h1 class="masque">GOKYO</h1>
 
   <header>
+    <p class="coord apparait" style="animation-delay:5.6s" aria-label="Gokyo, 27°57′ N, 86°41′ E">27°57′ N <span class="sep">·</span> 86°41′ E</p>
     <nav class="langue apparait" style="animation-delay:5.6s" aria-label="Langue / Language">
       <button type="button" data-set="fr" aria-pressed="true">FR</button>
       <button type="button" data-set="en" aria-pressed="false">EN</button>
