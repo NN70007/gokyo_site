@@ -290,14 +290,14 @@
     '  c=mix(c,vec3(1.,.74,.44),sel*.85);c+=vec3(1.,.58,.28)*(sel*.35+exp(-pow((h-SW)*28.,2.))*.10*SI);',
     '  float dH=length(p.xy-HP.xy);float haut=HP.z-Z(HP.xy);c*=1.-.45*exp(-dH*dH*2500.)*HV*smoothstep(.0,.02,haut);',
     '  float dL=length(p.xy-ON.xy);float o1=exp(-pow((dL-ON.z)*130.,2.)),o2=exp(-pow((dL-ON.z+.07)*130.,2.))*step(.07,ON.z),o3=exp(-pow((dL-ON.z+.14)*130.,2.))*step(.14,ON.z);',
-    '  c+=vec3(.99,.08,.35)*(o1+.65*o2+.4*o3)*ON.w*HV*1.3;',
+    '  float an=clamp((o1+.65*o2+.4*o3)*ON.w*HV,0.,1.);c=mix(c,vec3(.99,.08,.35),an*.9);c+=vec3(.99,.08,.35)*an*.25;',
     '  c=mix(c,ciel(rd,aube),brume);',
     ' } else { c=ciel(rd,aube)*k; }',
     // le point rouge (masqué s'il passe derrière une montagne)
     ' vec3 vh=HP-ro;float prof=dot(vh,fw);',
     ' if(prof>.05&&HV>0.){vec2 sp=vec2(dot(vh,rt),dot(vh,up))/prof*1.6;float px=length(uv-sp)*min(R.x,R.y)/max(min(R.x,R.y)/900.,1.);',
     '  float cache=(touche&&t<length(vh)-.01)?0.:1.;float pouls=.7+.3*sin(T*5.);',
-    '  float balise=pow(.5+.5*sin(T*4.),6.);c+=vec3(.99,.08,.35)*(exp(-px*px/16.)*1.5+exp(-px/14.)*(.25+.45*balise))*cache*HV;c+=vec3(1.,.82,.88)*exp(-px*px/3.)*.7*cache*HV;}',
+    '  float balise=pow(.5+.5*sin(T*4.),6.);float pt=clamp(exp(-px*px/16.)*1.6,0.,1.)*cache*HV;c=mix(c,vec3(.99,.08,.35),pt);c+=vec3(.99,.08,.35)*exp(-px/14.)*(.18+.35*balise)*cache*HV;c=mix(c,vec3(1.,.42,.62),clamp(exp(-px*px/2.5),0.,1.)*cache*HV*.8);}',
     // halo du soleil levant (vue du dessus), puis vignettage
     ' c+=vec3(1.,.55,.32)*aube*(1.-k)*exp(-length(uv-vec2(.95,.75))*1.6)*.35;',
     ' c*=1.-.35*smoothstep(.6,1.4,length(uv*vec2(.8,1.)));',
