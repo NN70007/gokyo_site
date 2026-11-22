@@ -52,6 +52,9 @@
   [data-lang]{display:none}
   html[lang="fr"] [data-lang="fr"],html[lang="en"] [data-lang="en"]{display:inline}
 
+  .scene{touch-action:none;cursor:grab}
+  .scene.saisie{cursor:grabbing}
+  header,footer{cursor:auto}
   /* Altimètre sous le curseur */
   .altitude{position:absolute;left:0;top:0;z-index:5;pointer-events:none;opacity:0;transition:opacity .35s;white-space:nowrap;
     font-size:12px;letter-spacing:.16em;color:#fff;font-variant-numeric:tabular-nums;text-shadow:0 1px 10px rgba(4,7,15,.95),0 0 3px rgba(4,7,15,.9)}
@@ -113,7 +116,7 @@
     <p>Chaque ligne est une courbe de niveau, comme sur une carte de montagne : une ligne tous les 200 m d’altitude, une ligne plus marquée tous les 1 000 m.</p>
     <h2>Le lever du jour</h2>
     <p>À l’aube, en haute montagne, la lumière touche d’abord les plus hauts sommets puis descend lentement le long des pentes. La page reprend ce moment : les courbes s’éclairent des sommets de plus de 8 000 m vers les vallées, qui restent dans l’ombre bleue de la nuit. La caméra descend ensuite vers le massif et tourne lentement autour de l’Everest.</p>
-    <p>En survolant le relief avec la souris (ou en le touchant sur un téléphone), l’altitude du point s’affiche et toute la courbe de cette altitude s’illumine.</p>
+    <p>Une courbe dorée parcourt ensuite le massif, du plus haut sommet vers les vallées, en suivant une même altitude. En survolant le relief (ou en le touchant sur un téléphone), l’altitude du point ou le nom du sommet s’affiche. On peut faire tourner la vue en la faisant glisser, et zoomer avec la molette ou en pinçant l’écran ; un double-clic rétablit la vue d’origine.</p>
     <p class="petit">Pour mieux lire les pentes, le relief est exagéré environ 1,5 fois en hauteur. Les couleurs et la lumière sont une interprétation artistique.</p>
     <h2>Données utilisées</h2>
     <p>Modèle numérique de terrain Copernicus DEM GLO-30 (résolution d’environ 30 m), ramené ici à environ 73 m par point. Copernicus DEM GLO-30 © DLR e.V. 2010-2014 et © Airbus Defence and Space GmbH 2014-2018, fourni dans le cadre de COPERNICUS par l’Union européenne et l’ESA ; tous droits réservés.</p>
@@ -129,7 +132,7 @@
     <p>Each line is a contour line, as on a mountain map: one line every 200 m of altitude, a stronger line every 1,000 m.</p>
     <h2>Sunrise</h2>
     <p>At dawn in high mountains, light reaches the highest summits first, then slowly moves down the slopes. The page recreates that moment: the contours light up from the 8,000-metre peaks down towards the valleys, which stay in the blue shadow of night. The camera then descends towards the massif and slowly circles Everest.</p>
-    <p>Hover over the terrain with your mouse (or touch it on a phone): the altitude of that point appears and the whole contour at that altitude lights up.</p>
+    <p>A golden contour then travels across the massif, from the highest summit down to the valleys, following a single altitude. Hover over the terrain (or touch it on a phone) to see the altitude of that point or the name of the summit. Drag to turn the view, and zoom with the scroll wheel or by pinching; double-click to return to the original view.</p>
     <p class="petit">To make the slopes easier to read, the terrain is exaggerated about 1.5 times vertically. Colours and lighting are an artistic interpretation.</p>
     <h2>Data used</h2>
     <p>Copernicus DEM GLO-30 digital elevation model (about 30 m resolution), resampled here to about 73 m per point. Copernicus DEM GLO-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018, provided under COPERNICUS by the European Union and ESA; all rights reserved.</p>
@@ -168,7 +171,7 @@
 
   var VS='#version 300 es\nin vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
   var FS='#version 300 es\nprecision highp float;out vec4 o;\n#define FRAG o\n' + [
-    'uniform vec2 R;uniform float T;uniform vec2 M;uniform sampler2D RELIEF;uniform float AL;uniform vec2 CP;uniform float CI;',
+    'uniform vec2 R;uniform float T;uniform sampler2D RELIEF;uniform float SW;uniform float SI;uniform vec2 CP;uniform float CI;uniform float K;uniform vec3 RO;uniform vec3 FW;uniform vec3 RT;uniform vec3 UP;',
     'float h21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}',
     // relief réel : carré de 56 km = 4 unités ; h = (altitude - 3000 m) / 4000 m
     'float H(vec2 p){float h=texture(RELIEF,vec2(p.x*.25+.5,.5-p.y*.25)).r;',
@@ -184,18 +187,8 @@
     ' return c;}',
     'void main(){',
     ' vec2 uv=(gl_FragCoord.xy-.5*R)/min(R.x,R.y);',
-    // --- caméra ---
-    ' float k=smoothstep(10.,18.,T);',                                     // descente / inclinaison
-    ' float th=1.0*k*(1.-(clamp(R.y/R.x,1.,2.4)-1.)*.17);',                                                   // angle depuis la verticale
-    ' float s0=T<11.?0.:(T<21.?(T-11.)*(T-11.)/20.:5.+(T-21.));',          // la rotation démarre en douceur
-    ' float az=.35+T*.006+s0*.105;',                               // un tour ≈ 1 min
-    ' float por=clamp(R.y/R.x,1.,2.4);',
-    ' float dist=mix(3.15-.45*smoothstep(0.,10.,T),3.7*(1.+(por-1.)*.22),k);',
-    ' vec3 cible=vec3(mix(vec2(0.),vec2(.62,.1),k),mix(0.,.55,k));',
-    ' vec3 ro=cible+dist*vec3(sin(th)*cos(az),sin(th)*sin(az),cos(th));',
-    ' vec3 fw=normalize(cible-ro);',
-    ' vec3 rt=normalize(vec3(-sin(az),cos(az),0.));',
-    ' vec3 up=cross(rt,fw);',
+    // --- caméra (calculée par la page : animation + rotation / zoom de l'utilisateur) ---
+    ' float k=K;vec3 ro=RO,fw=FW,rt=RT,up=UP;',
     ' vec3 rd=normalize(fw*1.6+uv.x*rt+uv.y*up);',
     // --- lancer de rayon sur le relief ---
     ' float t=.05,tp=.05;bool touche=false;float tmax=14.;',
@@ -224,13 +217,14 @@
     '  vec3 chaud=mix(vec3(.98,.62,.40),vec3(1.,.93,.80),smoothstep(.6,1.4,h));',
     '  vec3 lc=mix(froid,chaud,lumi);',
     '  float apparition=smoothstep(.0,2.2,T-length(uv)*1.1);',
-    '  float dh=abs(h-AL)/max(fwidth(h),1e-5);float sel=(1.-smoothstep(.8,3.,dh))*CI;',
-    '  float a=(l1*.34+l5*.62)*apparition*mix(.55,1.,lumi)*(1.-.45*CI);',
+    '  float dh=abs(h-SW)/max(fwidth(h),1e-5);float sel=(1.-smoothstep(.7,2.6,dh))*SI;',
+    '  float a=(l1*.34+l5*.62)*apparition*mix(.55,1.,lumi)*(1.-.25*SI);',
     '  c=fond*apparition+lc*a;',
     '  c+=vec3(1.,.7,.45)*front*(.25+l1*.9+l5);',
     '  float brume=smoothstep(3.,9.,t)*k;',
     '  float fr=exp(-dot(p.xy-CP,p.xy-CP)*70.)*CI;',
-    '  c+=vec3(1.,.72,.45)*fr*(.10+l1*.8+l5*.6);c=mix(c,vec3(.72,.92,1.),sel*.9);c+=vec3(.5,.8,1.)*sel*.35;',
+    '  c+=vec3(1.,.72,.45)*fr*(.10+l1*.8+l5*.6);',
+    '  c=mix(c,vec3(1.,.80,.50),sel*.85);c+=vec3(1.,.68,.36)*(sel*.35+exp(-pow((h-SW)*28.,2.))*.10*SI);',
     '  c=mix(c,ciel(rd,aube),brume);',
     ' } else { c=ciel(rd,aube)*k; }',
     // halo du soleil levant (vue du dessus), puis vignettage
@@ -246,10 +240,10 @@
   gl.useProgram(pr);
   var buf=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,buf); gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
   var loc=gl.getAttribLocation(pr,'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
-  var uR=gl.getUniformLocation(pr,'R'), uT=gl.getUniformLocation(pr,'T'), uM=gl.getUniformLocation(pr,'M');
+  var U={}; ['R','T','SW','SI','CP','CI','K','RO','FW','RT','UP','RELIEF'].forEach(function(n){ U[n]=gl.getUniformLocation(pr,n); });
 
   // Carte d'altitude réelle (Copernicus DEM, voir tools/relief.py) → texture flottante
-  var pret=false, relief=null;
+  var relief=null;
   (function(){
     var img=new Image(); img.decoding='async';
     img.onload=function(){
@@ -263,8 +257,8 @@
       gl.texImage2D(gl.TEXTURE_2D,0,gl.R16F,w,h,0,gl.RED,gl.FLOAT,f);
       gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
       gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.MIRRORED_REPEAT); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.MIRRORED_REPEAT);
-      gl.uniform1i(gl.getUniformLocation(pr,'RELIEF'),0); gl.uniform1f(gl.getUniformLocation(pr,'AL'),-99.); gl.uniform1f(gl.getUniformLocation(pr,'CI'),0.);
-      pret=true; T0=performance.now(); requestAnimationFrame(frame);
+      gl.uniform1i(U.RELIEF,0);
+      T0=performance.now(); dernier=T0; requestAnimationFrame(frame);
     };
     img.src='assets/relief.png?v=20261122';
   })();
@@ -277,12 +271,9 @@
 
   var reduit=matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
   var params=new URLSearchParams(location.search), tFixe=params.has('t')?parseFloat(params.get('t')):null;
-  var T0=performance.now(), souris=[0,0], cible=[0,0], lents=0, dernier=T0;
-  var uAL=gl.getUniformLocation(pr,'AL'), uCP=gl.getUniformLocation(pr,'CP'), uCI=gl.getUniformLocation(pr,'CI');
+  var T0=performance.now(), lents=0, dernier=T0;
 
-  /* ---------- Altimètre sous le curseur ----------
-     On refait côté page le même trajet de rayon que le dessin, pour savoir quel point du relief
-     est sous le curseur : son altitude s'affiche et la courbe de cette altitude s'illumine. */
+  /* ---------- Outils : relief côté page (mêmes calculs que le dessin) ---------- */
   var EX=.42, KM=14;   // 1 unité = 14 km (carré de 56 km = 4 unités)
   function xy(lat,lon){ return [(lon-86.83)*111.32*Math.cos(27.975*Math.PI/180)/KM, (lat-27.975)*110.95/KM]; }
   var SOMMETS=[['Everest',27.9881,86.9250,8849],['Lhotse',27.9617,86.9333,8516],['Makalu',27.8897,87.0889,8485],['Cho Oyu',28.0942,86.6608,8188],
@@ -298,24 +289,32 @@
     var loin=ss(2.4,4.5,Math.max(Math.abs(x),Math.abs(y))); return v+(-.3-v)*loin;
   }
   function Zjs(x,y){ return Hjs(x,y)*EX; }
-  function camera(T){
+  function n3(v){ var l=Math.hypot(v[0],v[1],v[2]); return [v[0]/l,v[1]/l,v[2]/l]; }
+
+  /* ---------- Caméra : animation d'ouverture + rotation / inclinaison / zoom par l'utilisateur ---------- */
+  var vue={az:0, incl:0, zoom:1};          // réglages de l'utilisateur
+  var azAuto=.35, pause=0;                  // rotation automatique, mise en pause quand on manipule
+  var cam=null, kCam=0;
+  function vitesseAuto(T){ var d=T<11?0:(T<21?(T-11)/10:1); return .006+.105*d; }
+  function calculCamera(T,dt){
     var k=ss(10,18,T), por=Math.min(2.4,Math.max(1,cv.height/cv.width));
-    var th=1.0*k*(1-(por-1)*.17);
-    var s0=T<11?0:(T<21?(T-11)*(T-11)/20:5+(T-21));
-    var az=.35+T*.006+s0*.105;
-    var dist=(3.15-.45*ss(0,10,T))*(1-k)+3.7*(1+(por-1)*.22)*k;
+    if(tFixe!=null){ var s0=T<11?0:(T<21?(T-11)*(T-11)/20:5+(T-21)); azAuto=.35+T*.006+s0*.105; }
+    else { var g=pause>0?0:1; pause=Math.max(0,pause-dt); azAuto+=dt*vitesseAuto(T)*g; }
+    var th=Math.min(1.32,Math.max(0,1.0*k*(1-(por-1)*.17)+vue.incl));
+    var az=azAuto+vue.az;
+    var dist=((3.15-.45*ss(0,10,T))*(1-k)+3.7*(1+(por-1)*.22)*k)*vue.zoom;
     var ci=[.62*k,.1*k,.55*k];
     var ro=[ci[0]+dist*Math.sin(th)*Math.cos(az), ci[1]+dist*Math.sin(th)*Math.sin(az), ci[2]+dist*Math.cos(th)];
-    function n3(v){ var l=Math.hypot(v[0],v[1],v[2]); return [v[0]/l,v[1]/l,v[2]/l]; }
     var fw=n3([ci[0]-ro[0],ci[1]-ro[1],ci[2]-ro[2]]), rt=n3([-Math.sin(az),Math.cos(az),0]);
     var up=[rt[1]*fw[2]-rt[2]*fw[1], rt[2]*fw[0]-rt[0]*fw[2], rt[0]*fw[1]-rt[1]*fw[0]];
+    kCam=Math.min(1,th/1.0);
     return {ro:ro,fw:fw,rt:rt,up:up};
   }
-  function viser(T,cx,cy){
+  function viser(cx,cy){
+    if(!cam||!relief) return null;
     var W=cv.clientWidth, Hh=cv.clientHeight, m=Math.min(W,Hh);
-    var ux=(cx-W/2)/m, uy=(Hh/2-cy)/m, c=camera(T);
-    var rd=[c.fw[0]*1.6+ux*c.rt[0]+uy*c.up[0], c.fw[1]*1.6+ux*c.rt[1]+uy*c.up[1], c.fw[2]*1.6+ux*c.rt[2]+uy*c.up[2]];
-    var l=Math.hypot(rd[0],rd[1],rd[2]); rd=[rd[0]/l,rd[1]/l,rd[2]/l];
+    var ux=(cx-W/2)/m, uy=(Hh/2-cy)/m, c=cam;
+    var rd=n3([c.fw[0]*1.6+ux*c.rt[0]+uy*c.up[0], c.fw[1]*1.6+ux*c.rt[1]+uy*c.up[1], c.fw[2]*1.6+ux*c.rt[2]+uy*c.up[2]]);
     var ro=c.ro, t=.05, tp=.05, touche=false;
     for(var i=0;i<190;i++){ var qx=ro[0]+rd[0]*t, qy=ro[1]+rd[1]*t, qz=ro[2]+rd[2]*t, hq=qz-Zjs(qx,qy);
       if(hq<0){ touche=true; break; } tp=t; t+=Math.max(.003*t,hq*.38); if(t>14) break; }
@@ -326,16 +325,51 @@
     return {x:x,y:y,h:Hjs(x,y)};
   }
 
+  /* ---------- Manipulation : glisser = tourner / incliner ; molette ou pincement = zoom ---------- */
+  var scene=document.querySelector('.scene'), doigts={}, glisse=null, pince=null;
+  function horsCarte(e){ return e.target.closest && e.target.closest('header,footer,dialog,button,a'); }
+  function bouge(dx,dy){ vue.az-=dx*.0065; vue.incl=Math.max(-1.2,Math.min(1.3,vue.incl-dy*.004)); pause=5; }
+  scene.addEventListener('pointerdown',function(e){
+    if(horsCarte(e)) return;
+    doigts[e.pointerId]=[e.clientX,e.clientY];
+    var ids=Object.keys(doigts);
+    if(ids.length===1){ glisse={x:e.clientX,y:e.clientY,x0:e.clientX,y0:e.clientY,bouge:false}; }
+    if(ids.length===2){ var a=doigts[ids[0]], b=doigts[ids[1]]; pince={d:Math.hypot(a[0]-b[0],a[1]-b[1]),z:vue.zoom}; glisse=null; }
+    try{ scene.setPointerCapture(e.pointerId); }catch(_){}
+    scene.classList.add('saisie');
+  });
+  scene.addEventListener('pointermove',function(e){
+    if(e.pointerType!=='touch'){ curseur=[e.clientX,e.clientY]; }
+    if(!(e.pointerId in doigts)) return;
+    doigts[e.pointerId]=[e.clientX,e.clientY];
+    var ids=Object.keys(doigts);
+    if(pince && ids.length===2){ var a=doigts[ids[0]], b=doigts[ids[1]]; var d=Math.hypot(a[0]-b[0],a[1]-b[1]);
+      vue.zoom=Math.max(.4,Math.min(1.8,pince.z*pince.d/Math.max(d,1))); pause=5; return; }
+    if(glisse){ var dx=e.clientX-glisse.x, dy=e.clientY-glisse.y; glisse.x=e.clientX; glisse.y=e.clientY;
+      if(Math.hypot(e.clientX-glisse.x0,e.clientY-glisse.y0)>4) glisse.bouge=true;
+      if(glisse.bouge){ bouge(dx,dy); if(e.pointerType==='touch') curseur=null; } }
+  });
+  function lache(e){
+    if(!(e.pointerId in doigts)) return;
+    if(e.pointerType==='touch' && glisse && !glisse.bouge){ curseur=[e.clientX,e.clientY]; finTouche=performance.now()+3000; }
+    delete doigts[e.pointerId]; if(Object.keys(doigts).length<2) pince=null;
+    if(!Object.keys(doigts).length){ glisse=null; scene.classList.remove('saisie'); }
+  }
+  scene.addEventListener('pointerup',lache); scene.addEventListener('pointercancel',lache);
+  scene.addEventListener('wheel',function(e){ if(horsCarte(e)) return; e.preventDefault();
+    vue.zoom=Math.max(.4,Math.min(1.8,vue.zoom*Math.exp(e.deltaY*(e.deltaMode===1?.05:.0012)))); pause=5; },{passive:false});
+  scene.addEventListener('dblclick',function(e){ if(horsCarte(e)) return; vue={az:0,incl:0,zoom:1}; });   // double-clic : vue d'origine
+
+  /* ---------- Étiquette sous le curseur : altitude, ou nom du sommet ---------- */
   var etiquette=document.createElement('div'); etiquette.className='altitude'; etiquette.setAttribute('aria-hidden','true');
-  document.querySelector('.scene').appendChild(etiquette);
-  var curseur=null, lecture=null, intensite=0, finTouche=0;
+  scene.appendChild(etiquette);
+  var curseur=null, intensite=0, finTouche=0;
   function nombre(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' '); }
-  addEventListener('pointermove',function(e){ if(e.pointerType==='touch') return; curseur=[e.clientX,e.clientY]; finTouche=0; });
   document.documentElement.addEventListener('mouseleave',function(){ curseur=null; });
-  cv.parentNode.addEventListener('pointerdown',function(e){ if(e.pointerType!=='touch'||e.target.closest('footer,header,dialog')) return; curseur=[e.clientX,e.clientY]; finTouche=performance.now()+3000; });
-  function majAltimetre(t,now){
+  function majEtiquette(t,now){
     if(finTouche && now>finTouche){ curseur=null; finTouche=0; }
-    lecture=(curseur && relief && t>3)?viser(t,curseur[0],curseur[1]):null;
+    var lecture=(curseur && t>3 && !glisse)?viser(curseur[0],curseur[1]):null;
+    if(glisse && glisse.bouge) lecture=null;
     intensite+=((lecture?1:0)-intensite)*.12;
     if(lecture){
       var proche=null, dmin=.09;
@@ -344,19 +378,34 @@
       etiquette.innerHTML=proche?'<b>'+proche.nom+'</b>'+nombre(proche.alt)+' m':nombre(alt)+' m';
       etiquette.style.transform='translate('+(curseur[0]+18)+'px,'+(curseur[1]-10)+'px)';
       etiquette.classList.add('vue');
-      gl.uniform1f(uAL,lecture.h); gl.uniform2f(uCP,lecture.x,lecture.y);
+      gl.uniform2f(U.CP,lecture.x,lecture.y);
     } else etiquette.classList.remove('vue');
-    gl.uniform1f(uCI,intensite);
+    gl.uniform1f(U.CI,intensite*.8);
+  }
+
+  /* ---------- Balayage doré : une courbe descend du plus haut sommet vers les vallées, en rythme lent ---------- */
+  var HAUT=(8849-3000)/4000, BAS=(2520-3000)/4000;
+  function balayage(t){
+    if(t<9.5) return [HAUT+1,0];
+    var P=7.5, ph=(t-9.5)%P, d=4.8;            // 4,8 s de descente, puis un temps de repos
+    if(ph>d) return [BAS-1,0];
+    var x=ph/d, e=x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2;
+    var env=Math.min(1,ph/.35)*Math.min(1,(d-ph)/.6);
+    return [HAUT+.02+(BAS-.04-HAUT)*e, env*ss(9.5,11,t)];
   }
 
   function frame(now){
     var t=reduit?9.5:(tFixe!=null?tFixe:(now-T0)/1000);
-    var dt=now-dernier; dernier=now;
-    if(tFixe==null && dt>40 && t>1){ if(++lents>15 && echelle*Math.min(window.devicePixelRatio||1,mobile?2:1.5)>.75){ echelle*=.75; lents=0; taille(); } } else if(lents>0) lents--;
-    souris[0]+=(cible[0]-souris[0])*.03; souris[1]+=(cible[1]-souris[1])*.03;
-    gl.uniform2f(uR,cv.width,cv.height); gl.uniform1f(uT,t); gl.uniform2f(uM,0,0); majAltimetre(t,now);
+    var dt=Math.min(.1,(now-dernier)/1000); var dms=now-dernier; dernier=now;
+    if(tFixe==null && dms>40 && t>1){ if(++lents>15 && echelle*Math.min(window.devicePixelRatio||1,mobile?2:1.5)>.75){ echelle*=.75; lents=0; taille(); } } else if(lents>0) lents--;
+    cam=calculCamera(t,dt);
+    var sw=balayage(t);
+    gl.uniform2f(U.R,cv.width,cv.height); gl.uniform1f(U.T,t); gl.uniform1f(U.K,kCam);
+    gl.uniform3fv(U.RO,cam.ro); gl.uniform3fv(U.FW,cam.fw); gl.uniform3fv(U.RT,cam.rt); gl.uniform3fv(U.UP,cam.up);
+    gl.uniform1f(U.SW,sw[0]); gl.uniform1f(U.SI,sw[1]);
+    majEtiquette(t,now);
     gl.drawArrays(gl.TRIANGLES,0,3);
-    if(!reduit) requestAnimationFrame(frame);
+    requestAnimationFrame(frame);
   }
 })();
 </script>
