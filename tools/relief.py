@@ -1,6 +1,6 @@
 """Prépare la carte d'altitude réelle de la région de Gokyo (Népal) pour la page d'accueil.
 
-Zone : carré de 56 km de côté centré entre Gokyo et l'Everest
+Zone : carré de 90 km de côté centré entre Gokyo et l'Everest
 (Gokyo, Ngozumpa, Cho Oyu, Everest, Lhotse, Makalu).
 Source : Copernicus DEM GLO-30 (ESA, données ouvertes, ~30 m), via AWS Open Data.
 Secours : tuiles d'altitude « Terrarium » d'AWS (Mapzen / Tilezen).
@@ -14,8 +14,8 @@ import numpy as np
 from PIL import Image
 
 LAT0, LON0 = 27.975, 86.830   # centre de la zone
-COTE_KM = 56.0
-N = 768                       # pixels de côté (≈ 73 m par pixel)
+COTE_KM = 90.0
+N = 1152                      # pixels de côté (≈ 78 m par pixel)
 SUR = 3                       # suréchantillonnage puis moyenne (anti-crénelage)
 
 def grille():

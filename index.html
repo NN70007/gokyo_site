@@ -2,7 +2,7 @@
 <!--
   GOKYO · 27°57′ N · 86°41′ E
 
-  Relief réel de la région de Gokyo (Khumbu, Népal) : Copernicus DEM GLO-30, 56 × 56 km.
+  Relief réel de la région de Gokyo (Khumbu, Népal) : Copernicus DEM GLO-30, 90 × 90 km.
   Rendu en temps réel en WebGL2, écrit à la main : pas de bibliothèque, pas de framework,
   pas de cookie, pas de mesure d'audience. Un seul fichier HTML, un relief, une musique.
 
@@ -29,7 +29,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="GOKYO">
 <meta name="twitter:image" content="https://gokyo.lu/assets/partage.jpg?v=20261122">
-<link rel="preload" href="assets/relief.png?v=20261122" as="image" fetchpriority="high">
+<link rel="preload" href="assets/relief.png?v=20261123" as="image" fetchpriority="high">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=20261122">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20261122">
 <style>
@@ -183,7 +183,7 @@
   <button class="fermer" type="button" aria-label="Fermer / Close">×</button>
   <div data-lang="fr">
     <h2 id="titreApropos">Ce que montre cette page</h2>
-    <p>L’image est le relief réel de la région de Gokyo, dans le Khumbu, au nord-est du Népal : un carré d’environ 56 km de côté qui englobe le village et les lacs de Gokyo, le glacier de Ngozumpa, le Cho Oyu (8 188 m), l’Everest (8 849 m), le Lhotse (8 516 m) et le Makalu (8 485 m).</p>
+    <p>L’image est le relief réel de la région de Gokyo, dans le Khumbu, au nord-est du Népal : un carré d’environ 90 km de côté qui englobe le village et les lacs de Gokyo, le glacier de Ngozumpa, le Cho Oyu (8 188 m), l’Everest (8 849 m), le Lhotse (8 516 m) et le Makalu (8 485 m).</p>
     <p>Chaque ligne est une courbe de niveau, comme sur une carte de montagne : une ligne tous les 200 m d’altitude, une ligne plus marquée tous les 1 000 m.</p>
     <h2>Le lever du jour</h2>
     <p>À l’aube, en haute montagne, la lumière touche d’abord les plus hauts sommets puis descend lentement le long des pentes. La page reprend ce moment : les courbes s’éclairent des sommets de plus de 8 000 m vers les vallées, qui restent dans l’ombre bleue de la nuit. La caméra descend ensuite vers le massif et tourne lentement autour de l’Everest.</p>
@@ -201,7 +201,7 @@
   </div>
   <div data-lang="en">
     <h2 id="titreAproposEn">What this page shows</h2>
-    <p>The image is the real terrain of the Gokyo region in the Khumbu, north-eastern Nepal: a square of about 56 km across that takes in the village and lakes of Gokyo, the Ngozumpa glacier, Cho Oyu (8,188 m), Everest (8,849 m), Lhotse (8,516 m) and Makalu (8,485 m).</p>
+    <p>The image is the real terrain of the Gokyo region in the Khumbu, north-eastern Nepal: a square of about 90 km across that takes in the village and lakes of Gokyo, the Ngozumpa glacier, Cho Oyu (8,188 m), Everest (8,849 m), Lhotse (8,516 m) and Makalu (8,485 m).</p>
     <p>Each line is a contour line, as on a mountain map: one line every 200 m of altitude, a stronger line every 1,000 m.</p>
     <h2>Sunrise</h2>
     <p>At dawn in high mountains, light reaches the highest summits first, then slowly moves down the slopes. The page recreates that moment: the contours light up from the 8,000-metre peaks down towards the valleys, which stay in the blue shadow of night. The camera then descends towards the massif and slowly circles Everest.</p>
@@ -279,9 +279,10 @@
   var FS='#version 300 es\nprecision highp float;out vec4 o;\n#define FRAG o\n' + [
     'uniform vec2 R;uniform float T;uniform sampler2D RELIEF;uniform float SW;uniform float SI;uniform vec2 CP;uniform float CI;uniform float K;uniform vec3 RO;uniform vec3 FW;uniform vec3 RT;uniform vec3 UP;uniform vec3 HP;uniform float HV;uniform vec4 ON;uniform sampler2D MARQ;uniform float MV;uniform vec3 GP;uniform vec3 BX[12];uniform float BV;',
     'float h21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}',
-    // relief réel : carré de 56 km = 4 unités ; h = (altitude - 3000 m) / 4000 m
-    'float H(vec2 p){float h=texture(RELIEF,vec2(p.x*.25+.5,.5-p.y*.25)).r;',
-    ' float loin=smoothstep(2.4,4.5,max(abs(p.x),abs(p.y)));return mix(h,-.3,loin);}',
+    // relief réel : carré de 90 km, 1 unité = 14 km (demi-côté S) ; h = (altitude - 3000 m) / 4000 m
+    'const float S=3.2142857;',
+    'float H(vec2 p){float h=texture(RELIEF,vec2(p.x/(2.*S)+.5,.5-p.y/(2.*S))).r;',
+    ' float loin=smoothstep(S-.35,S+.45,max(abs(p.x),abs(p.y)));return mix(h,-.3,loin);}',
     'const float EX=.42;',                                                // exagération du relief
     'float Z(vec2 p){return H(p)*EX;}',
     'vec3 ciel(vec3 d,float aube){',
@@ -327,7 +328,7 @@
     '  vec3 chaud=mix(vec3(.98,.62,.40),vec3(1.,.93,.80),smoothstep(.6,1.4,h));',
     '  vec3 lc=mix(froid,chaud,lumi);',
     '  float apparition=smoothstep(.0,2.2,T-length(uv)*1.1);',
-    '  float dh=abs(h-SW)/max(fwidth(h),1e-5);float sel=(1.-smoothstep(.7,2.6,dh))*SI;',
+    '  float dh=abs(h-SW)/max(fwidth(h),1e-5);float sil=1.-smoothstep(.04,.12,fwidth(t)/t);float sel=(1.-smoothstep(.7,2.6,dh))*SI*sil;',
     '  float a=(l1*.34+l5*.62)*apparition*mix(.55,1.,lumi)*(1.-.25*SI);',
     '  c=fond*apparition+lc*a;',
     '  c+=vec3(1.,.7,.45)*front*(.25+l1*.9+l5);',
@@ -380,12 +381,12 @@
       gl.pixelStorei(gl.UNPACK_ALIGNMENT,1);
       gl.texImage2D(gl.TEXTURE_2D,0,gl.R16F,w,h,0,gl.RED,gl.FLOAT,f);
       gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.MIRRORED_REPEAT); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.MIRRORED_REPEAT);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
       gl.uniform1i(U.RELIEF,0);
       document.documentElement.classList.add('pret');
       T0=performance.now(); dernier=T0; requestAnimationFrame(frame);
     };
-    img.src='assets/relief.png?v=20261122';
+    img.src='assets/relief.png?v=20261123';
   })();
 
   // Le relief en 3D est plus coûteux : résolution adaptée à l'appareil, et baisse automatique si ça rame
@@ -399,19 +400,18 @@
   var T0=performance.now(), lents=0, dernier=T0;
 
   /* ---------- Outils : relief côté page (mêmes calculs que le dessin) ---------- */
-  var EX=.42, KM=14;   // 1 unité = 14 km (carré de 56 km = 4 unités)
+  var EX=.42, KM=14, DEMI=45/14;   // 1 unité = 14 km (carré de 90 km : demi-côté DEMI)
   function xy(lat,lon){ return [(lon-86.83)*111.32*Math.cos(27.975*Math.PI/180)/KM, (lat-27.975)*110.95/KM]; }
   var SOMMETS=[['Everest',27.9881,86.9250,8849],['Lhotse',27.9617,86.9333,8516],['Makalu',27.8897,87.0889,8485],['Cho Oyu',28.0942,86.6608,8188],
     ['Gyachung Kang',28.0981,86.7422,7952],['Nuptse',27.9672,86.8869,7861],['Pumori',28.0147,86.8281,7161],['Ama Dablam',27.8617,86.8614,6812],
     ['Cholatse',27.9183,86.7672,6440],['Gokyo Ri',27.9617,86.6831,5357],['Gokyo',27.9530,86.6950,4790]].map(function(s){ var q=xy(s[1],s[2]); return {nom:s[0],x:q[0],y:q[1],alt:s[3]}; });
   function ss(a,b,x){ var t=Math.min(1,Math.max(0,(x-a)/(b-a))); return t*t*(3-2*t); }
-  function mir(t){ t=Math.abs(t)%2; return t>1?2-t:t; }
   function Hjs(x,y){
     var w=relief.w, hh=relief.h, f=relief.f;
-    var px=Math.min(w-1.001,Math.max(0,mir(x*.25+.5)*w-.5)), py=Math.min(hh-1.001,Math.max(0,mir(.5-y*.25)*hh-.5));
+    var px=Math.min(w-1.001,Math.max(0,(x/(2*DEMI)+.5)*w-.5)), py=Math.min(hh-1.001,Math.max(0,(.5-y/(2*DEMI))*hh-.5));
     var c0=px|0, r0=py|0, fc=px-c0, fr=py-r0, i=r0*w+c0;
     var v=f[i]*(1-fc)*(1-fr)+f[i+1]*fc*(1-fr)+f[i+w]*(1-fc)*fr+f[i+w+1]*fc*fr;
-    var loin=ss(2.4,4.5,Math.max(Math.abs(x),Math.abs(y))); return v+(-.3-v)*loin;
+    var loin=ss(DEMI-.35,DEMI+.45,Math.max(Math.abs(x),Math.abs(y))); return v+(-.3-v)*loin;
   }
   function Zjs(x,y){ return Hjs(x,y)*EX; }
   function n3(v){ var l=Math.hypot(v[0],v[1],v[2]); return [v[0]/l,v[1]/l,v[2]/l]; }
