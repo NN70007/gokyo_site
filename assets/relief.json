@@ -3,10 +3,10 @@
   27.975,
   86.83
  ],
- "cote_km": 56.0,
- "pixels": 768,
- "min_m": 2519.2,
- "max_m": 8729.2,
+ "cote_km": 90.0,
+ "pixels": 1024,
+ "min_m": 738.6,
+ "max_m": 8730.4,
  "source": "Copernicus DEM GLO-30 (ESA)",
  "codage": "altitude_m = (R*256+G)/4 ; ligne 0 = nord"
 }
