@@ -15,7 +15,7 @@ from PIL import Image
 
 LAT0, LON0 = 27.975, 86.830   # centre de la zone
 COTE_KM = 90.0
-N = 1152                      # pixels de côté (≈ 78 m par pixel)
+N = 1024                      # pixels de côté (≈ 88 m par pixel)
 SUR = 3                       # suréchantillonnage puis moyenne (anti-crénelage)
 
 def grille():

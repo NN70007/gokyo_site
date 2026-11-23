@@ -29,7 +29,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="GOKYO">
 <meta name="twitter:image" content="https://gokyo.lu/assets/partage.jpg?v=20261122">
-<link rel="preload" href="assets/relief.png?v=20261123" as="image" fetchpriority="high">
+<link rel="preload" href="assets/relief.png?v=20261123b" as="image" fetchpriority="high">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=20261122">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20261122">
 <style>
@@ -277,7 +277,7 @@
 
   var VS='#version 300 es\nin vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
   var FS='#version 300 es\nprecision highp float;out vec4 o;\n#define FRAG o\n' + [
-    'uniform vec2 R;uniform float T;uniform sampler2D RELIEF;uniform float SW;uniform float SI;uniform vec2 CP;uniform float CI;uniform float K;uniform vec3 RO;uniform vec3 FW;uniform vec3 RT;uniform vec3 UP;uniform vec3 HP;uniform float HV;uniform vec4 ON;uniform sampler2D MARQ;uniform float MV;uniform vec3 GP;uniform vec3 BX[12];uniform float BV;',
+    'uniform vec2 R;uniform float T;uniform sampler2D RELIEF;uniform float SW;uniform float SI;uniform vec2 CP;uniform float CI;uniform float K;uniform vec3 RO;uniform vec3 FW;uniform vec3 RT;uniform vec3 UP;uniform vec3 HP;uniform float HV;uniform vec4 ON;uniform sampler2D MARQ;uniform float MV;uniform vec3 GP;uniform vec3 BX[12];uniform float BV;uniform float ZM;',
     'float h21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}',
     // relief réel : carré de 90 km, 1 unité = 14 km (demi-côté S) ; h = (altitude - 3000 m) / 4000 m
     'const float S=3.2142857;',
@@ -307,7 +307,9 @@
     ' float k=K;vec3 ro=RO,fw=FW,rt=RT,up=UP;',
     ' vec3 rd=normalize(fw*1.6+uv.x*rt+uv.y*up);',
     // --- lancer de rayon sur le relief ---
-    ' float t=.05,tp=.05;bool touche=false;float tmax=14.;',
+    // brume : proche en vue normale (on lit la zone des bases), elle recule quand on dézoome et révèle le reste du massif
+    ' float zf=clamp((ZM-1.)/.8,0.,1.);float bA=mix(2.6,4.6,zf),bB=mix(6.5,11.,zf);',
+    ' float t=.05,tp=.05;bool touche=false;float tmax=mix(14.,bB+.3,K);',
     // on saute l'air vide : le regard démarre à l'altitude du plus haut sommet
     ' if(ro.z>ZTOP){if(rd.z>=0.)t=tmax+1.;else t=max(t,(ro.z-ZTOP)/-rd.z);tp=t;}',
     ' if(t<tmax)for(int i=0;i<190;i++){vec3 q=ro+rd*t;float hq=q.z-ZR(q);',
@@ -343,7 +345,7 @@
     '  float a=(l1*.34+l5*.62)*apparition*mix(.55,1.,lumi)*(1.-.25*SI);',
     '  c=fond*apparition+lc*a;',
     '  c+=vec3(1.,.7,.45)*front*(.25+l1*.9+l5);',
-    '  float brume=smoothstep(3.,9.,t)*k;',
+    '  float brume=smoothstep(bA,bB,t)*k;',
     '  float fr=exp(-dot(p.xy-CP,p.xy-CP)*70.)*CI;',
     '  c+=vec3(1.,.72,.45)*fr*(.10+l1*.8+l5*.6);',
     '  c=mix(c,vec3(1.,.74,.44),sel*.85);c+=vec3(1.,.58,.28)*(sel*.35+exp(-pow((h-SW)*28.,2.))*.10*SI);',
@@ -366,7 +368,7 @@
     '  float balise=pow(.5+.5*sin(T*4.),6.);float pt=clamp(exp(-px*px/16.)*1.6,0.,1.)*cache*HV;c=mix(c,vec3(.99,.08,.35),pt);c+=vec3(.99,.08,.35)*exp(-px/14.)*(.18+.35*balise)*cache*HV;c=mix(c,vec3(1.,.42,.62),clamp(exp(-px*px/2.5),0.,1.)*cache*HV*.8);}',
     // le cube d'une base, s'il est devant le relief
     ' if(tb<1e8&&(!touche||tb<t)){vec3 sl=normalize(vec3(.75,.35,.55));float l=.42+.58*max(dot(nb,sl),0.);',
-    '  vec3 cb=vec3(1.,.95,.86)*l;cb=mix(cb,ciel(rd,aube),smoothstep(3.,9.,tb)*k);c=mix(c,cb,BV);}',
+    '  vec3 cb=vec3(1.,.95,.86)*l;cb=mix(cb,ciel(rd,aube),smoothstep(bA,bB,tb)*k);c=mix(c,cb,BV);}',
     // halo du soleil levant (vue du dessus), puis vignettage
     ' c+=vec3(1.,.55,.32)*aube*(1.-k)*exp(-length(uv-vec2(.95,.75))*1.6)*.35;',
     ' c*=1.-.35*smoothstep(.6,1.4,length(uv*vec2(.8,1.)));',
@@ -380,7 +382,7 @@
   gl.useProgram(pr);
   var buf=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,buf); gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
   var loc=gl.getAttribLocation(pr,'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
-  var U={}; ['R','T','SW','SI','CP','CI','K','RO','FW','RT','UP','RELIEF','HP','HV','ON','MARQ','MV','GP','BX','BV'].forEach(function(n){ U[n]=gl.getUniformLocation(pr,n); });
+  var U={}; ['R','T','SW','SI','CP','CI','K','RO','FW','RT','UP','RELIEF','HP','HV','ON','MARQ','MV','GP','BX','BV','ZM'].forEach(function(n){ U[n]=gl.getUniformLocation(pr,n); });
 
   // Carte d'altitude réelle (Copernicus DEM, voir tools/relief.py) → texture flottante
   var relief=null;
@@ -401,7 +403,7 @@
       document.documentElement.classList.add('pret');
       T0=performance.now(); dernier=T0; requestAnimationFrame(frame);
     };
-    img.src='assets/relief.png?v=20261123';
+    img.src='assets/relief.png?v=20261123b';
   })();
 
   // Le relief en 3D est plus coûteux : résolution adaptée à l'appareil, et baisse automatique si ça rame
@@ -412,7 +414,7 @@
 
   var reduit=matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
   var params=new URLSearchParams(location.search), tFixe=params.has('t')?parseFloat(params.get('t')):null;
-  var T0=performance.now(), lents=0, moy=16, dernier=T0;
+  var T0=performance.now(), lents=0, moy=16, dernier=T0, zLisse=1;
 
   /* ---------- Outils : relief côté page (mêmes calculs que le dessin) ---------- */
   var EX=.42, KM=14, DEMI=45/14;   // 1 unité = 14 km (carré de 90 km : demi-côté DEMI)
@@ -737,7 +739,7 @@
     if(tFixe==null && t>1){ moy=moy*.94+Math.min(dms,100)*.06; if(moy>30 && ++lents>40 && echelle*Math.min(window.devicePixelRatio||1,mobile?2:1.5)>.75){ echelle*=.9; lents=0; moy=24; taille(); } else if(moy<26 && lents>0) lents--; }
     cam=calculCamera(t,dt);
     var sw=balayage(t);
-    gl.uniform2f(U.R,cv.width,cv.height); gl.uniform1f(U.T,t); gl.uniform1f(U.K,kCam);
+    gl.uniform2f(U.R,cv.width,cv.height); gl.uniform1f(U.T,t); gl.uniform1f(U.K,kCam); zLisse+=(vue.zoom-zLisse)*Math.min(1,dt*2.5); gl.uniform1f(U.ZM,tFixe!=null?vue.zoom:zLisse);
     gl.uniform3fv(U.RO,cam.ro); gl.uniform3fv(U.FW,cam.fw); gl.uniform3fv(U.RT,cam.rt); gl.uniform3fv(U.UP,cam.up);
     gl.uniform1f(U.SW,sw[0]); gl.uniform1f(U.SI,sw[1]);
     var hel=helico(t); heliEtat=hel; majFiche(hel); gl.uniform1f(U.MV,0); gl.uniform1f(U.BV,carteFaite?ss(7,10,t):0); majBases(t); if(hel){ gl.uniform3fv(U.HP,hel.p); gl.uniform1f(U.HV,hel.v); gl.uniform4fv(U.ON,hel.onde); } else gl.uniform1f(U.HV,0);
