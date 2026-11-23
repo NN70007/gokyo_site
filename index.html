@@ -281,8 +281,13 @@
     'float h21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}',
     // relief réel : carré de 90 km, 1 unité = 14 km (demi-côté S) ; h = (altitude - 3000 m) / 4000 m
     'const float S=3.2142857;',
-    'float H(vec2 p){float h=texture(RELIEF,vec2(p.x/(2.*S)+.5,.5-p.y/(2.*S))).r;',
-    ' float loin=smoothstep(S-.35,S+.45,max(abs(p.x),abs(p.y)));return mix(h,-.3,loin);}',
+    'float HT(vec2 p){float h=texture(RELIEF,vec2(p.x/(2.*S)+.5,.5-p.y/(2.*S))).r;',
+    ' float loin=smoothstep(S-.35,S+.45,max(abs(p.x),abs(p.y)));return mix(h,-.6,loin);}',
+    // mer de nuages autour du relief : elle remplit les vallées près du bord et s'étend jusqu'à l'horizon
+    'float bruit(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h21(i),h21(i+vec2(1.,0.)),f.x),mix(h21(i+vec2(0.,1.)),h21(i+1.),f.x),f.y);}',
+    'float NU(vec2 p){float w=smoothstep(S-1.1,S-.3,max(abs(p.x),abs(p.y)));if(w<=0.)return -9.;',
+    ' vec2 q=p*1.8+vec2(T*.012,T*.005);float n=bruit(q)*.55+bruit(q*2.7+3.1)*.3+bruit(q*7.1-1.7)*.15;return mix(-.6,.34+.26*n*n,w);}',
+    'float H(vec2 p){return max(HT(p),NU(p));}',
     'const float EX=.42;',                                                // exagération du relief
     'float Z(vec2 p){return H(p)*EX;}',
     'vec3 ciel(vec3 d,float aube){',
@@ -342,6 +347,10 @@
     '  float dH=length(p.xy-HP.xy);float haut=HP.z-Z(HP.xy);c*=1.-.45*exp(-dH*dH*2500.)*HV*smoothstep(.0,.02,haut);',
     '  float dL=length(p.xy-ON.xy);float o1=exp(-pow((dL-ON.z)*130.,2.)),o2=exp(-pow((dL-ON.z+.07)*130.,2.))*step(.07,ON.z),o3=exp(-pow((dL-ON.z+.14)*130.,2.))*step(.14,ON.z);',
     '  float an=clamp((o1+.65*o2+.4*o3)*ON.w*HV,0.,1.);c=mix(c,vec3(.99,.08,.35),an*.9);c+=vec3(.99,.08,.35)*an*.25;',
+    '  float nu=NU(p.xy);float nn=smoothstep(-.06,.004,nu-HT(p.xy));',
+    '  if(nn>0.){float lv=clamp(dot(n,normalize(vec3(.75,.35,.55))),0.,1.);float lv2=mix(clamp(dot(n,normalize(vec3(.55,.62,.55))),0.,1.),lv,k);',
+    '   vec3 ombre=vec3(.10,.085,.14);vec3 clair=mix(vec3(.34,.30,.42),vec3(1.,.80,.70),aube*mix(.6,1.,k));',
+    '   vec3 cn=mix(ombre,clair,.15+.7*lv2*lv2)*(.75+.45*smoothstep(.34,.6,nu));c=mix(c,cn*apparition,nn*mix(.75,1.,step(HT(p.xy),nu)));}',
     '  c=mix(c,ciel(rd,aube),brume);',
     ' } else { c=ciel(rd,aube)*k; }',
     // le point rouge (masqué s'il passe derrière une montagne)
@@ -411,7 +420,7 @@
     var px=Math.min(w-1.001,Math.max(0,(x/(2*DEMI)+.5)*w-.5)), py=Math.min(hh-1.001,Math.max(0,(.5-y/(2*DEMI))*hh-.5));
     var c0=px|0, r0=py|0, fc=px-c0, fr=py-r0, i=r0*w+c0;
     var v=f[i]*(1-fc)*(1-fr)+f[i+1]*fc*(1-fr)+f[i+w]*(1-fc)*fr+f[i+w+1]*fc*fr;
-    var loin=ss(DEMI-.35,DEMI+.45,Math.max(Math.abs(x),Math.abs(y))); return v+(-.3-v)*loin;
+    var r=Math.max(Math.abs(x),Math.abs(y)), loin=ss(DEMI-.35,DEMI+.45,r), w=ss(DEMI-1.1,DEMI-.3,r); v=v+(-.6-v)*loin; return w>0?Math.max(v,-.6+(.42+.6)*w):v;
   }
   function Zjs(x,y){ return Hjs(x,y)*EX; }
   function n3(v){ var l=Math.hypot(v[0],v[1],v[2]); return [v[0]/l,v[1]/l,v[2]/l]; }
