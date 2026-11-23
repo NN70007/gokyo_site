@@ -290,6 +290,10 @@
     'float H(vec2 p){return max(HT(p),NU(p));}',
     'const float EX=.42;',                                                // exagération du relief
     'float Z(vec2 p){return H(p)*EX;}',
+    // recherche du relief : au-dessus du plafond possible des nuages, la hauteur du relief suffit (calcul exact, sans le bruit)
+    'float ZR(vec3 q){float ht=HT(q.xy)*EX;float w=smoothstep(S-1.1,S-.3,max(abs(q.x),abs(q.y)));if(w<=0.)return ht;',
+    ' float plaf=mix(-.6,.6,w)*EX;if(q.z>plaf+.002)return max(ht,plaf);return max(ht,NU(q.xy)*EX);}',
+    'const float ZTOP=1.47*.42;',
     'vec3 ciel(vec3 d,float aube){',
     ' float e=d.z;',
     ' vec3 c=mix(vec3(.10,.07,.11),vec3(.012,.02,.05),smoothstep(-.02,.45,e));',
@@ -304,9 +308,11 @@
     ' vec3 rd=normalize(fw*1.6+uv.x*rt+uv.y*up);',
     // --- lancer de rayon sur le relief ---
     ' float t=.05,tp=.05;bool touche=false;float tmax=14.;',
-    ' for(int i=0;i<190;i++){vec3 q=ro+rd*t;float hq=q.z-Z(q.xy);',
+    // on saute l'air vide : le regard démarre à l'altitude du plus haut sommet
+    ' if(ro.z>ZTOP){if(rd.z>=0.)t=tmax+1.;else t=max(t,(ro.z-ZTOP)/-rd.z);tp=t;}',
+    ' if(t<tmax)for(int i=0;i<190;i++){vec3 q=ro+rd*t;float hq=q.z-ZR(q);',
     '  if(hq<0.){touche=true;break;}',
-    '  tp=t;t+=max(.003*t,hq*.38);if(t>tmax)break;}',
+    '  tp=t;t+=max(.003*t,hq*.38*(1.+.8*smoothstep(4.,9.,t)));if(t>tmax)break;}',
     ' if(touche){float a0=tp,a1=t;for(int j=0;j<6;j++){float m=.5*(a0+a1);vec3 q=ro+rd*m;if(q.z-Z(q.xy)<0.)a1=m;else a0=m;}t=.5*(a0+a1);}',
     ' float tb=1e9;vec3 nb=vec3(0.);',
     ' if(BV>0.){for(int i=0;i<12;i++){vec3 b=BX[i];vec3 hs=vec3(.0042,.0042,R.x>R.y?.0013:.0055);vec3 ce=vec3(b.xy,b.z+hs.z-.0003);',
@@ -315,7 +321,7 @@
     ' float aube=smoothstep(1.5,9.5,T);',
     ' vec3 c;',
     ' if(touche){',
-    '  vec3 p=ro+rd*t;float h=H(p.xy);',
+    '  vec3 p=ro+rd*t;float ht0=HT(p.xy),nu=NU(p.xy);float h=max(ht0,nu);',
     '  float e=.006;',
     '  vec3 n=normalize(vec3(Z(p.xy-vec2(e,0.))-Z(p.xy+vec2(e,0.)),Z(p.xy-vec2(0.,e))-Z(p.xy+vec2(0.,e)),2.*e));',
     '  float N=20.;float f=h*N;float fwd=max(fwidth(f),1e-4);',
@@ -347,10 +353,10 @@
     '  float dH=length(p.xy-HP.xy);float haut=HP.z-Z(HP.xy);c*=1.-.45*exp(-dH*dH*2500.)*HV*smoothstep(.0,.02,haut);',
     '  float dL=length(p.xy-ON.xy);float o1=exp(-pow((dL-ON.z)*130.,2.)),o2=exp(-pow((dL-ON.z+.07)*130.,2.))*step(.07,ON.z),o3=exp(-pow((dL-ON.z+.14)*130.,2.))*step(.14,ON.z);',
     '  float an=clamp((o1+.65*o2+.4*o3)*ON.w*HV,0.,1.);c=mix(c,vec3(.99,.08,.35),an*.9);c+=vec3(.99,.08,.35)*an*.25;',
-    '  float nu=NU(p.xy);float nn=smoothstep(-.06,.004,nu-HT(p.xy));',
+    '  float nn=smoothstep(-.06,.004,nu-ht0);',
     '  if(nn>0.){float lv=clamp(dot(n,normalize(vec3(.75,.35,.55))),0.,1.);float lv2=mix(clamp(dot(n,normalize(vec3(.55,.62,.55))),0.,1.),lv,k);',
     '   vec3 ombre=vec3(.10,.085,.14);vec3 clair=mix(vec3(.34,.30,.42),vec3(1.,.80,.70),aube*mix(.6,1.,k));',
-    '   vec3 cn=mix(ombre,clair,.15+.7*lv2*lv2)*(.75+.45*smoothstep(.34,.6,nu));c=mix(c,cn*apparition,nn*mix(.75,1.,step(HT(p.xy),nu)));}',
+    '   vec3 cn=mix(ombre,clair,.15+.7*lv2*lv2)*(.75+.45*smoothstep(.34,.6,nu));c=mix(c,cn*apparition,nn*mix(.75,1.,step(ht0,nu)));}',
     '  c=mix(c,ciel(rd,aube),brume);',
     ' } else { c=ciel(rd,aube)*k; }',
     // le point rouge (masqué s'il passe derrière une montagne)
@@ -406,7 +412,7 @@
 
   var reduit=matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
   var params=new URLSearchParams(location.search), tFixe=params.has('t')?parseFloat(params.get('t')):null;
-  var T0=performance.now(), lents=0, dernier=T0;
+  var T0=performance.now(), lents=0, moy=16, dernier=T0;
 
   /* ---------- Outils : relief côté page (mêmes calculs que le dessin) ---------- */
   var EX=.42, KM=14, DEMI=45/14;   // 1 unité = 14 km (carré de 90 km : demi-côté DEMI)
@@ -728,7 +734,7 @@
   function frame(now){
     var t=reduit?9.5:(tFixe!=null?tFixe:(now-T0)/1000);
     var dt=Math.min(.1,(now-dernier)/1000); var dms=now-dernier; dernier=now;
-    if(tFixe==null && dms>40 && t>1){ if(++lents>15 && echelle*Math.min(window.devicePixelRatio||1,mobile?2:1.5)>.75){ echelle*=.75; lents=0; taille(); } } else if(lents>0) lents--;
+    if(tFixe==null && t>1){ moy=moy*.94+Math.min(dms,100)*.06; if(moy>30 && ++lents>40 && echelle*Math.min(window.devicePixelRatio||1,mobile?2:1.5)>.75){ echelle*=.9; lents=0; moy=24; taille(); } else if(moy<26 && lents>0) lents--; }
     cam=calculCamera(t,dt);
     var sw=balayage(t);
     gl.uniform2f(U.R,cv.width,cv.height); gl.uniform1f(U.T,t); gl.uniform1f(U.K,kCam);
