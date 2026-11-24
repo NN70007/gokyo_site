@@ -29,7 +29,6 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="GOKYO">
 <meta name="twitter:image" content="https://gokyo.lu/assets/partage.jpg?v=20261122">
-<link rel="preload" href="assets/relief.png?v=20261124b" as="image" fetchpriority="high">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=20261122">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20261122">
 <style>
@@ -50,7 +49,7 @@
   .coord{font-size:12.5px;letter-spacing:.34em;color:rgba(255,252,246,.88);text-shadow:0 1px 14px rgba(4,7,15,.9),0 0 3px rgba(4,7,15,.8);font-variant-numeric:tabular-nums;white-space:nowrap}
   .coord .sep{color:var(--or);margin:0 .34em 0 0}
   .droite{display:flex;align-items:center;gap:14px}
-  .son{display:flex;align-items:center;gap:8px;background:none;border:0;color:rgba(247,243,236,.55);cursor:pointer;padding:6px 4px;font:inherit;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase}
+  .son{display:flex;align-items:center;justify-content:center;gap:8px;min-height:32px;min-width:32px;background:none;border:0;color:rgba(247,243,236,.55);cursor:pointer;padding:6px 4px;font:inherit;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase}
   .son:hover,.son[aria-pressed="true"]{color:#fff}
   .son .barres{display:flex;align-items:flex-end;gap:2px;height:12px}
   .son .barres i{display:block;width:2px;height:3px;background:currentColor;border-radius:1px;transition:height .4s}
@@ -61,14 +60,16 @@
   @keyframes barre{from{height:3px}to{height:12px}}
   @media (max-width:700px){.son-txt{display:none}.droite{gap:6px}}
   .langue{display:flex;gap:2px;font-size:11.5px;letter-spacing:.18em}
-  .langue button{background:none;border:0;color:var(--doux);cursor:pointer;padding:6px 8px;font:inherit}
+  .langue button{background:none;border:0;color:var(--doux);cursor:pointer;padding:6px 8px;min-height:32px;min-width:36px;font:inherit}
   .langue button[aria-pressed="true"]{color:#fff;font-weight:600}
   .apparait{opacity:0;transform:translateY(10px);animation:monte 1.8s var(--ease) forwards}
   @keyframes monte{to{opacity:1;transform:none}}
+  footer.apparait{opacity:.4;transform:none;animation-name:pied}
+  @keyframes pied{to{opacity:1}}
 
   footer{grid-row:3;position:relative;z-index:3;padding:20px clamp(18px,4vw,56px) max(22px,env(safe-area-inset-bottom));font-size:11px;line-height:1.75;letter-spacing:.04em;color:var(--doux);text-align:center}
   footer b{color:rgba(247,243,236,.85);font-weight:600;letter-spacing:.08em}
-  footer a{color:#fff;text-decoration:none;border-bottom:1px solid rgba(242,192,138,.55);padding-bottom:1px}
+  footer a{color:#fff;text-decoration:underline;text-decoration-color:rgba(242,192,138,.55);text-decoration-thickness:1px;text-underline-offset:3px;display:inline-block;padding:6px 4px;margin:-6px -4px}
   footer .sep{opacity:.45;margin:0 .55em}
   [data-lang]{display:none}
   html[lang="fr"] [data-lang="fr"],html[lang="en"] [data-lang="en"]{display:inline}
@@ -103,7 +104,8 @@
   @keyframes trace{to{transform:translateX(100%)}}
   .pret .chargement,.sans3d .chargement{opacity:0}
   /* Sans WebGL2 : une image fixe du même relief */
-  .sans3d canvas#topo{background:#04070F url(assets/fond.jpg) center/cover no-repeat}
+  .sans3d canvas#topo{visibility:hidden}
+  .sans3d .scene{background:#04070F url(assets/fond.jpg) center/cover no-repeat}
   /* Bases : noms sur le relief et fiche au survol */
   .bases{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden}
   .base-nom{position:absolute;left:0;top:0;opacity:0;white-space:nowrap;font-size:8.5px;letter-spacing:.32em;text-transform:uppercase;color:rgba(255,240,222,.9);
@@ -153,7 +155,7 @@
 </style>
 </head>
 <body>
-<div class="scene">
+<div class="scene" role="main">
   <canvas id="topo" aria-hidden="true"></canvas>
   <div class="chargement" aria-hidden="true"><i></i></div>
   <div class="voile"></div>
@@ -273,6 +275,8 @@
      3) Puis elle tourne lentement autour du sommet, objectif toujours dirigé vers lui. */
   var cv=document.getElementById('topo');
   var gl=cv.getContext('webgl2',{antialias:false,alpha:false});
+  // sans carte graphique (rendu logiciel), la 3D rame : on montre l'image fixe du relief (?3d=1 force la 3D)
+  if(gl && !/[?&]3d=1/.test(location.search)){ try{ var ext=gl.getExtension('WEBGL_debug_renderer_info'); var rend=String(gl.getParameter(ext?ext.UNMASKED_RENDERER_WEBGL:gl.RENDERER)||''); if(/swiftshader|llvmpipe|softpipe|software|microsoft basic render/i.test(rend)) gl=null; }catch(e){} }
   if(!gl){ document.documentElement.classList.add('sans3d'); return; }   // repli : une image fixe du relief
 
   var VS='#version 300 es\nin vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
