@@ -374,9 +374,9 @@
     ' if(prof>.05&&HV>0.){vec2 sp=vec2(dot(vh,rt),dot(vh,up))/prof*1.6;float px=length(uv-sp)*min(R.x,R.y)/max(min(R.x,R.y)/900.,1.);',
     '  float cache=(touche&&t<length(vh)-.01)?0.:1.;float pouls=.7+.3*sin(T*5.);',
     '  float balise=pow(.5+.5*sin(T*4.),6.);float pt=clamp(exp(-px*px/16.)*1.6,0.,1.)*cache*HV;c=mix(c,vec3(.99,.08,.35),pt);c+=vec3(.99,.08,.35)*exp(-px/14.)*(.18+.35*balise)*cache*HV;c=mix(c,vec3(1.,.42,.62),clamp(exp(-px*px/2.5),0.,1.)*cache*HV*.8);}',
-    // la voix : un point doré qui rejoint l'hélicoptère
+    // l'invité : un point blanc qui rejoint l'hélicoptère
     ' if(VX.w>0.){vec3 vv=VX.xyz-ro;float pv=dot(vv,fw);if(pv>.05){vec2 sv=vec2(dot(vv,rt),dot(vv,up))/pv*1.6;float qx=length(uv-sv)*min(R.x,R.y)/max(min(R.x,R.y)/900.,1.);',
-    '  float cv=(touche&&t<length(vv)-.01)?.25:1.;vec3 dore=vec3(1.,.82,.52);c=mix(c,dore,clamp(exp(-qx*qx/9.)*1.5,0.,1.)*VX.w*cv);c+=dore*exp(-qx/16.)*.55*VX.w*cv;c=mix(c,vec3(1.),clamp(exp(-qx*qx/2.),0.,1.)*VX.w*cv*.7);}}',
+    '  float cv=(touche&&t<length(vv)-.01)?.25:1.;vec3 blanc=vec3(1.,.98,.94);c=mix(c,blanc,clamp(exp(-qx*qx/3.5)*1.6,0.,1.)*VX.w*cv);c+=blanc*exp(-qx/7.)*.3*VX.w*cv;}}',
     // le cube d'une base, s'il est devant le relief
     ' if(tb<1e8&&(!touche||tb<t)){vec3 sl=normalize(vec3(.75,.35,.55));float l=.42+.58*max(dot(nb,sl),0.);',
     '  vec3 cb=vec3(1.,.95,.86)*l;cb=mix(cb,ciel(rd,aube),smoothstep(bA,bB,tb)*k);c=mix(c,cb,BV);}',
@@ -664,10 +664,12 @@
       while((arr.length && m[0]===arr[arr.length-1]) || (t0===0 && m[0]===av[1]) || (t0===7 && (m[n-1]===arr[0] || m[n-1]===av[0])));
       arr=arr.concat(m); }
     try{ localStorage.setItem('vol',arr[arr.length-1]+','+arr[0]); }catch(e){}
+    // l'hélicoptère se pose à côté de chaque base (≈ 400 m), du côté où le terrain est le plus à niveau
+    ESCALES.forEach(function(h){ var zh=Zjs(h.x,h.y), best=1e9; for(var q=0;q<12;q++){ var an=q*Math.PI/6, lx=h.x+Math.cos(an)*.03, ly=h.y+Math.sin(an)*.03, dz=Math.abs(Zjs(lx,ly)-zh); if(dz<best){ best=dz; h.lx=lx; h.ly=ly; } } });
     for(var i=0;i<arr.length;i++){
-      var A=ESCALES[arr[(i+arr.length-1)%arr.length]], B=ESCALES[arr[i]], za=Zjs(A.x,A.y)+.004, zb=Zjs(B.x,B.y)+.004;
-      var L=Math.hypot(B.x-A.x,B.y-A.y), marge=0;
-      for(var k=0;k<=80;k++){ var u=k/80, x=A.x+(B.x-A.x)*u, y=A.y+(B.y-A.y)*u; marge=Math.max(marge, Zjs(x,y)-(za+(zb-za)*u)); }
+      var A=ESCALES[arr[(i+arr.length-1)%arr.length]], B=ESCALES[arr[i]], za=Zjs(A.lx,A.ly)+.004, zb=Zjs(B.lx,B.ly)+.004;
+      var L=Math.hypot(B.lx-A.lx,B.ly-A.ly), marge=0;
+      for(var k=0;k<=80;k++){ var u=k/80, x=A.lx+(B.lx-A.lx)*u, y=A.ly+(B.ly-A.ly)*u; marge=Math.max(marge, Zjs(x,y)-(za+(zb-za)*u)); }
       var duree=L/VIT+4;
       VOLS.push({A:A,B:B,za:za,zb:zb,H:marge+.05,duree:duree,debut:CYCLE}); CYCLE+=duree+SOL;
     }
@@ -676,23 +678,23 @@
     if(!relief||!construireCarte()) return null;
     if(!VOLS) preparerVols();
     var visible=ss(DEBUT_VOL-1.5,DEBUT_VOL,t);
-    if(t<DEBUT_VOL){ var A0=VOLS[0].A; return {p:[A0.x,A0.y,Zjs(A0.x,A0.y)+.004],v:visible,onde:[A0.x,A0.y,0,0]}; }
+    if(t<DEBUT_VOL){ var A0=VOLS[0].A; return {p:[A0.lx,A0.ly,Zjs(A0.lx,A0.ly)+.004],v:visible,onde:[A0.lx,A0.ly,0,0]}; }
     var c=(t-DEBUT_VOL)%CYCLE, v=VOLS[0];
     for(var i=0;i<VOLS.length;i++){ if(c>=VOLS[i].debut && c<VOLS[i].debut+VOLS[i].duree+SOL){ v=VOLS[i]; break; } }
     var tau=c-v.debut, prec=VOLS[(VOLS.indexOf(v)+VOLS.length-1)%VOLS.length];
     if(tau<v.duree){
       var s0=tau/v.duree, e=ss(.12,.88,s0), bosse=ss(0,.18,s0)*(1-ss(.82,1,s0));
-      var x=v.A.x+(v.B.x-v.A.x)*e, y=v.A.y+(v.B.y-v.A.y)*e, z=v.za+(v.zb-v.za)*e+v.H*bosse;
+      var x=v.A.lx+(v.B.lx-v.A.lx)*e, y=v.A.ly+(v.B.ly-v.A.ly)*e, z=v.za+(v.zb-v.za)*e+v.H*bosse;
       z=Math.max(z,Zjs(x,y)+.004);
       // l'onde du dernier atterrissage finit de s'étendre pendant le décollage
-      var r=(SOL+tau)/ (SOL+2.5); return {vers:{escale:v.B,prog:s0},p:[x,y,z],v:visible,onde:[v.A.x,v.A.y,.02+.33*Math.min(1,r),Math.max(0,1-r)*.0]};
+      var r=(SOL+tau)/ (SOL+2.5); return {vers:{escale:v.B,prog:s0},p:[x,y,z],v:visible,onde:[v.A.lx,v.A.ly,.02+.33*Math.min(1,r),Math.max(0,1-r)*.0]};
     }
     var g=tau-v.duree, r2=g/5, tour=Math.floor((t-DEBUT_VOL)/CYCLE);
-    // la voix part d'un point de la vallée, à ~2 km du refuge, et rejoint l'hélicoptère en 2,4 s
-    var vi=VOLS.indexOf(v), ang=vi*2.39+tour*1.3, d0=.22, sx=v.B.x+Math.cos(ang)*d0, sy=v.B.y+Math.sin(ang)*d0, sz=Zjs(sx,sy)+.006;
-    var u=ss(1.6,4.0,g), ue=u*u*(3-2*u), vx=sx+(v.B.x-sx)*ue, vy=sy+(v.B.y-sy)*ue, vz=sz+(v.zb+.004-sz)*ue+.03*Math.sin(Math.PI*ue);
-    vz=Math.max(vz,Zjs(vx,vy)+.004); var vw=ss(1.2,1.8,g)*(1-ss(3.8,4.1,g));
-    return {voix:[vx,vy,vz,vw],pose:{escale:v.B,g:g,n:tour*VOLS.length+VOLS.indexOf(v),idx:VOLS.indexOf(v)%ESCALES.length},p:[v.B.x,v.B.y,v.zb],v:visible,onde:[v.B.x,v.B.y,.015+.34*r2,Math.pow(Math.max(0,1-r2),1.3)*ss(0,.25,g)]};
+    // l'invité : un point blanc sort de la base et rejoint l'hélicoptère posé à côté
+    var sx=v.B.x, sy=v.B.y, sz=Zjs(sx,sy)+.007;
+    var u=ss(1.6,5.2,g), ue=u*u*(3-2*u), vx=sx+(v.B.lx-sx)*ue, vy=sy+(v.B.ly-sy)*ue, vz=sz+(v.zb-sz)*ue+.004*Math.sin(Math.PI*ue);
+    vz=Math.max(vz,Zjs(vx,vy)+.004); var vw=ss(1.2,1.7,g)*(1-ss(5.0,5.5,g));
+    return {voix:[vx,vy,vz,vw],pose:{escale:v.B,g:g,n:tour*VOLS.length+VOLS.indexOf(v),idx:VOLS.indexOf(v)%ESCALES.length},p:[v.B.lx,v.B.ly,v.zb],v:visible,onde:[v.B.lx,v.B.ly,.015+.34*r2,Math.pow(Math.max(0,1-r2),1.3)*ss(0,.25,g)]};
   }
 
   /* ---------- Fiche de mission à chaque atterrissage ---------- */
