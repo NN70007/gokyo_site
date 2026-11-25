@@ -656,8 +656,16 @@
   var VOLS=null, CYCLE=0, DEBUT_VOL=11, SOL=10, VIT=.11;
   function preparerVols(){
     VOLS=[]; CYCLE=0;
-    for(var i=0;i<ESCALES.length;i++){
-      var A=ESCALES[i], B=ESCALES[(i+1)%ESCALES.length], za=Zjs(A.x,A.y)+.004, zb=Zjs(B.x,B.y)+.004;
+    // parcours au hasard, différent à chaque visite : 8 tournées mélangées, chaque base une fois par tournée, jamais deux fois de suite
+    var n=ESCALES.length, arr=[], t0, j, k2, tmp, av=[-1,-1];
+    try{ av=(localStorage.getItem('vol')||'-1,-1').split(',').map(Number); }catch(e){}   // départ et première escale de la visite précédente
+    for(t0=0;t0<8;t0++){ var m=[]; for(j=0;j<n;j++) m.push(j);
+      do{ for(j=n-1;j>0;j--){ k2=Math.floor(Math.random()*(j+1)); tmp=m[j]; m[j]=m[k2]; m[k2]=tmp; } }
+      while((arr.length && m[0]===arr[arr.length-1]) || (t0===0 && m[0]===av[1]) || (t0===7 && (m[n-1]===arr[0] || m[n-1]===av[0])));
+      arr=arr.concat(m); }
+    try{ localStorage.setItem('vol',arr[arr.length-1]+','+arr[0]); }catch(e){}
+    for(var i=0;i<arr.length;i++){
+      var A=ESCALES[arr[(i+arr.length-1)%arr.length]], B=ESCALES[arr[i]], za=Zjs(A.x,A.y)+.004, zb=Zjs(B.x,B.y)+.004;
       var L=Math.hypot(B.x-A.x,B.y-A.y), marge=0;
       for(var k=0;k<=80;k++){ var u=k/80, x=A.x+(B.x-A.x)*u, y=A.y+(B.y-A.y)*u; marge=Math.max(marge, Zjs(x,y)-(za+(zb-za)*u)); }
       var duree=L/VIT+4;
@@ -668,7 +676,7 @@
     if(!relief||!construireCarte()) return null;
     if(!VOLS) preparerVols();
     var visible=ss(DEBUT_VOL-1.5,DEBUT_VOL,t);
-    if(t<DEBUT_VOL){ var A0=ESCALES[ESCALES.length-1]; return {p:[A0.x,A0.y,Zjs(A0.x,A0.y)+.004],v:visible,onde:[A0.x,A0.y,0,0]}; }
+    if(t<DEBUT_VOL){ var A0=VOLS[0].A; return {p:[A0.x,A0.y,Zjs(A0.x,A0.y)+.004],v:visible,onde:[A0.x,A0.y,0,0]}; }
     var c=(t-DEBUT_VOL)%CYCLE, v=VOLS[0];
     for(var i=0;i<VOLS.length;i++){ if(c>=VOLS[i].debut && c<VOLS[i].debut+VOLS[i].duree+SOL){ v=VOLS[i]; break; } }
     var tau=c-v.debut, prec=VOLS[(VOLS.indexOf(v)+VOLS.length-1)%VOLS.length];
@@ -684,7 +692,7 @@
     var vi=VOLS.indexOf(v), ang=vi*2.39+tour*1.3, d0=.22, sx=v.B.x+Math.cos(ang)*d0, sy=v.B.y+Math.sin(ang)*d0, sz=Zjs(sx,sy)+.006;
     var u=ss(1.6,4.0,g), ue=u*u*(3-2*u), vx=sx+(v.B.x-sx)*ue, vy=sy+(v.B.y-sy)*ue, vz=sz+(v.zb+.004-sz)*ue+.03*Math.sin(Math.PI*ue);
     vz=Math.max(vz,Zjs(vx,vy)+.004); var vw=ss(1.2,1.8,g)*(1-ss(3.8,4.1,g));
-    return {voix:[vx,vy,vz,vw],pose:{escale:v.B,g:g,n:tour*VOLS.length+VOLS.indexOf(v),idx:(VOLS.indexOf(v)+1)%VOLS.length},p:[v.B.x,v.B.y,v.zb],v:visible,onde:[v.B.x,v.B.y,.015+.34*r2,Math.pow(Math.max(0,1-r2),1.3)*ss(0,.25,g)]};
+    return {voix:[vx,vy,vz,vw],pose:{escale:v.B,g:g,n:tour*VOLS.length+VOLS.indexOf(v),idx:VOLS.indexOf(v)%ESCALES.length},p:[v.B.x,v.B.y,v.zb],v:visible,onde:[v.B.x,v.B.y,.015+.34*r2,Math.pow(Math.max(0,1-r2),1.3)*ss(0,.25,g)]};
   }
 
   /* ---------- Fiche de mission à chaque atterrissage ---------- */
