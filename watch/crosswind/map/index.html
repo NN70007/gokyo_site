@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Crosswind METAR – airports map</title>
+<link rel="icon" type="image/svg+xml" href="../img/icon.svg?v=2">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png?v=2">
+<meta name="description" content="Where Crosswind METAR pilots fly: airports set on Crosswind METAR watches over the last 30 days.">
+<link rel="canonical" href="https://watch.gokyo.lu/crosswind/map/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Crosswind METAR">
+<meta property="og:title" content="Crosswind METAR – airports map">
+<meta property="og:description" content="Where Crosswind METAR pilots fly: airports set on Crosswind METAR watches over the last 30 days.">
+<meta property="og:url" content="https://watch.gokyo.lu/crosswind/map/">
+<meta property="og:image" content="https://watch.gokyo.lu/crosswind/img/og-crosswind.jpg?v=2">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Crosswind METAR watch face on a Garmin watch: flight category, QNH, wind and gusts">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="../aviator.css?v=35">
+<script src="../commun.js?v=2"></script>
+<script src="../terre.js?v=1" defer></script>
+<script src="../carte-points.js?v=2" defer></script>
+<script src="carte.js?v=2" defer></script>
+</head>
+<body class="page-carte">
+<header class="entete">
+  <a class="marque" href="../"><svg aria-hidden="true" width="32" height="32" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linejoin="miter" style="color:var(--accent)"><path transform="rotate(-18 24 24)" d="M20 4h8v24h7L24 45 13 28h7z"/></svg><span><span class="marque-x">CROSSWIND</span> METAR</span><small>by NiderLabs</small></a>
+  <nav class="nav" aria-label="Pages">
+    <a href="../">Watch face</a>
+    <a href="../#settings">Settings</a>
+    <a href="../map/" aria-current="page">Airports map</a>
+    <a href="../#feedback" class="nav-avis">Feedback</a>
+    <button type="button" class="theme">Day mode</button>
+  </nav>
+</header>
+
+<main><div class="col">
+  <h1>Where our pilots fly</h1>
+  <p class="chapeau">Airports set on Crosswind METAR watches over the last 30 days. Anonymous: no names, no watches, only rounded numbers – and every pilot can opt out in the settings.</p>
+  <div id="plan" class="dotmap grande" role="img" aria-label="World map of airports used by Crosswind METAR pilots"></div>
+  <div class="legende" aria-label="Legend">
+    <span><i class="rond" style="width:12px;height:12px"></i>1–4 pilots</span>
+    <span><i class="rond" style="width:20px;height:20px"></i>5 or more</span>
+    <span><i class="rond" style="width:30px;height:30px"></i>10 or more</span>
+    <span id="total"></span>
+  </div>
+</div></main>
+<footer class="pied2">
+  <div class="pied2-haut">
+    <div class="pied2-marque">
+      <a class="marque" href="/crosswind/"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linejoin="miter" style="color:var(--accent)"><path transform="rotate(-18 24 24)" d="M20 4h8v24h7L24 45 13 28h7z"/></svg><span><span class="marque-x">CROSSWIND</span> METAR</span></a>
+      <p>Published by GOKYO S.à r.l.-S, Luxembourg</p>
+    </div>
+    <nav class="pied2-col" aria-label="Product">
+      <h2>Product</h2>
+      <a href="/crosswind/">Watch face</a>
+      <a href="/crosswind/#settings">Settings</a>
+      <a href="/crosswind/map/">Airports map</a>
+    </nav>
+    <nav class="pied2-col" aria-label="Get it">
+      <h2>Get it</h2>
+      <a href="https://apps.garmin.com/apps/1d33b7b5-b517-4991-a8f2-ce8a70097dc3" rel="noopener">Watch face on Connect IQ</a>
+      <a href="https://apps.garmin.com/apps/a0a90833-ac1a-4ac8-811f-f57c16e39536" rel="noopener">App on Connect IQ</a>
+    </nav>
+    <div class="pied2-col">
+      <h2>Contact</h2>
+      <a href="mailto:contact@gokyo.lu">contact@gokyo.lu</a>
+      <a href="/crosswind/#feedback">Send feedback</a>
+      <a href="/crosswind/legal/">Publisher: GOKYO S.à r.l.-S</a>
+    </div>
+  </div>
+  <div class="pied2-bas">
+    <p><b>Not for navigation</b> · Situational awareness only · Weather data: aviationweather.gov (NOAA)</p>
+    <p class="pied2-legal"><a href="/crosswind/terms/">Terms of Use</a> · <a href="/crosswind/refund/">Refunds</a> · <a href="/crosswind/privacy/">Privacy</a> · <a href="/crosswind/legal/">Legal notice</a> · © <span data-annee></span> NiderLabs</p>
+  </div>
+</footer>
+<script src="/visite.js?v=1" defer></script>
+</body>
+</html>

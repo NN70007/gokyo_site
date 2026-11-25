@@ -1,0 +1,282 @@
+/* Crosswind METAR — page de réglages : code de la montre → réglages → enregistrement. */
+(function () {
+  "use strict";
+  var $ = function (s) { return document.querySelector(s); };
+  var jeton = null, reglages = null;
+  var ROLES = ["AIRPORT 1 · DEPARTURE", "AIRPORT 2 · DESTINATION", "AIRPORT 3 · ALTERNATE"];
+  var SUF = ["", "2", "3"];
+  var pad = function (n) { return (n < 10 ? "0" : "") + n; };
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function msg(el, txt, ok) { el.textContent = txt; el.className = "message " + (ok ? "ok" : "err"); el.hidden = !txt; }
+
+  // Le code se tape avec un espace au milieu : « 482 917 »
+  $("#code").addEventListener("input", function (e) {
+    var d = e.target.value.replace(/\D/g, "").slice(0, 6);
+    e.target.value = d.length > 3 ? d.slice(0, 3) + " " + d.slice(3) : d;
+  });
+
+  var bOuvrir = $("#form-code button"); bOuvrir.setAttribute("data-t", bOuvrir.textContent);
+
+  // ---- « Remember this phone » : jeton gardé dans ce navigateur, 30 jours ----
+  var MEMO = "aviator-memo", viaQR = /[?&]c=\d{6}/.test(location.search);
+  function memoLire() { try { return localStorage.getItem(MEMO); } catch (e) { return null; } }
+  function memoEcrire(v, exp) { try { if (v) { localStorage.setItem(MEMO, v); localStorage.setItem(MEMO + "-exp", String(exp)); } else { localStorage.removeItem(MEMO); localStorage.removeItem(MEMO + "-exp"); } } catch (e) {} }
+  function memoInfo() {
+    var m = memoLire(), box = $("#memo-info");
+    if (!box) return;
+    box.hidden = !m;
+    if (m) {
+      var exp = Number((function () { try { return localStorage.getItem(MEMO + "-exp"); } catch (e) { return 0; } })()) || 0;
+      var d = new Date(exp), mois = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+      $("#memo-txt").textContent = "This phone is remembered" + (exp ? " until " + pad(d.getDate()) + " " + mois[d.getMonth()] + " " + d.getFullYear() : "") + ": no code needed. Lost it? Forget all phones from another device.";
+    }
+  }
+  var jetonApp = null;
+  function lierAppli(o) {
+    jetonApp = o.jetonApp;
+    $("#vue-code").hidden = true; $("#vue-appli").hidden = false;
+    $("#lier-memo").hidden = !memoLire();
+    $("#vue-appli").scrollIntoView({ block: "start" });
+  }
+  function lier(req, b) {
+    var err = $("#err-lier"), t = b.textContent;
+    b.disabled = true; b.textContent = "Linking…"; err.hidden = true;
+    req.action = "aviator.lier"; req.jetonApp = jetonApp;
+    AVIATOR.appel(req).then(function (o) {
+      if (o.memo) memoEcrire(o.memo, o.memoExp);
+      $("#vue-appli").hidden = true;
+      ouvert(o);
+    }).catch(function (x) {
+      if (x.code === "memo" || (req.memo && x.code === "code")) { memoEcrire(null); $("#lier-memo").hidden = true; }
+      msg(err, x.message, false);
+    }).then(function () { b.disabled = false; b.textContent = t; });
+  }
+  $("#lier-memo").addEventListener("click", function (e) { lier({ memo: memoLire() }, e.target); });
+  $("#form-lier").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var c = $("#code-cadran").value.replace(/\D/g, "");
+    if (c.length !== 6) { msg($("#err-lier"), "Enter the 6 digits shown on your watch face.", false); return; }
+    lier({ code: c, garder: !!($("#garder") && $("#garder").checked) }, e.target.querySelector("button"));
+  });
+  $("#code-cadran").addEventListener("input", function (e) { var v = e.target.value.replace(/\D/g, "").slice(0, 6); e.target.value = v.length > 3 ? v.slice(0, 3) + " " + v.slice(3) : v; });
+  function ouvert(o) {
+    if (o.appli === "alier") { lierAppli(o); return; }
+    $("#note-appli").hidden = o.appli !== "liee";
+    jeton = o.jeton; reglages = o.reglages;
+    if (window.onAviatorOpen) window.onAviatorOpen(o.jeton, o);
+    afficher(o);
+    memoInfo();
+  }
+  function quitter(tous) {
+    var m = memoLire(), j = jeton;
+    memoEcrire(null); jeton = null;
+    var req = tous ? { action: "aviator.oublier", tous: true, jeton: j } : { action: "aviator.oublier", memo: m };
+    return (m || tous ? AVIATOR.appel(req).catch(function () {}) : Promise.resolve()).then(function () { location.href = location.pathname; });
+  }
+
+  // ordinateur : afficher quand même le champ du code sur demande
+  var oc = $("#ordi-code"); if (oc) oc.addEventListener("click", function () { $("#vue-code").classList.add("code-ordi"); $("#code").focus(); });
+  $("#form-code").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var code = $("#code").value.replace(/\D/g, ""), b = e.target.querySelector("button"), err = $("#err-code");
+    if (code.length !== 6) { msg(err, "Enter the 6 digits shown on your watch.", false); return; }
+    b.disabled = true; b.textContent = "Checking…"; err.hidden = true;
+    var garder = !!($("#garder") && $("#garder").checked);
+    AVIATOR.appel({ action: "aviator.ouvrir", code: code, garder: garder, memo: memoLire() || undefined }).then(function (o) {
+      if (o.memo) memoEcrire(o.memo, o.memoExp);
+      ouvert(o);
+    }).catch(function (x) { msg(err, x.message, false); })
+      .then(function () { b.disabled = false; b.textContent = "Open my settings"; });
+  });
+
+  // QR code de la montre : niderlabs.com/A/482917 -> ?c=482917, ouverture directe
+  (function () {
+    var m = /[?&]c=(\d{6})(?:&|$)/.exec(location.search);
+    if (!m) return;
+    try { history.replaceState(null, "", location.pathname); } catch (e) {}
+    // Arrivée par le QR de la montre : on va droit au but (pas la page de présentation)
+    if ($("#produit")) $("#produit").hidden = true;
+    var rec = document.querySelector(".recit"); if (rec) rec.hidden = true;
+    try { window.scrollTo(0, 0); } catch (e) {}
+    $("#vue-code").classList.add("code-ordi");
+    $("#code").value = m[1].slice(0, 3) + " " + m[1].slice(3);
+    $("#form-code").requestSubmit ? $("#form-code").requestSubmit() : $("#form-code").dispatchEvent(new Event("submit", { cancelable: true }));
+  })();
+
+  function afficher(o) {
+    var r = o.reglages, box = $("#aeroports");
+    box.innerHTML = "";
+    SUF.forEach(function (s, i) {
+      var d = document.createElement("div");
+      d.className = "carte";
+      d.innerHTML = '<label class="titre" for="icao' + i + '">' + ROLES[i] + '</label>' +
+        '<input class="icao" id="icao' + i + '" maxlength="4" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="' + (i ? "—" : "ELLX") + '" value="' + esc(r["icao" + s] || "") + '">' +
+        '<div class="nom-apt" id="nom' + i + '"></div>' +
+        '<input class="recherche" id="q' + i + '" type="search" autocomplete="off" spellcheck="false" placeholder="Search a city or airport" aria-label="Search ' + ROLES[i].toLowerCase() + ' by city or name">' +
+        '<div class="suggestions" id="sg' + i + '" role="listbox" hidden></div>' +
+        '<label class="titre" for="rwy' + i + '">RUNWAY</label>' +
+        '<select id="rwy' + i + '"><option value="0">AUTO (into wind)</option></select>';
+      box.appendChild(d);
+      var inp = d.querySelector("input");
+      var lancer = function () { pistes(i, inp.value, Number($("#rwy" + i).value) || r["rwy" + s] || 0); };
+      inp.addEventListener("input", function () { inp.value = inp.value.toUpperCase().replace(/[^A-Z0-9]/g, ""); if (inp.value.length === 4 || !inp.value) lancer(); });
+      pistes(i, r["icao" + s], r["rwy" + s] || 0);
+      recherche(i, inp);
+    });
+    $("#gps").checked = !!r.gps;
+    $("#xwLim").value = r.xwLim;
+    $("#magVar").value = r.magVar;
+    ["pUnit", "wUnit", "dateFmt"].forEach(function (k) { var x = document.querySelector('input[name="' + k + '"][value="' + (r[k] || 0) + '"]'); if (x) x.checked = true; });
+    majUnite();
+    $("#carte").checked = o.carte !== false;
+    $("#accepte").checked = false;
+    $("#vue-code").hidden = true; $("#vue-reglages").hidden = false; $("#lie").hidden = false;
+    if ($("#produit")) $("#produit").hidden = true;
+    try { window.scrollTo(0, 0); } catch (e) {}
+    $("#msg").hidden = true;
+    window.scrollTo(0, 0);
+  }
+
+  // Nom de l'aéroport et liste des pistes (extrémités) depuis le serveur
+  var demandes = {};
+  function pistes(i, icao, choisi) {
+    var sel = $("#rwy" + i), nom = $("#nom" + i);
+    icao = String(icao || "").toUpperCase();
+    sel.innerHTML = '<option value="0">AUTO (into wind)</option>';
+    if (choisi) sel.innerHTML += '<option value="' + choisi + '">' + pad(choisi) + "</option>";
+    sel.value = String(choisi || 0);
+    if (icao.length !== 4) { nom.textContent = ""; return; }
+    nom.textContent = "…";
+    var n = (demandes[i] = (demandes[i] || 0) + 1);
+    AVIATOR.appel({ action: "aviator.aeroport", icao: icao }).then(function (a) {
+      if (n !== demandes[i]) return;
+      if (!a.trouve) { nom.textContent = "Unknown airport – check the code"; return; }
+      nom.textContent = a.nom || "";
+      var html = '<option value="0">AUTO (into wind)</option>';
+      a.pistes.slice().sort(function (x, y) { return x - y; }).forEach(function (p) { html += '<option value="' + p + '">' + pad(p) + (p === choisi ? "" : "") + "</option>"; });
+      if (choisi && a.pistes.indexOf(choisi) < 0) html += '<option value="' + choisi + '">' + pad(choisi) + "</option>";
+      sel.innerHTML = html; sel.value = String(choisi || 0);
+    }).catch(function () { if (n === demandes[i]) nom.textContent = ""; });
+  }
+
+  // Recherche par ville ou par nom (liste OurAirports, chargée au premier usage)
+  var liste = null, listeP = null;
+  function chargerListe() {
+    if (!listeP) listeP = fetch("airports.json?v=1").then(function (r) { return r.json(); }).then(function (l) {
+      liste = l.map(function (a) { return { c: a[0], n: a[1], v: a[2], p: a[3], t: a[4], k: " " + plat(a[0] + " " + a[1] + " " + a[2] + " " + (a[5] || "")).replace(/[^a-z0-9]+/g, " ") }; });
+      return liste;
+    }).catch(function () { listeP = null; return []; });
+    return listeP;
+  }
+  function plat(s) { return String(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(); }
+  function chercher(q) {
+    q = plat(q.trim()); if (q.length < 2) return [];
+    var ALIAS = { geneve: "geneva", genf: "geneva", bale: "basel", basle: "basel", zurich: "zurich", munchen: "munich", koln: "cologne", bruxelles: "brussels", brussel: "brussels", anvers: "antwerp", liege: "liege", luik: "liege", lisbonne: "lisbon", londres: "london", milan: "milan", milano: "milan", rome: "rome", roma: "rome", vienne: "vienna", wien: "vienna", varsovie: "warsaw", prague: "prague", praha: "prague", copenhague: "copenhagen", athenes: "athens", nice: "nice", strasbourg: "strasbourg", sarrebruck: "saarbrucken", treves: "trier", coblence: "koblenz", aix: "aix" };
+    var mots = q.split(/\s+/).map(function (m) { return ALIAS[m] || m; }), res = [];
+    for (var j = 0; j < liste.length; j++) {
+      var a = liste[j], ok = true;
+      for (var m = 0; m < mots.length; m++) if (a.k.indexOf(" " + mots[m]) < 0) { ok = false; break; }
+      if (!ok) continue;
+      var v = plat(a.v), score = a.t * 10 + (a.c.toLowerCase() === q ? 100 : 0) + (v === q ? 40 : v.indexOf(q) === 0 ? 25 : 0) + (plat(a.n).indexOf(q) === 0 ? 10 : 0);
+      res.push([score, a]);
+    }
+    res.sort(function (x, y) { return y[0] - x[0]; });
+    return res.slice(0, 8).map(function (x) { return x[1]; });
+  }
+  function recherche(i, inpIcao) {
+    var q = $("#q" + i), box = $("#sg" + i), n = 0;
+    q.addEventListener("focus", chargerListe);
+    q.addEventListener("input", function () {
+      var mine = ++n;
+      chargerListe().then(function () {
+        if (mine !== n) return;
+        var r = chercher(q.value);
+        box.innerHTML = "";
+        r.forEach(function (a) {
+          var b = document.createElement("button");
+          b.type = "button"; b.className = "sugg"; b.setAttribute("role", "option");
+          b.innerHTML = '<b>' + a.c + '</b><span>' + esc(a.n) + (a.v ? " · " + esc(a.v) : "") + " · " + a.p + "</span>";
+          b.addEventListener("click", function () {
+            inpIcao.value = a.c; q.value = ""; box.hidden = true; box.innerHTML = "";
+            pistes(i, a.c, 0);
+          });
+          box.appendChild(b);
+        });
+        if (!r.length && q.value.trim().length >= 2) box.innerHTML = '<p class="aide" style="padding:8px 4px">No match – try another spelling, or type the ICAO code above.</p>';
+        box.hidden = !box.innerHTML;
+      });
+    });
+  }
+
+  function majUnite() { var m = document.querySelector('input[name="wUnit"]:checked'); $("#xw-unite").textContent = m && m.value === "1" ? "m/s" : "kt"; }
+  document.querySelectorAll('input[name="wUnit"]').forEach(function (x) { x.addEventListener("change", majUnite); });
+
+  $("#vue-reglages").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var m = $("#msg"), b = $("#enregistrer");
+    if (!$("#accepte").checked) { msg(m, "Please tick the box to accept the Terms of Use and the NOT FOR NAVIGATION notice.", false); $("#accepte").focus(); return; }
+    var val = function (k) { var x = document.querySelector('input[name="' + k + '"]:checked'); return x ? Number(x.value) : 0; };
+    var s = {
+      icao: $("#icao0").value.trim(), rwy: Number($("#rwy0").value) || 0,
+      icao2: $("#icao1").value.trim(), rwy2: Number($("#rwy1").value) || 0,
+      icao3: $("#icao2").value.trim(), rwy3: Number($("#rwy2").value) || 0,
+      gps: $("#gps").checked, xwLim: Number($("#xwLim").value.replace(/\D/g, "") || 0),
+      pUnit: val("pUnit"), wUnit: val("wUnit"), dateFmt: val("dateFmt"),
+      magVar: Number(String($("#magVar").value).replace("−", "-").replace(/[^\d-]/g, "") || 0),
+      carte: $("#carte").checked
+    };
+    if (!/^[A-Za-z0-9]{4}$/.test(s.icao)) { msg(m, "Airport 1 needs a 4-letter ICAO code (e.g. ELLX).", false); return; }
+    b.disabled = true; b.textContent = "Saving…";
+    AVIATOR.appel({ action: "aviator.enregistrer", jeton: jeton, reglages: s, accepte: true }).then(function () {
+      msg(m, "Saved. Your watch shows UPDATED within 5 minutes (keep your phone nearby). If SETTINGS was not opened on the watch in the last 30 minutes, it can take up to 15 minutes.", true);
+    }).catch(function (x) {
+      if (x.code === "session") { msg(m, x.message, false); setTimeout(function () { location.reload(); }, 2500); }
+      else msg(m, x.message, false);
+    }).then(function () { b.disabled = false; b.textContent = "Save to my watch"; m.scrollIntoView({ block: "center" }); });
+  });
+
+  $("#quitter").addEventListener("click", function (e) { e.preventDefault(); quitter(false); });
+  if ($("#memo-oublier")) $("#memo-oublier").addEventListener("click", function () { quitter(false); });
+  if ($("#memo-tous")) $("#memo-tous").addEventListener("click", function () { quitter(true); });
+
+  // Téléphone mémorisé : ouverture directe, sans code (sauf arrivée par le QR code)
+  (function () {
+    var m = memoLire();
+    if (!m || viaQR) return;
+    var b = $("#form-code button");
+    b.disabled = true; b.textContent = "Opening…";
+    AVIATOR.appel({ action: "aviator.reprendre", memo: m }).then(ouvert).catch(function (x) {
+      if (x.code === "memo") memoEcrire(null);
+      b.disabled = false; b.textContent = b.getAttribute("data-t") || b.textContent;
+    }).then(function () { if (b.textContent === "Opening…") b.textContent = b.getAttribute("data-t"); });
+  })();
+})();
+
+/* Avis : envoyé au serveur, sans e-mail à écrire */
+(function () {
+  var f = document.getElementById("form-avis");
+  if (!f) return;
+  var r = document.getElementById("avis-retour"), b = document.getElementById("avis-envoyer");
+  f.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var msg = document.getElementById("avis-msg").value.trim();
+    var t = f.querySelector("input[name=avis-type]:checked");
+    r.hidden = false;
+    if (msg.length < 3) { r.className = "message err"; r.textContent = "Please write a few words."; return; }
+    b.disabled = true; b.textContent = "Sending…";
+    AVIATOR.appel({ action: "avis", produit: "Crosswind METAR", type: t ? t.value : "", message: msg,
+      email: document.getElementById("avis-email").value.trim(), piege: document.getElementById("avis-piege").value, page: location.pathname })
+      .then(function () {
+        r.className = "message ok"; r.textContent = "Thank you! Your message has been sent.";
+        document.getElementById("avis-msg").value = ""; b.textContent = "Sent";
+      })
+      .catch(function (x) { r.className = "message err"; r.textContent = x.message || "Error."; b.disabled = false; b.textContent = "Send"; });
+  });
+})();
+
+/* Confidentialité : en accordéon sur téléphone */
+(function () {
+  document.querySelectorAll(".liste.acc>div").forEach(function (d) {
+    d.addEventListener("click", function () { d.classList.toggle("ouvert"); });
+  });
+})();
