@@ -1,0 +1,180 @@
+<!doctype html>
+<!--
+  GOKYO · Making of
+  Conception et réalisation : NiderLabs by JBN — © 2026, tous droits réservés.
+-->
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GOKYO · Making of</title>
+<meta name="description" content="How the GOKYO homepage was made: the real terrain of the Khumbu drawn live in WebGL, a golden contour at dawn, and a helicopter gathering voices across twelve bases.">
+<meta name="theme-color" content="#04070F">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Gokyo">
+<meta property="og:title" content="GOKYO · Making of">
+<meta property="og:url" content="https://gokyo.lu/making-of/">
+<meta property="og:image" content="https://gokyo.lu/making-of/relief.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://gokyo.lu/making-of/">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg?v=20261122">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png?v=20261122">
+<style>
+  :root{--or:#F2C08A;--rose:#FD145A;--doux:rgba(247,243,236,.62);--ligne:rgba(242,192,138,.18)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{background:#04070F}
+  body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#F7F3EC;-webkit-font-smoothing:antialiased;line-height:1.7;font-size:16.5px}
+  a{color:#fff;text-decoration:underline;text-decoration-color:rgba(242,192,138,.55);text-underline-offset:3px}
+  [data-lang]{display:none}
+  html[lang="fr"] [data-lang="fr"],html[lang="en"] [data-lang="en"]{display:revert}
+  header{display:flex;justify-content:space-between;align-items:center;padding:22px clamp(18px,4vw,56px);font-size:12px;letter-spacing:.3em;text-transform:uppercase}
+  header a{text-decoration:none;color:rgba(255,252,246,.88);display:inline-block;padding:8px 0}
+  header a span{color:var(--or)}
+  .langue{display:flex;gap:2px;letter-spacing:.18em}
+  .langue button{background:none;border:0;color:var(--doux);cursor:pointer;padding:6px 8px;min-height:32px;min-width:36px;font:inherit;text-transform:uppercase}
+  .langue button[aria-pressed="true"]{color:#fff;font-weight:600}
+  main{max-width:760px;margin:0 auto;padding:6vh clamp(20px,5vw,40px) 10vh}
+  .sur{font-size:11.5px;letter-spacing:.34em;text-transform:uppercase;color:var(--or);margin-bottom:18px}
+  h1{font-family:Georgia,'Times New Roman',serif;font-weight:400;font-style:italic;font-size:clamp(30px,5vw,46px);line-height:1.15;margin-bottom:22px}
+  .chapo{font-size:18.5px;color:rgba(247,243,236,.86);margin-bottom:8px}
+  h2{font-size:11.5px;letter-spacing:.32em;text-transform:uppercase;color:var(--or);font-weight:600;margin:56px 0 14px;display:flex;gap:14px;align-items:center}
+  h2 i{font-style:normal;color:rgba(242,192,138,.78);font-variant-numeric:tabular-nums}
+  p{margin:0 0 14px;color:rgba(247,243,236,.8)}
+  figure{margin:34px calc(-1 * clamp(0px,6vw,90px)) 8px}
+  figure img{display:block;width:100%;height:auto;border-radius:10px;border:1px solid var(--ligne);background:#0b0d16}
+  figcaption{font-size:12.5px;color:var(--doux);margin-top:10px;padding:0 clamp(0px,6vw,90px)}
+  .chiffres{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--ligne);border:1px solid var(--ligne);border-radius:10px;overflow:hidden;margin:26px 0 8px}
+  .chiffres div{background:#070a14;padding:18px 18px 16px}
+  .chiffres b{display:block;font-family:Georgia,serif;font-weight:400;font-size:28px;color:#fff;line-height:1.1}
+  .chiffres span{font-size:12px;color:var(--doux);letter-spacing:.04em}
+  ul{margin:0 0 14px 1.1em;color:rgba(247,243,236,.8)}
+  li{margin-bottom:6px}
+  .rose{color:var(--rose)}
+  .dore{color:var(--or)}
+  .retour{display:inline-block;margin-top:44px;font-size:12px;letter-spacing:.3em;text-transform:uppercase;text-decoration:none;padding:12px 18px;border:1px solid rgba(242,192,138,.4);border-radius:999px}
+  .retour:hover{border-color:var(--or)}
+  footer{border-top:1px solid var(--ligne);padding:26px clamp(18px,4vw,56px) max(26px,env(safe-area-inset-bottom));font-size:11.5px;color:var(--doux);text-align:center;line-height:1.8}
+  footer b{color:rgba(247,243,236,.85);font-weight:600;letter-spacing:.08em}
+  footer a{display:inline-block;padding:6px 4px;margin:-6px -4px}
+  :focus-visible{outline:2px solid var(--or);outline-offset:3px;border-radius:4px}
+</style>
+</head>
+<body>
+<header>
+  <a href="../">GOKYO <span>·</span> Making of</a>
+  <div class="langue" role="group" aria-label="Langue / Language">
+    <button type="button" data-set="fr" aria-pressed="true">FR</button>
+    <button type="button" data-set="en" aria-pressed="false">EN</button>
+  </div>
+</header>
+
+<main>
+  <!-- ===================== FRANÇAIS ===================== -->
+  <div data-lang="fr">
+    <p class="sur">Making of</p>
+    <h1>Un territoire réel, une lumière qui descend, des voix qu’on va chercher.</h1>
+    <p class="chapo">La page d’accueil de GOKYO n’est ni une vidéo ni une image : c’est le relief réel du Khumbu, au Népal, dessiné en direct par votre navigateur, à chaque image.</p>
+
+    <figure><img src="courbes.webp" width="1400" height="875" alt="Le relief de la région de Gokyo vu du dessus, en courbes de niveau dorées" fetchpriority="high" decoding="async"><figcaption>Le relief vu du dessus, au moment où l’aube touche les plus hauts sommets.</figcaption></figure>
+
+    <h2><i>01</i> L’idée</h2>
+    <p>Gokyo est un village du Khumbu, à 4 790 m, au pied du Cho Oyu. GOKYO, la société luxembourgeoise, lui emprunte son nom : le goût de l’effort, de l’altitude et du travail bien fait. La page ne raconte pas une activité. Elle montre un territoire, et ce qui s’y passe.</p>
+    <p>Elle s’ouvre sur la nuit. La lumière touche d’abord les sommets de plus de 8 000 m, puis descend lentement le long des pentes, comme un vrai lever de soleil en haute montagne. Les vallées restent dans le bleu de la nuit.</p>
+
+    <h2><i>02</i> L’histoire</h2>
+    <p>Douze bases sont posées sur des lieux réels : Namche Bazaar, Tengboche, Gokyo, le camp de base de l’Everest, celui du Makalu… Chacune porte l’un des grands sujets du podcast Finscale, édité par GOKYO.</p>
+    <p>Un <span class="rose">hélicoptère rose</span> en fait le tour. À chaque escale, une <span class="dore">voix</span> — un point doré — quitte la vallée et le rejoint : c’est l’invité d’un vrai épisode. La fiche en haut à gauche en donne le numéro, le titre, l’invité et sa société, comme un carnet de bord. Les données sont mises à jour chaque jour.</p>
+    <figure><img src="relief.webp" width="1400" height="875" alt="Le massif en trois dimensions, la courbe dorée et l’hélicoptère rose au loin" loading="lazy" decoding="async"><figcaption>La courbe dorée descend du plus haut sommet vers les vallées. Au loin, l’hélicoptère.</figcaption></figure>
+
+    <h2><i>03</i> Les données</h2>
+    <p>Le relief vient du modèle numérique de terrain <strong>Copernicus DEM GLO-30</strong> (DLR et Airbus Defence and Space, pour l’Union européenne et l’ESA). Un disque d’environ 80 km de diamètre, ramené à 88 m par point, englobe le Cho Oyu, l’Everest, le Lhotse et le Makalu. Le relief est exagéré d’environ 1,5 fois en hauteur pour mieux lire les pentes.</p>
+    <p>Une ligne tous les 200 m, une ligne marquée tous les 1 000 m. Au-delà du disque, la carte continue : les courbes d’un relief inventé sont peintes sur un sol plat, jusqu’à l’horizon.</p>
+    <figure><img src="disque.webp" width="1400" height="875" alt="Vue lointaine : le disque de relief réel et les courbes peintes qui continuent autour" loading="lazy" decoding="async"><figcaption>En s’éloignant, le relief réel se fond dans des courbes peintes qui continuent à l’infini.</figcaption></figure>
+
+    <h2><i>04</i> La technique</h2>
+    <p>Tout est écrit à la main, sans bibliothèque ni framework. Un seul programme graphique (WebGL2) lance un rayon par pixel, trouve où il touche le relief, puis calcule la lumière, les courbes de niveau et la brume. Les courbes sont tracées à partir de la pente vue à l’écran : elles restent fines, quelle que soit la distance.</p>
+    <ul>
+      <li>La caméra, la lumière de l’aube et la courbe dorée sont réglées comme une partition : un battement de 24 secondes, lent et régulier.</li>
+      <li>Le calcul se limite au disque de relief réel ; le sol peint se calcule d’un coup. La page tourne de façon fluide sur téléphone.</li>
+      <li>Sur un appareil sans carte graphique, la 3D est remplacée par une image fixe du même relief.</li>
+      <li>Ni cookie, ni mesure d’audience, ni lien sortant sur la page d’accueil.</li>
+    </ul>
+    <div class="chiffres">
+      <div><b>~60 Ko</b><span>la page entière, code compris</span></div>
+      <div><b>0</b><span>bibliothèque, cookie ou traceur</span></div>
+      <div><b>12</b><span>bases sur des lieux réels</span></div>
+      <div><b>100</b><span>PageSpeed mobile (sur 100)</span></div>
+    </div>
+
+    <h2><i>05</i> Le son</h2>
+    <p>La musique est facultative et ne démarre que si vous l’activez : « Transcend », courtesy of <a href="https://www.morninglightmusic.io" target="_blank" rel="noopener">MorningLightMusic.io</a>.</p>
+
+    <h2><i>06</i> Crédits</h2>
+    <p>Conception et réalisation : <strong>NiderLabs by JBN</strong>. Éditeur : GOKYO S.à r.l.-S, Luxembourg.<br>Copernicus DEM GLO-30 © DLR e.V. 2010-2014 et © Airbus Defence and Space GmbH 2014-2018, fourni dans le cadre de COPERNICUS par l’Union européenne et l’ESA ; tous droits réservés.</p>
+
+    <a class="retour" href="../">← Retour à la page</a>
+  </div>
+
+  <!-- ===================== ENGLISH ===================== -->
+  <div data-lang="en">
+    <p class="sur">Making of</p>
+    <h1>A real landscape, a light coming down, voices gathered one by one.</h1>
+    <p class="chapo">The GOKYO homepage is neither a video nor a picture: it is the real terrain of the Khumbu, in Nepal, drawn live by your browser, frame after frame.</p>
+
+    <figure><img src="courbes.webp" width="1400" height="875" alt="The terrain of the Gokyo region seen from above, in golden contour lines" fetchpriority="high" decoding="async"><figcaption>The terrain from above, as dawn reaches the highest summits.</figcaption></figure>
+
+    <h2><i>01</i> The idea</h2>
+    <p>Gokyo is a village in the Khumbu, at 4,790 m, at the foot of Cho Oyu. GOKYO, the Luxembourg company, borrows its name: a taste for effort, altitude and work done well. The page does not describe a business. It shows a landscape, and what happens in it.</p>
+    <p>It opens at night. Light first touches the peaks above 8,000 m, then slowly moves down the slopes, like a real sunrise in high mountains. The valleys stay in the blue of the night.</p>
+
+    <h2><i>02</i> The story</h2>
+    <p>Twelve bases stand on real places: Namche Bazaar, Tengboche, Gokyo, Everest Base Camp, Makalu Base Camp… Each carries one of the main topics of the Finscale podcast, published by GOKYO.</p>
+    <p>A <span class="rose">pink helicopter</span> flies from base to base. At every landing, a <span class="dore">voice</span> — a golden light — leaves the valley and joins it: the guest of a real episode. The card in the top-left corner gives its number, title, guest and company, like a logbook. The data is refreshed every day.</p>
+    <figure><img src="relief.webp" width="1400" height="875" alt="The massif in three dimensions, the golden contour and the pink helicopter in the distance" loading="lazy" decoding="async"><figcaption>The golden contour travels down from the highest summit to the valleys. In the distance, the helicopter.</figcaption></figure>
+
+    <h2><i>03</i> The data</h2>
+    <p>The terrain comes from the <strong>Copernicus DEM GLO-30</strong> elevation model (DLR and Airbus Defence and Space, for the European Union and ESA). A disc about 80 km across, resampled to 88 m per point, takes in Cho Oyu, Everest, Lhotse and Makalu. Heights are exaggerated about 1.5 times to make the slopes easier to read.</p>
+    <p>One line every 200 m, a stronger line every 1,000 m. Beyond the disc, the map goes on: the contours of an invented terrain are painted on flat ground, all the way to the horizon.</p>
+    <figure><img src="disque.webp" width="1400" height="875" alt="Distant view: the disc of real terrain and the painted contours continuing around it" loading="lazy" decoding="async"><figcaption>Seen from afar, the real terrain melts into painted contours that go on forever.</figcaption></figure>
+
+    <h2><i>04</i> The craft</h2>
+    <p>Everything is hand-written, with no library or framework. A single WebGL2 program casts one ray per pixel, finds where it meets the terrain, then works out light, contour lines and haze. The contours are drawn from the on-screen slope, so they stay thin at any distance.</p>
+    <ul>
+      <li>Camera, dawn light and the golden contour are timed like a score: one slow, steady 24-second beat.</li>
+      <li>Ray marching is limited to the disc of real terrain; the painted ground is solved in one step. The page runs smoothly on phones.</li>
+      <li>On devices without a graphics chip, the 3D is replaced by a still image of the same terrain.</li>
+      <li>No cookies, no analytics, no outbound links on the homepage.</li>
+    </ul>
+    <div class="chiffres">
+      <div><b>~60 KB</b><span>the whole page, code included</span></div>
+      <div><b>0</b><span>libraries, cookies or trackers</span></div>
+      <div><b>12</b><span>bases on real places</span></div>
+      <div><b>100</b><span>PageSpeed mobile (out of 100)</span></div>
+    </div>
+
+    <h2><i>05</i> Sound</h2>
+    <p>Music is optional and only plays if you turn it on: “Transcend”, courtesy of <a href="https://www.morninglightmusic.io" target="_blank" rel="noopener">MorningLightMusic.io</a>.</p>
+
+    <h2><i>06</i> Credits</h2>
+    <p>Design and development: <strong>NiderLabs by JBN</strong>. Publisher: GOKYO S.à r.l.-S, Luxembourg.<br>Copernicus DEM GLO-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018, provided under COPERNICUS by the European Union and ESA; all rights reserved.</p>
+
+    <a class="retour" href="../">← Back to the page</a>
+  </div>
+</main>
+
+<footer>
+  <b>GOKYO S.à r.l.-S</b> · 131, rue de Hollerich, L-1741 Luxembourg · RCS B239634 · <span data-lang="fr">TVA</span><span data-lang="en">VAT</span> LU31725054 · <a href="mailto:contact@gokyo.lu">contact@gokyo.lu</a> · © 2026
+</footer>
+
+<script>
+(function(){
+  var html=document.documentElement, btns=document.querySelectorAll('[data-set]');
+  function set(l){ html.lang=l; document.title=(l==='en'?'GOKYO · Making of':'GOKYO · Making of'); for(var i=0;i<btns.length;i++){ btns[i].setAttribute('aria-pressed', String(btns[i].getAttribute('data-set')===l)); } try{ localStorage.setItem('lang',l); }catch(e){} }
+  var l=null; try{ l=localStorage.getItem('lang'); }catch(e){}
+  if(l!=='fr'&&l!=='en'){ l=((navigator.language||'fr').slice(0,2).toLowerCase()==='fr')?'fr':'en'; }
+  set(l);
+  for(var b=0;b<btns.length;b++){ btns[b].addEventListener('click',function(){ set(this.getAttribute('data-set')); }); }
+})();
+</script>
+</body>
+</html>

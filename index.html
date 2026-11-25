@@ -64,6 +64,9 @@
   .langue button[aria-pressed="true"]{color:#fff;font-weight:600}
   .apparait{opacity:0;transform:translateY(10px);animation:monte 1.8s var(--ease) forwards}
   @keyframes monte{to{opacity:1;transform:none}}
+  .cle{position:absolute;left:0;right:0;top:62%;z-index:3;text-align:center;pointer-events:none;padding:0 24px;font-size:clamp(12px,1.25vw,15px);letter-spacing:.32em;text-transform:uppercase;color:rgba(255,252,246,.9);text-shadow:0 1px 18px rgba(4,7,15,.95),0 0 4px rgba(4,7,15,.8);opacity:0;animation:cle 8.5s ease 2.6s forwards}
+  @keyframes cle{0%{opacity:0;transform:translateY(6px)}18%{opacity:1;transform:none}78%{opacity:1}100%{opacity:0;transform:translateY(-4px)}}
+  @media (prefers-reduced-motion:reduce){.cle{animation-duration:6s}}
   footer.apparait{opacity:.4;transform:none;animation-name:pied}
   @keyframes pied{to{opacity:1}}
 
@@ -177,8 +180,9 @@
 
   <footer class="apparait" style="animation-delay:6s">
     <span class="bl"><b>GOKYO S.à r.l.-S</b></span><span class="sep">·</span><span class="bl"><span data-lang="fr">Société à responsabilité limitée simplifiée de droit luxembourgeois</span><span data-lang="en">Simplified limited liability company under Luxembourg law</span></span><span class="sep">·</span><span class="bl">131, rue de Hollerich, L-1741 Luxembourg</span><br class="br">
-    <span class="bl"><span data-lang="fr">RCS Luxembourg</span><span data-lang="en">Luxembourg Trade and Companies Register</span> B239634</span><span class="sep">·</span><span class="bl"><span data-lang="fr">TVA</span><span data-lang="en">VAT</span> LU31725054</span><span class="sep">·</span><span class="bl"><a href="mailto:contact@gokyo.lu">contact@gokyo.lu</a><span class="sep">·</span>© 2026</span><span class="sep">·</span><span class="bl"><a href="#apropos" id="ouvrir"><span data-lang="fr">Mentions et crédits</span><span data-lang="en">Notices &amp; credits</span></a></span>
+    <span class="bl"><span data-lang="fr">RCS Luxembourg</span><span data-lang="en">Luxembourg Trade and Companies Register</span> B239634</span><span class="sep">·</span><span class="bl"><span data-lang="fr">TVA</span><span data-lang="en">VAT</span> LU31725054</span><span class="sep">·</span><span class="bl"><a href="mailto:contact@gokyo.lu">contact@gokyo.lu</a><span class="sep">·</span>© 2026</span><span class="sep">·</span><span class="bl"><a href="#apropos" id="ouvrir"><span data-lang="fr">Mentions et crédits</span><span data-lang="en">Notices &amp; credits</span></a><span class="sep">·</span><a href="making-of/">Making of</a></span>
   </footer>
+  <p class="cle"><span data-lang="fr">Douze bases. Un hélicoptère. À chaque escale, une voix.</span><span data-lang="en">Twelve bases. One helicopter. At every landing, a voice.</span></p>
 </div>
 
 <dialog id="apropos" aria-labelledby="titreApropos">
@@ -192,7 +196,7 @@
     <p>Une courbe dorée parcourt ensuite le massif, du plus haut sommet vers les vallées, en suivant une même altitude. Douze bases sont posées sur des lieux réels du Khumbu (Namche Bazaar, Gokyo, le camp de base de l’Everest…), chacune associée à l’un des grands sujets du podcast Finscale, édité par GOKYO. Un point rose, comme un hélicoptère, fait le tour des bases et va chercher à chacune l’un de ses invités ; la fiche en haut à gauche reprend le numéro et le titre de l’épisode (les mesures d’expédition sont fictives). Un clic sur le petit cube d’une base indique son lieu, son sujet et le nombre d’invités. En survolant le relief (ou en le touchant sur un téléphone), l’altitude du point ou le nom du sommet s’affiche. On peut faire tourner la vue en la faisant glisser, et zoomer avec la molette ou en pinçant l’écran ; un double-clic rétablit la vue d’origine.</p>
     <p class="petit">Pour mieux lire les pentes, le relief est exagéré environ 1,5 fois en hauteur. Les couleurs et la lumière sont une interprétation artistique.</p>
     <h2>Données utilisées</h2>
-    <p>Modèle numérique de terrain Copernicus DEM GLO-30 (résolution d’environ 30 m), ramené ici à environ 73 m par point. Copernicus DEM GLO-30 © DLR e.V. 2010-2014 et © Airbus Defence and Space GmbH 2014-2018, fourni dans le cadre de COPERNICUS par l’Union européenne et l’ESA ; tous droits réservés.</p>
+    <p>Modèle numérique de terrain Copernicus DEM GLO-30 (résolution d’environ 30 m), ramené ici à environ 88 m par point. Copernicus DEM GLO-30 © DLR e.V. 2010-2014 et © Airbus Defence and Space GmbH 2014-2018, fourni dans le cadre de COPERNICUS par l’Union européenne et l’ESA ; tous droits réservés.</p>
     <h2>Musique</h2>
     <p>« Transcend » — Production Music courtesy of <a href="https://www.morninglightmusic.io" target="_blank" rel="noopener">www.MorningLightMusic.io</a>. La musique ne démarre que si vous l’activez avec le bouton « Son ».</p>
     <h2>Conception et réalisation</h2>
@@ -210,7 +214,7 @@
     <p>A golden contour then travels across the massif, from the highest summit down to the valleys, following a single altitude. Twelve bases stand on real places in the Khumbu (Namche Bazaar, Gokyo, Everest Base Camp…), each linked to one of the main topics of the Finscale podcast, published by GOKYO. A pink dot, like a helicopter, circles the bases and picks up one of its guests at each; the card at the top left shows the episode number and title (expedition readings are fictitious). Click the small cube of a base to see its place, its topic and how many guests it holds. Hover over the terrain (or touch it on a phone) to see the altitude of that point or the name of the summit. Drag to turn the view, and zoom with the scroll wheel or by pinching; double-click to return to the original view.</p>
     <p class="petit">To make the slopes easier to read, the terrain is exaggerated about 1.5 times vertically. Colours and lighting are an artistic interpretation.</p>
     <h2>Data used</h2>
-    <p>Copernicus DEM GLO-30 digital elevation model (about 30 m resolution), resampled here to about 73 m per point. Copernicus DEM GLO-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018, provided under COPERNICUS by the European Union and ESA; all rights reserved.</p>
+    <p>Copernicus DEM GLO-30 digital elevation model (about 30 m resolution), resampled here to about 88 m per point. Copernicus DEM GLO-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018, provided under COPERNICUS by the European Union and ESA; all rights reserved.</p>
     <h2>Music</h2>
     <p>“Transcend” — Production Music courtesy of <a href="https://www.morninglightmusic.io" target="_blank" rel="noopener">www.MorningLightMusic.io</a>. Music only plays if you turn it on with the “Sound” button.</p>
     <h2>Design and development</h2>
@@ -281,7 +285,7 @@
 
   var VS='#version 300 es\nin vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
   var FS='#version 300 es\nprecision highp float;out vec4 o;\n#define FRAG o\n' + [
-    'uniform vec2 R;uniform float T;uniform sampler2D RELIEF;uniform float SW;uniform float SI;uniform vec2 CP;uniform float CI;uniform float K;uniform vec3 RO;uniform vec3 FW;uniform vec3 RT;uniform vec3 UP;uniform vec3 HP;uniform float HV;uniform vec4 ON;uniform sampler2D MARQ;uniform float MV;uniform vec3 GP;uniform vec3 BX[12];uniform float BV;uniform float ZM;',
+    'uniform vec2 R;uniform float T;uniform sampler2D RELIEF;uniform float SW;uniform float SI;uniform vec2 CP;uniform float CI;uniform float K;uniform vec3 RO;uniform vec3 FW;uniform vec3 RT;uniform vec3 UP;uniform vec3 HP;uniform vec4 VX;uniform float HV;uniform vec4 ON;uniform sampler2D MARQ;uniform float MV;uniform vec3 GP;uniform vec3 BX[12];uniform float BV;uniform float ZM;',
     'float h21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}',
     // relief réel : carré de 90 km, 1 unité = 14 km (demi-côté S) ; h = (altitude - 3000 m) / 4000 m
     // on n'en garde qu'un disque de rayon R0 (≈ 40 km) ; au-delà, un sol plat où l'on peint les courbes d'un relief inventé
@@ -370,6 +374,9 @@
     ' if(prof>.05&&HV>0.){vec2 sp=vec2(dot(vh,rt),dot(vh,up))/prof*1.6;float px=length(uv-sp)*min(R.x,R.y)/max(min(R.x,R.y)/900.,1.);',
     '  float cache=(touche&&t<length(vh)-.01)?0.:1.;float pouls=.7+.3*sin(T*5.);',
     '  float balise=pow(.5+.5*sin(T*4.),6.);float pt=clamp(exp(-px*px/16.)*1.6,0.,1.)*cache*HV;c=mix(c,vec3(.99,.08,.35),pt);c+=vec3(.99,.08,.35)*exp(-px/14.)*(.18+.35*balise)*cache*HV;c=mix(c,vec3(1.,.42,.62),clamp(exp(-px*px/2.5),0.,1.)*cache*HV*.8);}',
+    // la voix : un point doré qui rejoint l'hélicoptère
+    ' if(VX.w>0.){vec3 vv=VX.xyz-ro;float pv=dot(vv,fw);if(pv>.05){vec2 sv=vec2(dot(vv,rt),dot(vv,up))/pv*1.6;float qx=length(uv-sv)*min(R.x,R.y)/max(min(R.x,R.y)/900.,1.);',
+    '  float cv=(touche&&t<length(vv)-.01)?.25:1.;vec3 dore=vec3(1.,.82,.52);c=mix(c,dore,clamp(exp(-qx*qx/9.)*1.5,0.,1.)*VX.w*cv);c+=dore*exp(-qx/16.)*.55*VX.w*cv;c=mix(c,vec3(1.),clamp(exp(-qx*qx/2.),0.,1.)*VX.w*cv*.7);}}',
     // le cube d'une base, s'il est devant le relief
     ' if(tb<1e8&&(!touche||tb<t)){vec3 sl=normalize(vec3(.75,.35,.55));float l=.42+.58*max(dot(nb,sl),0.);',
     '  vec3 cb=vec3(1.,.95,.86)*l;cb=mix(cb,ciel(rd,aube),smoothstep(bA,bB,tb)*k);c=mix(c,cb,BV);}',
@@ -386,7 +393,7 @@
   gl.useProgram(pr);
   var buf=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,buf); gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
   var loc=gl.getAttribLocation(pr,'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
-  var U={}; ['R','T','SW','SI','CP','CI','K','RO','FW','RT','UP','RELIEF','HP','HV','ON','MARQ','MV','GP','BX','BV','ZM'].forEach(function(n){ U[n]=gl.getUniformLocation(pr,n); });
+  var U={}; ['R','T','SW','SI','CP','CI','K','RO','FW','RT','UP','RELIEF','HP','HV','ON','MARQ','MV','GP','BX','BV','ZM','VX'].forEach(function(n){ U[n]=gl.getUniformLocation(pr,n); });
 
   // Carte d'altitude réelle (Copernicus DEM, voir tools/relief.py) → texture flottante
   var relief=null;
@@ -672,7 +679,11 @@
       var r=(SOL+tau)/ (SOL+2.5); return {vers:{escale:v.B,prog:s0},p:[x,y,z],v:visible,onde:[v.A.x,v.A.y,.02+.33*Math.min(1,r),Math.max(0,1-r)*.0]};
     }
     var g=tau-v.duree, r2=g/5, tour=Math.floor((t-DEBUT_VOL)/CYCLE);
-    return {pose:{escale:v.B,g:g,n:tour*VOLS.length+VOLS.indexOf(v),idx:(VOLS.indexOf(v)+1)%VOLS.length},p:[v.B.x,v.B.y,v.zb],v:visible,onde:[v.B.x,v.B.y,.015+.34*r2,Math.pow(Math.max(0,1-r2),1.3)*ss(0,.25,g)]};
+    // la voix part d'un point de la vallée, à ~2 km du refuge, et rejoint l'hélicoptère en 2,4 s
+    var vi=VOLS.indexOf(v), ang=vi*2.39+tour*1.3, d0=.22, sx=v.B.x+Math.cos(ang)*d0, sy=v.B.y+Math.sin(ang)*d0, sz=Zjs(sx,sy)+.006;
+    var u=ss(1.6,4.0,g), ue=u*u*(3-2*u), vx=sx+(v.B.x-sx)*ue, vy=sy+(v.B.y-sy)*ue, vz=sz+(v.zb+.004-sz)*ue+.03*Math.sin(Math.PI*ue);
+    vz=Math.max(vz,Zjs(vx,vy)+.004); var vw=ss(1.2,1.8,g)*(1-ss(3.8,4.1,g));
+    return {voix:[vx,vy,vz,vw],pose:{escale:v.B,g:g,n:tour*VOLS.length+VOLS.indexOf(v),idx:(VOLS.indexOf(v)+1)%VOLS.length},p:[v.B.x,v.B.y,v.zb],v:visible,onde:[v.B.x,v.B.y,.015+.34*r2,Math.pow(Math.max(0,1-r2),1.3)*ss(0,.25,g)]};
   }
 
   /* ---------- Fiche de mission à chaque atterrissage ---------- */
@@ -721,7 +732,7 @@
       (v?'<div class="m-titre">« '+esc(titreSeul(ep.t,v.p.n))+' »</div><div class="m-nom">'+esc(v.p.n)+(v.p.s?' <span>· '+esc(v.p.s)+'</span>':'')+'</div>':'')+
       '<div class="m-coord">'+dms(E.lat,'N','S')+' · '+dms(E.lon,'E','W')+' · '+alt.toLocaleString(en?'en-GB':'fr-FR').replace(/[,\s]/g,' ')+' m</div>'+
       '<div class="m-det">'+MESURES[m1](en)+'</div>'+
-      '<div class="m-ok"><i></i>'+(en?'Guest on board':'Invité à bord')+'</div>';
+      '<div class="m-ok"><i></i>'+(en?'Voice gathered':'Voix recueillie')+'</div>';
   }
   function majFiche(hel){
     var pose=hel&&hel.pose, vis=0;
@@ -738,7 +749,7 @@
   }
 
   function frame(now){
-    var t=reduit?9.5:(tFixe!=null?tFixe:(now-T0)/1000);
+    var t=reduit?9.5:(window.__T!=null?window.__T:(tFixe!=null?tFixe:(now-T0)/1000));
     var dt=Math.min(.1,(now-dernier)/1000); var dms=now-dernier; dernier=now;
     if(tFixe==null && t>1){ moy=moy*.94+Math.min(dms,100)*.06; if(moy>30 && ++lents>40 && echelle*Math.min(window.devicePixelRatio||1,mobile?2:1.5)>.75){ echelle*=.9; lents=0; moy=24; taille(); } else if(moy<26 && lents>0) lents--; }
     cam=calculCamera(t,dt);
@@ -746,7 +757,7 @@
     gl.uniform2f(U.R,cv.width,cv.height); gl.uniform1f(U.T,t); gl.uniform1f(U.K,kCam); zLisse+=(vue.zoom-zLisse)*Math.min(1,dt*2.5); gl.uniform1f(U.ZM,tFixe!=null?vue.zoom:zLisse);
     gl.uniform3fv(U.RO,cam.ro); gl.uniform3fv(U.FW,cam.fw); gl.uniform3fv(U.RT,cam.rt); gl.uniform3fv(U.UP,cam.up);
     gl.uniform1f(U.SW,sw[0]); gl.uniform1f(U.SI,sw[1]);
-    var hel=helico(t); heliEtat=hel; majFiche(hel); gl.uniform1f(U.MV,0); gl.uniform1f(U.BV,carteFaite?ss(7,10,t):0); majBases(t); if(hel){ gl.uniform3fv(U.HP,hel.p); gl.uniform1f(U.HV,hel.v); gl.uniform4fv(U.ON,hel.onde); } else gl.uniform1f(U.HV,0);
+    var hel=helico(t); heliEtat=hel; majFiche(hel); gl.uniform1f(U.MV,0); gl.uniform1f(U.BV,carteFaite?ss(7,10,t):0); majBases(t); if(hel){ gl.uniform3fv(U.HP,hel.p); gl.uniform1f(U.HV,hel.v); gl.uniform4fv(U.ON,hel.onde); gl.uniform4fv(U.VX,hel.voix||[0,0,0,0]); } else gl.uniform1f(U.HV,0);
     majEtiquette(t,now);
     gl.drawArrays(gl.TRIANGLES,0,3);
     requestAnimationFrame(frame);
