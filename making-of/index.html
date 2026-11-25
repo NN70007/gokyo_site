@@ -90,8 +90,9 @@
 
     <h2><i>01</i> L’idée</h2>
     <p>Gokyo est un village du Khumbu, au Népal, situé à 4 790 mètres d’altitude, au pied du Cho Oyu. La société luxembourgeoise GOKYO lui a emprunté son nom.</p>
-    <p>La montagne constitue le fil conducteur de l’identité visuelle. Elle évoque l’exploration, la persévérance et la progression. Des valeurs qui correspondent à la démarche de GOKYO.</p>
+    <p>La montagne constitue le fil conducteur de l’identité visuelle. Elle évoque l’exploration, la persévérance et la progression.</p>
     <p>La page s’ouvre dans la nuit. Puis l’aube apparaît sur les sommets de plus de 8 000 mètres et descend progressivement le long des pentes. Les vallées restent encore dans l’ombre, avant d’être à leur tour baignées de lumière.</p>
+    <figure><img src="relief.webp" width="1400" height="875" alt="Le massif en trois dimensions, la courbe dorée et l’hélicoptère rose au loin" loading="lazy" decoding="async"><figcaption>La courbe dorée descend du plus haut sommet vers les vallées. Au loin, l’hélicoptère poursuit son parcours.</figcaption></figure>
 
     <h2><i>02</i> La légende</h2>
     <p>Chaque élément du paysage a une fonction et une signification.</p>
@@ -99,8 +100,8 @@
     <p><strong class="rose">La compagnie et le point rose.</strong> GOKYO est la société à l’origine du projet. Son podcast, Finscale, est représenté par le point rose qui se déplace dans le paysage de montagne. Ce point symbolise un hélicoptère qui voyage entre les douze camps de base, chacun correspondant à l’un des grands thèmes du podcast. À chaque escale, une personnalité de premier plan dans son domaine quitte la base et monte à bord pour partager son expérience et son expertise, le temps d’un épisode.</p>
     <p><strong>Les douze camps de base.</strong> Ils sont posés sur des lieux réels du Khumbu : Namche Bazaar, Tengboche, Gokyo, le camp de base de l’Everest ou celui du Makalu deviennent les étapes d’un parcours à travers différents univers.</p>
     <p><strong>L’invité.</strong> C’est le point blanc qui sort de la base et rejoint l’hélicoptère, posé juste à côté.</p>
-    <p><strong>Le carnet de bord.</strong> En haut à gauche, une fiche présente l’épisode de l’escale en cours : son numéro, son titre, son invité et sa société. Son contenu est actualisé quotidiennement.</p>
-    <figure><img src="relief.webp" width="1400" height="875" alt="Le massif en trois dimensions, la courbe dorée et l’hélicoptère rose au loin" loading="lazy" decoding="async"><figcaption>La courbe dorée descend du plus haut sommet vers les vallées. Au loin, l’hélicoptère poursuit son parcours.</figcaption></figure>
+    <p><strong>Le manifeste passagers.</strong> En haut à gauche, un manifeste comme celui que l’on remplit avant un vol. À chaque escale s’y inscrivent le numéro du vol, qui est celui de l’épisode, sa date, l’invité qui embarque et sa société, le motif du vol, qui est le thème, et le bagage déclaré, qui est le titre de l’épisode. La liste s’allonge d’escale en escale. Les épisodes sont mis à jour chaque jour.</p>
+    <figure><img src="escale.webp" width="1400" height="875" alt="Une escale : le point rose posé près d’une base, le point blanc qui le rejoint, et le manifeste passagers rempli en haut à gauche" loading="lazy" decoding="async"><figcaption>Troisième escale. L’invité quitte la base, rejoint l’hélicoptère, et son nom s’ajoute au manifeste.</figcaption></figure>
 
     <h2><i>03</i> Les données</h2>
     <p>Le relief provient du modèle numérique de terrain <strong>Copernicus DEM GLO-30</strong> (DLR et Airbus Defence and Space, pour l’Union européenne et l’ESA).</p>
@@ -112,6 +113,7 @@
 
     <h2><i>04</i> La technique</h2>
     <p>Tout est développé à la main, sans bibliothèque graphique ni framework. Un programme WebGL2 réalise l’ensemble du rendu.</p>
+    <p>C’est un choix de dessin avant d’être un choix technique. Écrire le rendu soi-même, c’est décider de chaque trait : l’épaisseur d’une courbe, la couleur de l’aube, la densité de la brume. C’est aussi ce qui garde la page légère et lui permet de tourner sur un téléphone, sans dépendre d’un moteur 3D conçu pour d’autres usages. La carte et son interprétation viennent ainsi du même geste.</p>
     <p>Pour chaque pixel, un rayon est lancé afin de déterminer son intersection avec le relief. Le programme calcule ensuite l’éclairage, les courbes de niveau et la brume atmosphérique.</p>
     <p>Les courbes sont générées à partir de la pente apparente du terrain. Elles conservent ainsi une épaisseur régulière, quelle que soit la distance de visualisation.</p>
     <p>Quelques choix techniques structurent le fonctionnement de la scène :</p>
@@ -123,10 +125,10 @@
       <li>La page d’accueil ne dépose aucun cookie et n’utilise aucun outil de mesure d’audience.</li>
     </ul>
     <div class="chiffres">
-      <div><b>~60 Ko</b><span>pour l’ensemble de la page, code compris</span></div>
+      <div><b>25 Ko</b><span>de code transféré (68 Ko avant compression), hors données de relief</span></div>
       <div><b>0</b><span>bibliothèque graphique, cookie ou traceur</span></div>
       <div><b>12</b><span>camps de base inspirés de lieux réels</span></div>
-      <div><b>100/100</b><span>au test PageSpeed mobile</span></div>
+      <div><b>100/100</b><span>au test PageSpeed mobile, novembre 2026</span></div>
     </div>
 
     <h2><i>05</i> Le son</h2>
@@ -152,25 +154,26 @@
     <h2><i>00</i> Why</h2>
     <div class="pourquoi">
       <p>Mountains are a land of effort and patience. To reach the summits, you move forward stage by stage, stop at times, catch your breath and carry on.</p>
-      <p>At the foot of the great faces, base camps are places of meeting and preparation. People share an experience there, recover their strength and prepare the rest of the climb.</p>
+      <p>At the foot of the great walls, base camps are places of meeting and preparation. People share an experience there, recover their strength and prepare for the rest of the climb.</p>
       <p>This is the idea behind the GOKYO homepage: a landscape to explore, twelve base camps to discover and a journey that unfolds little by little.</p>
       <p>A helicopter links these camps and goes to meet those who have reached the summits of their field. At every stage, a new encounter adds to the journey.</p>
       <p>The mountain is real. The journey is an invitation to discover other territories: those of finance, of companies and of human experience.</p>
     </div>
 
     <h2><i>01</i> The idea</h2>
-    <p>Gokyo is a village in the Khumbu, in Nepal, at an altitude of 4,790 metres, at the foot of Cho Oyu. GOKYO, the Luxembourg company, borrowed its name.</p>
-    <p>The mountain is the common thread of the visual identity. It evokes exploration, perseverance and progress: values that match GOKYO’s approach.</p>
+    <p>Gokyo is a village in the Khumbu, in Nepal, at an altitude of 4,790 metres, at the foot of Cho Oyu. The Luxembourg company GOKYO takes its name from it.</p>
+    <p>The mountain is the common thread of the visual identity. It evokes exploration, perseverance and progress.</p>
     <p>The page opens at night. Then dawn appears on the peaks above 8,000 metres and gradually moves down the slopes. The valleys stay in shadow a while longer, before they too are bathed in light.</p>
+    <figure><img src="relief.webp" width="1400" height="875" alt="The massif in three dimensions, the golden contour and the pink helicopter in the distance" loading="lazy" decoding="async"><figcaption>The golden contour moves down from the highest summit to the valleys. In the distance, the helicopter continues its journey.</figcaption></figure>
 
     <h2><i>02</i> The legend</h2>
     <p>Every element of the landscape has a function and a meaning.</p>
-    <p><strong>The terrain.</strong> It represents a real region of the Himalaya: the Khumbu. It is also a metaphor for finance, a complex environment whose relief one must learn to read in order to understand what is at stake.</p>
+    <p><strong>The terrain.</strong> It represents a real region of the Himalaya: the Khumbu. It is also a metaphor for finance, a complex environment whose contours you have to learn to read before you can grasp what is at stake.</p>
     <p><strong class="rose">The company and the pink dot.</strong> GOKYO is the company behind the project. Its podcast, Finscale, is represented by the pink dot moving across the mountain landscape. The dot symbolises a helicopter travelling between the twelve base camps, each corresponding to one of the podcast’s main themes. At every landing, a leading figure in their field leaves the base and comes aboard to share their experience and expertise, for the length of an episode.</p>
-    <p><strong>The twelve base camps.</strong> They stand on real places in the Khumbu: Namche Bazaar, Tengboche, Gokyo, Everest Base Camp or Makalu Base Camp become the stages of a journey through different worlds.</p>
-    <p><strong>The guest.</strong> This is the white dot that leaves the base and joins the helicopter, landed just beside it.</p>
-    <p><strong>The logbook.</strong> In the top-left corner, a card presents the episode of the current landing: its number, title, guest and company. Its content is updated daily.</p>
-    <figure><img src="relief.webp" width="1400" height="875" alt="The massif in three dimensions, the golden contour and the pink helicopter in the distance" loading="lazy" decoding="async"><figcaption>The golden contour moves down from the highest summit to the valleys. In the distance, the helicopter continues its journey.</figcaption></figure>
+    <p><strong>The twelve base camps.</strong> They stand on real places in the Khumbu: Namche Bazaar, Tengboche, Gokyo, Everest Base Camp and Makalu Base Camp become the stages of a journey through different worlds.</p>
+    <p><strong>The guest.</strong> This is the white dot that leaves the base and joins the helicopter, which has landed just beside it.</p>
+    <p><strong>The passenger manifest.</strong> In the top-left corner, a manifest like the one filled in before a flight. At every landing it records the flight number, which is the episode’s, its date, the guest coming aboard and their company, the purpose of the flight, which is the theme, and the declared baggage, which is the episode title. The list grows from landing to landing. Episodes are refreshed every day.</p>
+    <figure><img src="escale.webp" width="1400" height="875" alt="A landing: the pink dot on the ground near a base, the white dot joining it, and the passenger manifest filled in at the top left" loading="lazy" decoding="async"><figcaption>Third landing. The guest leaves the base, joins the helicopter, and their name is added to the manifest. Shown here in French.</figcaption></figure>
 
     <h2><i>03</i> The data</h2>
     <p>The terrain comes from the <strong>Copernicus DEM GLO-30</strong> digital elevation model (DLR and Airbus Defence and Space, for the European Union and ESA).</p>
@@ -182,6 +185,7 @@
 
     <h2><i>04</i> The craft</h2>
     <p>Everything is hand-coded, with no graphics library or framework. A single WebGL2 program does all the rendering.</p>
+    <p>This is a drawing decision before it is a technical one. Writing the renderer by hand means deciding every stroke: the weight of a contour, the colour of dawn, the density of the haze. It also keeps the page light enough to run on a phone, with no dependence on a 3D engine built for other purposes. The map and its interpretation come from the same hand.</p>
     <p>For each pixel, a ray is cast to find where it meets the terrain. The program then computes the lighting, the contour lines and the atmospheric haze.</p>
     <p>The contours are generated from the apparent slope of the terrain, so they keep an even thickness at any viewing distance.</p>
     <p>A few technical choices shape how the scene works:</p>
@@ -193,10 +197,10 @@
       <li>The homepage sets no cookies and uses no analytics tools.</li>
     </ul>
     <div class="chiffres">
-      <div><b>~60 KB</b><span>for the whole page, code included</span></div>
+      <div><b>25 KB</b><span>of code transferred (68 KB before compression), terrain data aside</span></div>
       <div><b>0</b><span>graphics libraries, cookies or trackers</span></div>
       <div><b>12</b><span>base camps inspired by real places</span></div>
-      <div><b>100/100</b><span>on the PageSpeed mobile test</span></div>
+      <div><b>100/100</b><span>on the PageSpeed mobile test, November 2026</span></div>
     </div>
 
     <h2><i>05</i> Sound</h2>
