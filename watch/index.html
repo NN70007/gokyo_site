@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Watch faces for Garmin – GOKYO</title>
+<meta name="description" content="Garmin watch faces created by NiderLabs and published by GOKYO, Luxembourg. Crosswind METAR: the METAR and runway wind for VFR pilots.">
+<link rel="canonical" href="https://watch.gokyo.lu/">
+<link rel="icon" type="image/svg+xml" href="/crosswind/img/icon.svg?v=2">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Watch faces for Garmin – GOKYO">
+<meta property="og:description" content="Garmin watch faces created by NiderLabs and published by GOKYO, Luxembourg.">
+<meta property="og:url" content="https://watch.gokyo.lu/">
+<meta property="og:image" content="https://watch.gokyo.lu/crosswind/img/og-crosswind.jpg?v=2">
+<link rel="stylesheet" href="/crosswind/aviator.css?v=35">
+<script src="/crosswind/commun.js?v=2"></script>
+<style>
+.cat{width:100%;max-width:1160px;margin:0 auto;padding:clamp(40px,7vw,88px) clamp(16px,4vw,48px)}
+.cat-sur{font-family:Mono,monospace;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin:0 0 18px}
+.cat h1{font-family:Display,serif;font-weight:300;font-size:clamp(40px,6vw,76px);line-height:1.05;margin:0 0 18px;text-transform:none}
+.cat h1 em{font-style:italic}
+.cat-intro{font-size:clamp(18px,2vw,22px);color:var(--encre-3);max-width:640px;margin:0 0 clamp(36px,6vw,64px);text-align:left}
+.cat-grille{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.cat-carte{display:grid;grid-template-columns:minmax(0,1fr) 170px;gap:18px;align-items:center;padding:28px;border:1px solid var(--trait);border-radius:22px;background:var(--surface);color:var(--encre);text-decoration:none}
+.cat-carte:hover{border-color:var(--bord)}
+.cat-carte img{width:170px;height:auto}
+.cat-nom{font-family:Inter,system-ui,sans-serif;font-weight:700;font-size:25px;letter-spacing:.03em;margin:0 0 10px;white-space:nowrap}
+.cat-nom b{color:var(--accent);font-weight:700}
+.cat-pour{font-family:Mono,monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--encre-3);margin:0 0 12px}
+.cat-carte p.t{font-size:17px;line-height:1.5;color:var(--encre-2);margin:0 0 16px}
+.cat-prix{display:inline-block;white-space:nowrap;font-size:13px;font-weight:600;color:var(--ambre);border:1px solid var(--ambre);border-radius:999px;padding:5px 12px;margin:0 0 16px}
+.cat-aller{font-weight:600;color:var(--accent);font-size:17px}
+.cat-vide{display:flex;flex-direction:column;justify-content:center;padding:28px;border:1px dashed var(--bord);border-radius:22px;color:var(--encre-3);font-size:17px;min-height:220px}
+.cat-vide b{color:var(--encre-2);font-family:Inter,system-ui,sans-serif;font-size:22px;letter-spacing:.5px;margin-bottom:8px}
+@media(max-width:900px){.cat-grille{grid-template-columns:1fr}}
+@media(max-width:560px){.cat-carte{grid-template-columns:1fr}.cat-carte img{width:150px;margin:0 auto;order:-1}}
+</style>
+</head>
+<body>
+<header class="entete">
+  <a class="marque" href="/"><span>GOKYO</span><small>Watch faces</small></a>
+  <nav class="nav" aria-label="Pages">
+    <a href="/crosswind/">Crosswind METAR</a>
+    <a href="/crosswind/legal/">Legal notice</a>
+    <button type="button" class="theme">Day mode</button>
+  </nav>
+</header>
+<main class="cat">
+  <p class="cat-sur">Garmin · Connect IQ</p>
+  <h1>Watch faces <em>made to be read at a glance.</em></h1>
+  <p class="cat-intro">Created by NiderLabs. Published by GOKYO, Luxembourg.</p>
+  <div class="cat-grille">
+    <a class="cat-carte" href="/crosswind/">
+      <div>
+        <p class="cat-pour">For VFR pilots</p>
+        <p class="cat-nom"><b>CROSSWIND</b> METAR</p>
+        <p class="t">Flight category, QNH, wind and gusts, and a wind arrow relative to your runway.</p>
+        <span class="cat-prix">Free if installed before 31 Dec 2026</span><br>
+        <span class="cat-aller">Discover →</span>
+      </div>
+      <img src="/crosswind/img/watch-dial.webp" alt="Crosswind METAR watch face" width="190" height="230">
+    </a>
+    <div class="cat-vide"><b>More to come</b>New watch faces are in preparation.</div>
+  </div>
+</main>
+<footer class="pied2">
+  <div class="pied2-bas">
+    <p>Published by GOKYO S.à r.l.-S, Luxembourg · Watch faces © NiderLabs</p>
+    <p class="pied2-legal"><a href="/crosswind/terms/">Terms of Use</a> · <a href="/crosswind/refund/">Refunds</a> · <a href="/crosswind/privacy/">Privacy</a> · <a href="/crosswind/legal/">Legal notice</a> · © <span data-annee></span> GOKYO</p>
+  </div>
+</footer>
+<script src="/visite.js?v=1" defer></script>
+</body>
+</html>
