@@ -454,7 +454,8 @@
     if(tFixe!=null){ var s0=T<11?0:(T<21?(T-11)*(T-11)/20:5+(T-21)); azAuto=.35+T*.006+s0*.105; }
     else { var g=pause>0?0:1; pause=Math.max(0,pause-dt); azAuto+=dt*vitesseAuto(T)*g; }
     var th=Math.min(1.32,Math.max(0,1.0*k*(1-(por-1)*.17)+vue.incl));
-    var az=azAuto+vue.az;
+    // ouverture nord en haut, comme une carte ; la vue pivote pendant la descente pour rejoindre le cadrage en relief
+    var eo=ss(10,19,T), az=-Math.PI/2+(azAuto+Math.PI/2)*eo+vue.az;
     var dist=((3.15-.45*ss(0,10,T))*(1-k)+3.7*(1+(por-1)*.22)*k)*vue.zoom;
     var ci=[.62*k,.1*k,.55*k];
     var ro=[ci[0]+dist*Math.sin(th)*Math.cos(az), ci[1]+dist*Math.sin(th)*Math.sin(az), ci[2]+dist*Math.cos(th)];
