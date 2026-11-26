@@ -112,8 +112,8 @@
     <figure><img src="disque.webp" width="1400" height="875" alt="Vue lointaine : le disque de relief réel et les courbes peintes qui continuent autour" loading="lazy" decoding="async"><figcaption>En s’éloignant, le relief réel se fond progressivement dans des courbes de niveau dessinées sur un sol plat.</figcaption></figure>
 
     <h2><i>04</i> La technique</h2>
-    <p>Tout est développé à la main, sans bibliothèque graphique ni framework. Un programme WebGL2 réalise l’ensemble du rendu.</p>
-    <p>C’est un choix de dessin avant d’être un choix technique. Écrire le rendu soi-même, c’est décider de chaque trait : l’épaisseur d’une courbe, la couleur de l’aube, la densité de la brume. C’est aussi ce qui garde la page légère et lui permet de tourner sur un téléphone, sans dépendre d’un moteur 3D conçu pour d’autres usages. La carte et son interprétation viennent ainsi du même geste.</p>
+    <p>Tout est écrit sur mesure, sans bibliothèque graphique ni framework. Un programme WebGL2 réalise l’ensemble du rendu.</p>
+    <p>C’est un choix de dessin avant d’être un choix technique. Se passer de toute bibliothèque, c’est décider de chaque trait : l’épaisseur d’une courbe, la couleur de l’aube, la densité de la brume. C’est aussi ce qui garde la page légère et lui permet de tourner sur un téléphone, sans dépendre d’un moteur 3D conçu pour d’autres usages. La carte et son interprétation naissent ainsi du même dessin.</p>
     <p>Pour chaque pixel, un rayon est lancé afin de déterminer son intersection avec le relief. Le programme calcule ensuite l’éclairage, les courbes de niveau et la brume atmosphérique.</p>
     <p>Les courbes sont générées à partir de la pente apparente du terrain. Elles conservent ainsi une épaisseur régulière, quelle que soit la distance de visualisation.</p>
     <p>Quelques choix techniques structurent le fonctionnement de la scène :</p>
@@ -184,8 +184,8 @@
     <figure><img src="disque.webp" width="1400" height="875" alt="Distant view: the disc of real terrain and the painted contours continuing around it" loading="lazy" decoding="async"><figcaption>Seen from afar, the real terrain gradually blends into contour lines drawn on flat ground.</figcaption></figure>
 
     <h2><i>04</i> The craft</h2>
-    <p>Everything is hand-coded, with no graphics library or framework. A single WebGL2 program does all the rendering.</p>
-    <p>This is a drawing decision before it is a technical one. Writing the renderer by hand means deciding every stroke: the weight of a contour, the colour of dawn, the density of the haze. It also keeps the page light enough to run on a phone, with no dependence on a 3D engine built for other purposes. The map and its interpretation come from the same hand.</p>
+    <p>Everything is custom-built, with no graphics library or framework. A single WebGL2 program does all the rendering.</p>
+    <p>This is a drawing decision before it is a technical one. Doing without any library means deciding every stroke: the weight of a contour, the colour of dawn, the density of the haze. It also keeps the page light enough to run on a phone, with no dependence on a 3D engine built for other purposes. The map and its interpretation come from the same drawing.</p>
     <p>For each pixel, a ray is cast to find where it meets the terrain. The program then computes the lighting, the contour lines and the atmospheric haze.</p>
     <p>The contours are generated from the apparent slope of the terrain, so they keep an even thickness at any viewing distance.</p>
     <p>A few technical choices shape how the scene works:</p>
