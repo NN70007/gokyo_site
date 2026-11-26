@@ -564,3 +564,7 @@ a.puce-m.bientot{border-style:dashed;color:var(--encre-3);text-decoration:none}
 @media (max-width:560px){.tuiles{grid-template-columns:1fr}.tuile{display:grid;grid-template-columns:46px 1fr;column-gap:14px;padding:18px}.tuile b{margin-top:0}.tuile p{grid-column:2}.tuile-ico{grid-row:span 2}.panneau{padding:22px}.touche{min-width:62px}}
 
 .marque-x{color:var(--accent)}
+/* Encart vers l'appli (cadrans sans écran tactile) */
+.pub-appli{display:flex;flex-direction:column;gap:6px;padding:20px 24px;border-radius:18px;border:2px solid var(--accent);color:inherit;text-decoration:none;font-size:20px;line-height:1.4}
+.pub-appli strong{color:var(--accent);font-weight:600}
+.pub-appli span{opacity:.8;font-size:18px}

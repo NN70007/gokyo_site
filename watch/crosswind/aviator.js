@@ -129,7 +129,7 @@
     var un = o.tactile === false;
     box.querySelectorAll(".carte").forEach(function (c, i) { c.hidden = un && i > 0; });
     if (un) box.querySelector(".titre").textContent = "AIRPORT";
-    $("#aide-apt").hidden = un; $("#aide-apt-1").hidden = !un; $("#case-gps").hidden = un;
+    $("#aide-apt").hidden = un; $("#aide-apt-1").hidden = !un; $("#pub-appli").hidden = !un; $("#case-gps").hidden = un;
     $("#xwLim").value = r.xwLim;
     $("#magVar").value = r.magVar;
     ["pUnit", "wUnit", "dateFmt"].forEach(function (k) { var x = document.querySelector('input[name="' + k + '"][value="' + (r[k] || 0) + '"]'); if (x) x.checked = true; });
