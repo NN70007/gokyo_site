@@ -26,7 +26,7 @@
 <link rel="preload" href="/crosswind/fonts/inter-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="aviator.css?v=35">
 <script src="commun.js?v=2"></script>
-<script src="aviator.js?v=15" defer></script>
+<script src="aviator.js?v=16" defer></script>
 <script src="terre.js?v=1" defer></script>
 <script src="carte-points.js?v=2" defer></script>
 <script src="intro.js?v=7" defer></script>
@@ -278,9 +278,10 @@
 
     <section style="display:flex;flex-direction:column;gap:18px">
       <h2>Airports</h2>
-      <p class="aide">Tap the airport code on the watch to switch: 1 → 2 → 3 → nearest → 1. Runway AUTO picks the runway most into the wind.</p>
+      <p class="aide" id="aide-apt">Tap the airport code on the watch to switch: 1 → 2 → 3 → nearest → 1. Runway AUTO picks the runway most into the wind.</p>
+      <p class="aide" id="aide-apt-1" hidden>Your watch has no touch screen: the watch face shows this airport. To switch between three airports and the nearest one, use the Crosswind METAR App. Runway AUTO picks the runway most into the wind.</p>
       <div class="grille" id="aeroports"></div>
-      <label class="case"><input type="checkbox" id="gps"> <span>Add the nearest airport (from the watch's last known position) to the list</span></label>
+      <label class="case" id="case-gps"><input type="checkbox" id="gps"> <span>Add the nearest airport (from the watch's last known position) to the list</span></label>
     </section>
 
     <section style="display:flex;flex-direction:column;gap:18px">
