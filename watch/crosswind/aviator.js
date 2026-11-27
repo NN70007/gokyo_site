@@ -236,12 +236,48 @@
     if (!/^[A-Za-z0-9]{4}$/.test(s.icao)) { msg(m, "Airport 1 needs a 4-letter ICAO code (e.g. ELLX).", false); return; }
     b.disabled = true; b.textContent = "Saving…";
     AVIATOR.appel({ action: "aviator.enregistrer", jeton: jeton, reglages: s, accepte: true }).then(function () {
-      msg(m, "Saved. Your watch shows UPDATED within 5 minutes (keep your phone nearby). If SETTINGS was not opened on the watch in the last 30 minutes, it can take up to 15 minutes.", true);
+      suivre(m);
     }).catch(function (x) {
       if (x.code === "session") { msg(m, x.message, false); setTimeout(function () { location.reload(); }, 2500); }
       else msg(m, x.message, false);
     }).then(function () { b.disabled = false; b.textContent = "Save to my watch"; m.scrollIntoView({ block: "center" }); });
   });
+
+  // Après l'enregistrement : la montre a-t-elle reçu les réglages ? (elle passe toutes les 5 minutes)
+  var suivi = null;
+  function suivre(m) {
+    if (suivi) clearInterval(suivi.t);
+    var debut = Date.now(), etat = { vu: 0, ecart: 0 }, fini = false;
+    var afficher = function () {
+      if (fini) return;
+      var prochain = etat.vu ? etat.vu + 300000 - (Date.now() + etat.ecart) : 300000 - (Date.now() - debut);
+      var txt;
+      if (Date.now() - debut > 20 * 60000) {
+        fini = true; clearInterval(suivi.t);
+        m.className = "message err"; m.hidden = false;
+        m.textContent = "Saved, but the watch has not picked up the new settings yet. Check that your phone is nearby, with Bluetooth on and the Garmin Connect app running. The watch will get them at its next check.";
+        return;
+      }
+      if (prochain > 0) {
+        var mn = Math.floor(prochain / 60000), sc = Math.floor(prochain % 60000 / 1000);
+        txt = "Saved. Sending to your watch… within " + mn + ":" + pad(sc);
+      } else txt = "Saved. Sending to your watch… any moment now.";
+      m.className = "message attente"; m.hidden = false;
+      m.innerHTML = '<span class="sablier" aria-hidden="true"></span>' + esc(txt);
+    };
+    var demander = function () {
+      AVIATOR.appel({ action: "aviator.etat", jeton: jeton }).then(function (o) {
+        if (fini) return;
+        etat.vu = o.vu; etat.ecart = (o.maintenant || Date.now()) - Date.now();
+        if (o.recu) {
+          fini = true; clearInterval(suivi.t);
+          msg(m, "\u2713 Your watch has your new settings.", true);
+        } else afficher();
+      }).catch(function () { /* nouvel essai au prochain tour */ });
+    };
+    suivi = { t: setInterval(function () { afficher(); if ((Date.now() - debut) % 10000 < 1000) demander(); }, 1000) };
+    afficher(); demander();
+  }
 
   $("#quitter").addEventListener("click", function (e) { e.preventDefault(); quitter(false); });
   if ($("#memo-oublier")) $("#memo-oublier").addEventListener("click", function () { quitter(false); });
